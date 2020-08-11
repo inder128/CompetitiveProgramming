@@ -1,0 +1,11 @@
+[
+	{
+		"test": "11\n(RaRbR)L)L(\n"
+	},
+	{
+		"test": "11\n(R)R(R)Ra)c\n"
+	},
+	{
+		"test": "21\n(RRRRR)LLLL(RRR)LL(R)\n"
+	}
+]
