@@ -1,0 +1,8 @@
+[
+	{
+		"test": "ab\nba\naba\n"
+	},
+	{
+		"test": "abccba\ncabcab\ncbaca\n"
+	}
+]
