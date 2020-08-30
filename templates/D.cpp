@@ -7,11 +7,9 @@ template<class T> ostream& operator<<(ostream &os, vector<T> V) {
     os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
 template<class T> ostream& operator<<(ostream &os, set<T> S){
     os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-template<class T> ostream& operator<<(ostream &os, multiset<T> S){
-    os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
 template<class L, class R> ostream& operator<<(ostream &os, map<L,R> M) {
     os << "{ "; for(auto m:M) os<<"("<<m.F<<":"<<m.S<<") "; return os<<"}"; }
-    #define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
+#define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
 template <typename Arg1>
 void __f(const char* name, Arg1&& arg1) { cout << name << " : " << arg1 << '\n'; }
 template <typename Arg1, typename... Args>
@@ -30,8 +28,6 @@ typedef pair<ll,ll> pl;
 typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef vector<vi> vvi;
-typedef vector<vl> vvl;
-typedef vector<bool> vb;
  
 /*-----------------------------Code begins----------------------------------*/
 

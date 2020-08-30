@@ -1,0 +1,2 @@
+1. Maximum xor subsequence
+2. Alternate houses and towers in circle (codeforces)

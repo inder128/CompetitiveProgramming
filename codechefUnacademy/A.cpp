@@ -28,12 +28,42 @@ typedef pair<ll,ll> pl;
 typedef vector<int> vi;
 typedef vector<ll> vl;
 typedef vector<vi> vvi;
+typedef vector<vl> vvl;
+typedef vector<bool> vb;
  
 /*-----------------------------Code begins----------------------------------*/
 
-void solve(){
-    
+inline ll n2(int n){
+    return (n*1ll*(n+1))/2;
 }
+
+void solve(){
+    int n; cin>>n;
+    ll s; cin>>s;
+    vi a(n); for(int &i : a) cin>>i;
+
+    int l = 0, r = 0, mxS = 0;
+    ll ts = a[0] + 1;
+    while(r < n){
+        int tl = r - l + 1;
+        if(ts <= s){
+            mxS = max(mxS, r - l + 1);
+            if(r == n - 1) break;
+            r++;
+            ts += n2(r+1) - n2(l);
+            ts += tl*1ll*(r + 1);
+            ts += a[r];
+        }
+        else{
+            ts -= n2(r+1) - n2(l+1);
+            ts -= tl*1ll*(l + 1);
+            ts -= a[l];
+            l++;
+        }
+    }
+    cout<<mxS<<el;
+}
+
  
 int main(){
     ios_base::sync_with_stdio(0);
