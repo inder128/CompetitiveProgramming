@@ -1,0 +1,111 @@
+Given two strings s1 and s2, let us assume that while typing the strings there were some backspaces encountered which are represented by #. The task is to determine whether the resultant strings after processing the backspace character would be equal or not.
+
+si#dg#dfi
+sdDfi
+
+Bck = 0
+
+ti##dg#dfi
+
+s##
+
+Sddfi
+
+O(n), O(n);
+
+Bool comp(string s1, string s2){
+	Int n = s1.length()
+Int m = s2.length()
+Int i = n  -1, bck1 = 0;
+Int j = m-1, bck2 = 0;
+
+while(i>=0 or j>=0){
+	while(i>= 0){
+	if(bck1 == 0 and s1[i]!=’#’) break;
+	if(s1[i]==’#’) bck1++;
+	else bck1--;
+}
+while(j>= 0){
+	if(bck2 == 0 and s2[j]!=’#’) break;
+	if(s2[j]==’#’) bck2++;
+	else bck2--;
+}
+if(i>=0 and j<0) return false;
+if(i<0 and j>=0) return false;
+if(i>=0 and j>= 0 ){
+	if(s1[i]==s2[j])i--, j--;
+else return false;
+}
+
+
+
+}
+return true;
+}
+
+
+
+Given an array of N positive integers. We are allowed to remove an element from either of the two ends i.e from the left side or right side of the array. Each time we remove an element, the score is increased by the value of the element. The task is to find the maximum score that can be obtained by removing k such elements.
+
+2 50 3 7 9
+
+2 100 3 7 70 70 70
+
+3 7 70
+
+fdel + bdel = k
+
+sumfdel + sumbdel -> maximize
+
+mxSum = 0
+for evet pair of fdel , bdel  such that fdel + bdel = k sum
+
+mxSum = max(sum, mxSum)
+
+O(k*k)
+currBackSum = 0;
+currFrontSum = 0;
+for(i = len-1-k; i  <= len-1; i++){
+currBackSum  += arr[i];
+mxSum = currFrontSum + currbackSum;
+
+for(fdel = 0; fdel  < k; fdel++){
+	currFrontSum += arr[fdel];
+	currBackSum -= arr[(len-k) + fdel];
+
+	mxSum = max(mxSum, currFrontSum + currbackSum);
+mxSum = max(sum, mxSum);
+}
+	
+
+mxSum;
+
+k = 3
+
+l  r tk
+
+
+currDP[l][r][tk] = max(oldDP[l+1][r][tk-1] + arr[l],  oldDP[l][r-1][tk-1] + arr[r])
+
+oldDP = currDP;
+
+tk 1 to k 
+
+
+DP[l][l][1] = arr[l]; for all l 0, len-1;
+
+oldDP[l][r][0] = 0;  
+
+DP[l][i][2]  k <= n
+
+ans = DP[0][len-1][k]
+
+
+
+
+k = 2;
+
+currDP[][]   oldDP[][]
+
+
+O(n*n*k), O(n*n)
