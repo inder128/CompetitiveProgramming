@@ -43,9 +43,20 @@ void solve1(){
 }
 
 void solve(){
+	// at max sm can be (n*10^9 - n) -> when c = 1;
+	// when n==1 -> sm will always be a[0] - 1 regardless of c;
+	// when n==2 -> 1 c -> abs(a[0] - 1) + abs(a[1] - c) -> so c will be a[i];
+	// when n==3 -> c can be atmost 10^5;
+	// so n >= 3 check for all possible values of c;
 	int n; cin>>n;
 	vl a(n); for(ll &i : a) cin>>i;
 	sort(rng(a));
+	if(n<=2){
+		cout<<a[0] - 1<<el;
+		// cout<<a[0] - 1 + abs(a[1] - c)<<el;
+		// cout<<a[0] - 1 + abs(c - c)<<el;
+		return;
+	}
 	ll lsm = LLONG_MAX, c = 1;
 	while(true){
 		ll ci = 1, sm = 0;
