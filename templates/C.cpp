@@ -7,7 +7,7 @@ using namespace std;
 #define S second
 #define el '\n'
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
-    return os << "(" << P.F << "," << P.F << ")"; }
+    return os << "(" << P.F << "," << P.S << ")"; }
 template<class T> ostream& operator<<(ostream &os, vector<T> V) {
     os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
 template<class T> ostream& operator<<(ostream &os, set<T> S){

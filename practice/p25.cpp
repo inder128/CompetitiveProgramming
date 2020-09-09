@@ -25,9 +25,40 @@ typedef long long ll; typedef pair<int,int> pi;
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
+  
 
 void solve(){
-    
+    int n; cin>>n;
+    vector <bool> inc(n+1), taken(n+1);
+    set <pi> ord;
+    int ptr = n;
+
+    for (int i = 0; i < n-1; ++i){
+        int v; cin>>v; 
+        if(i==0) cout<<v<<el;
+        if(ord.empty() or inc[v]){
+            taken[v] = inc[v] = true;
+            while(taken[ptr]) ptr--;
+            taken[ptr] = true;
+            ord.insert({ptr, v});          
+        }
+        else{
+            pi pr = *ord.upper_bound({v, 0});
+
+            cout<<pr.S<<" "<<v<<el;
+            taken[v] = inc[v] = true;
+
+            ord.erase(pr);
+            pr.S = v;
+            if(pr.F == v){
+                while(taken[ptr]) ptr--;
+                taken[ptr] = true;
+                pr.F = ptr;
+            }
+            ord.insert(pr);
+        }
+    }
+    for(pi pr : ord) cout<<pr.S<<" "<<pr.F<<el;
 }
  
 int main(){
