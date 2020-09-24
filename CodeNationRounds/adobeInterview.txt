@@ -1,0 +1,60 @@
+a%x = b;
+
+5  2
+
+x = 3;
+
+10 2;
+
+f = some factor of (a - b)  8 2
+not a
+
+if(f <= b) a%f != b;
+else a%b == b;
+
+4 8
+
+15 - 3 = 12
+
+(1 2 3 6 12)
+
+(factor > b);
+
+
+// returns no of factors of a > b;
+int findFactors(int a, int b){
+	unordered_set <int> validFactors;
+	for(int i = 1; i*i <= a, i++){
+		if(a % i == 0){
+			if(i > b) validFactors.insert(i);
+			if(a/i > b) validFactors.insert(a/i);
+		}
+	}
+	return validFactors.size();
+}
+
+x*y = a
+x or y <= root(a);
+
+
+int calc(int a, int b){
+	if(a==b) return inf;
+	if(b > a) return 0;
+	return findFactors(a-b, b);
+}
+
+1000 = 1-1000 = 10 bits; 1023
+
+1001010101
+
+10 
+0 <= i < 10
+i th of people will drink bottle j if (set(j, i) == 1)
+
+1010101111;
+
+0 1 2 3 5 7 9
+
+1010101111;
+
+minP  = 1000

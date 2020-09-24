@@ -2,6 +2,7 @@ https://codeforces.com/contest/1397/problem/B
 https://codeforces.com/contest/1397/problem/C
 https://codeforces.com/contest/1397/problem/D
 https://codeforces.com/contest/1283/problem/F
+https://codeforces.com/problemset/problem/1295/D
 
 
 
