@@ -21,81 +21,28 @@ template <typename Arg1, typename... Args>
 void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cout.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
-typedef long long ll; typedef pair<int,int> pi; typedef vector<bool> vb;
+typedef long long ll; typedef pair<int,int> pi; 
 typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 5000;
-vb vis(N);
-vector <pi> adj[N];
-vi wgt(N);
-
-void dfs(int node){
-	vis[node] = true;
-	for(pi childPr : adj[node]){
-		if(!vis[childPr.F]) 
-			dfs(childPr.F);
-	}
-}
-
-int getMinWt(int u, int v, int par = -1){
-	for(pi childPr : adj[u]){
-		if(childPr.F == par) continue;
-		else if(childPr.F == v) return wgt[childPr.S];
-		int wt = getMinWt(childPr.F, v, u);
-		if(wt >= 0) return min(wt, wgt[childPr.S]);
-	}
-	return -1;
-}
-
 void solve(){
-	int n; cin>>n;
-	vector <pi> egs(n-1);
-	for (int i = 0; i < n-1; ++i){
-		int x, y; cin>>x>>y;
-		x--; y--;
-		egs[i] = {x, y};
-		adj[x].pb({y, i});
-		adj[y].pb({x, i});
-	}
-
-	int m; cin>>m; 
-	vector <pair<pi, int>> res(m);
-	for (int i = 0; i < m; ++i){
-		int u, v, w; cin>>u>>v>>w;
-		u--; v--;
-		res[i] = {{u, v}, w};
-	}
-    
-    for (int i = 0; i < n-1; ++i){
-    	auto eg = egs[i];
-    	fill(vis.begin(), vis.begin() + n, false);
-    	vis[eg.S] = true;
-    	dfs(eg.F);
-    	vis[eg.S] = false;
-    	for(auto resEgPr : res){
-    		pi &resEg = resEgPr.F;
-    		if(vis[resEg.F] != vis[resEg.S]) 
-    			wgt[i] = max(wgt[i], resEgPr.S);
+    int n; cin>>n;
+    vi a(n); for(int &i : a) cin>>i;
+    vector <pair<double, ll>> stk;
+    for (int i = 0; i < n; ++i){
+    	pair <double, ll> tp = {1.0, a[i]};
+    	while(stk.size() and stk.back().S/stk.back().F >= tp.S/tp.F){
+    		tp.F += stk.back().F, tp.S += stk.back().S;
+    		stk.pop_back();
     	}
-    	if(wgt[i] == 0) wgt[i] = 1e6;
+    	stk.pb(tp);
     }
-
-
-    for(auto resEgPr : res){
-    	pi &resEg = resEgPr.F;
-		int mnWt = getMinWt(resEg.F, resEg.S);
-		if(mnWt != resEgPr.S){
-			cout<<"-1\n";
-			return;
-		}
-	}
-
-	for (int i = 0; i < n-1; ++i){
-		cout<<wgt[i]<<" ";
-	}
-	cout<<el;
+    cout<<setprecision(9)<<fixed;
+    for(auto pr : stk){
+    	for (int i = 0; i < pr.F; ++i)
+    		cout<<(pr.S/pr.F)<<el;
+    }
 }
  
 int main(){
