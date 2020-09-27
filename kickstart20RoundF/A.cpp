@@ -27,15 +27,24 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    
+    int n, x; cin>>n>>x;
+    vector <pi> v;
+    for (int i = 1; i <= n; ++i){
+        int c; cin>>c;
+        v.pb({(c+x-1)/x, i});
+    }
+    sort(rng(v));
+    for(pi p : v) cout<<p.S<<" "; cout<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    // cin>>T; 
+    cin>>T; 
     while(T--){
+        cout<<"Case #"<<tc<<": ";
+        tc++;
         solve();
     }
     return 0; 

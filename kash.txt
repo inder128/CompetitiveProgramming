@@ -4,7 +4,8 @@ https://codeforces.com/contest/1397/problem/D
 https://codeforces.com/contest/1283/problem/F
 https://codeforces.com/problemset/problem/1295/D
 https://codeforces.com/contest/1304/problem/E -> p43.cpp
-
+https://codeforces.com/problemset/problem/1312/E -> p47.cpp
+ACL-BEG-26SEPT20 folder;
 
 
 Todo :-

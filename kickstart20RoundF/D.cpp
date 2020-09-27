@@ -27,7 +27,21 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    
+    vector <int> v = {1, 2};
+    int c = 0;
+    for (int i = 1; i <= 6; ++i){
+        for (int j = 1; j <= 6; ++j){
+            for (int k = 1; k <= 6; ++k){
+                vi cnt(7);
+                cnt[i]++, cnt[j]++, cnt[k]++;
+                vi pcnt;
+                for(int &i : cnt) if(i) pcnt.pb(i);
+                sort(rng(pcnt));
+                if(pcnt == v) c++, db(pcnt);
+            }
+        }
+    }
+    db(c);
 }
  
 int main(){
@@ -36,6 +50,8 @@ int main(){
     int T=1, tc = 1;
     // cin>>T; 
     while(T--){
+        cout<<"Case #"<<tc<<": ";
+        tc++;
         solve();
     }
     return 0; 

@@ -27,15 +27,29 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    
+    int n, k; cin>>n>>k;
+    vector <pi> gaps(n);
+    for(pi &p : gaps) cin>>p.F>>p.S;
+    sort(rng(gaps));
+    int mxCov = 0, ans = 0;
+    for(pi &p : gaps){
+        if(p.S <= mxCov) continue;
+        int st = max(mxCov, p.F);
+        int ta = (p.S - st + k - 1)/k;
+        ans += ta;
+        mxCov = st + ta*k;
+    }
+    cout<<ans<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    // cin>>T; 
+    cin>>T; 
     while(T--){
+        cout<<"Case #"<<tc<<": ";
+        tc++;
         solve();
     }
     return 0; 

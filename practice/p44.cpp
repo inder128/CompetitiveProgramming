@@ -26,21 +26,24 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+// https://codeforces.com/contest/1311/problem/D
+// 1/1 + 1/2 + 1/3 + 1/4 ------ + 1/n ~= log(n);
+
 void solve(){
-	int a, b, c; cin>>a>>b>>c;
+    int a, b, c; cin>>a>>b>>c;
     int sm = INT_MAX, sa, sb, sc;
     for (int i = 1; i <= 40000; ++i){
-    	for (int j = 1; j*i <= 40000; ++j){
-    		int kr, tb = i*j;
-    		if(c <= tb) kr = tb - c;
-    		else kr = min(c%tb, tb - c%tb);
-    		int tsm = abs(a - i) + abs(b - tb) + kr;
-    		if(tsm < sm){
-    			sm = tsm, sa = i, sb = tb;
-    			if(kr == c%tb) sc = c - kr;
-    			else sc = c + kr;
-    		}
-    	}
+        for (int j = 1; j*i <= 40000; ++j){
+            int kr, tb = i*j;
+            if(c <= tb) kr = tb - c;
+            else kr = min(c%tb, tb - c%tb);
+            int tsm = abs(a - i) + abs(b - tb) + kr;
+            if(tsm < sm){
+                sm = tsm, sa = i, sb = tb;
+                if(kr == c%tb) sc = c - kr;
+                else sc = c + kr;
+            }
+        }
     }
     cout<<sm<<el<<sa<<" "<<sb<<" "<<sc<<el;
 }
