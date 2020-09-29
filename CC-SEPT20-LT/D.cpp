@@ -28,9 +28,9 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
 
 void solve(){
     int r, c; cin>>r>>c;
-    string ans; 
+    string ans;
     ans.pb('U');
-    for (int i = 0; i < c; ++i){
+    for (int i = 0; i < r; ++i){
     	ans.insert(ans.end(), c, 'R');
     	ans.insert(ans.end(), c, 'L');
     	ans.pb('U');

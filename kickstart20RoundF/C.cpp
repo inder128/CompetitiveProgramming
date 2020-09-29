@@ -26,42 +26,69 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-int con(int x, int y){
-    return y - (x==1);
+vb occ(36);
+int s;
+
+int ind(int x, int y){
+    return x*x + y;
+}
+
+bool valid(int x, int y){
+    return (x<s and y<(2*x+1) and x>=0 and y>=0 and !occ[ind(x, y)]);
+}
+
+int dfs(int x1, int y1, int s1, int x2, int y2, int s2, bool t1){
+    // db(x1, y1, s1, x2, y2, s2, t1);
+
+    vector <pi> n1 = {{x1, y1-1}, {x1, y1+1}};
+    vector <pi> n2 = {{x2, y2-1}, {x2, y2+1}};
+    if(y1%2) n1.pb({x1-1, y1-1});
+    else n1.pb({x1+1, y1+1});
+    if(y2%2) n2.pb({x2-1, y2-1});
+    else n2.pb({x2+1, y2+1});
+
+    bool e1 = true, e2 = true;
+    for(pi p : n1) if(valid(p.F, p.S)) e1 = false;
+    for(pi p : n2) if(valid(p.F, p.S)) e2 = false;
+
+
+    if(e1 and e2) return s1 - s2;
+
+    if(t1){
+        if(e1) return dfs(x1, y1, s1, x2, y2, s2, !t1);
+        int ans = INT_MIN;
+        for(pi p : n1){
+            if(!valid(p.F, p.S)) continue;
+            occ[ind(p.F, p.S)] = true;
+            ans = max(ans, dfs(p.F, p.S, s1+1, x2, y2, s2, !t1));
+            occ[ind(p.F, p.S)] = false;
+        }
+        return ans;
+    }
+    else{
+        if(e2) return dfs(x1, y1, s1, x2, y2, s2, !t1);
+        int ans = INT_MAX;
+        for(pi p : n2){
+            if(!valid(p.F, p.S)) continue;
+            occ[ind(p.F, p.S)] = true;
+            ans = min(ans, dfs(x1, y1, s1, p.F, p.S, s2+1, !t1));
+            occ[ind(p.F, p.S)] = false;
+        }
+        return ans;
+    }
 }
 
 void solve(){
-    vi adj[4] = {{2}, {2}, {0, 1, 3}, {2}};
-    vb occ(4);
-    int s, x1, y1, x2, y2, c;
+    int x1, y1, x2, y2, c;
     cin>>s>>x1>>y1>>x2>>y2>>c;
-    int p1 = con(x1, y1),  p2 = con(x2, y2);
-    // db(p1, p2);
-    occ[p1] = occ[p2] = true;
+    x1--, y1--, x2--, y2--;
+    fill(rng(occ), false);
     for (int i = 0; i < c; ++i){
         int x, y; cin>>x>>y;
-        occ[con(x, y)] = true;
+        occ[ind(x-1, y-1)] = true;
     }
-    int s1 = 1, s2 = 1;
-    for (int p : adj[p1]){
-        if(occ[p]) continue;
-        occ[p] = true;
-        p1 = p;
-        s1++;
-        break;
-    }
-    for (int p : adj[p2]){
-        if(occ[p]) continue;
-        occ[p] = true;
-        s2++;
-        break;
-    }
-    for (int p : adj[p1]){
-        if(occ[p]) continue;
-        s1++;
-        break;
-    }
-    cout<<s1-s2<<el;
+    occ[ind(x1, y1)] = occ[ind(x2, y2)] = true;
+    cout<<dfs(x1, y1, 1, x2, y2, 1, true)<<el;
 }
  
 int main(){

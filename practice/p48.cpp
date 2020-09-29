@@ -26,67 +26,53 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// Expected value -> bottom up appraoch
+// Expected value :-
+// nice question 
+// https://atcoder.jp/contests/dp/tasks/dp_j
 
-const int mxN = 51 + 1;
-vi reqState(mxN);
-int nd, f, k; 
+int n; 
+const int mxN = 301;
+double DP[mxN][mxN][mxN];
 
-map <vi, double> DP;
-
-double get(vi state){
-    if(state == reqState) return 0;
-    if(DP.count(state)) return DP[state];
-
-    int wc = 0; // wrong choices;
-    for (int i = 0; i <= mxN-2; ++i){
-        if(state[i+1] + 1 > reqState[i+1])
-            wc += state[i] - state[i+1];
+double get(int c0, int c1, int c2){
+    if(c0 == n) return 0;
+    double &ans = DP[c0][c1][c2];
+    if(ans != -1.0) return ans;
+    ans = 1;
+    vi cnt = {c0, c1, c2, n - (c0 + c1 + c2)};
+    for(int c = 1; c <= 3; c++){
+        if(cnt[c] == 0) continue;
+        cnt[c]--, cnt[c-1]++;
+        ans += ((cnt[c]+1)*get(cnt[0], cnt[1], cnt[2]))/n;
+        cnt[c]++, cnt[c-1]--;
     }
-
-    DP[state] = 1.0;
-    vi nxtState = state;
-    for (int i = 0; i <= mxN-2; ++i){
-        if(state[i+1] + 1 > reqState[i+1]) continue;
-        if(state[i] - state[i+1] == 0) continue;
-        nxtState[i+1]++;
-        DP[state] += ((1.0*(state[i] - state[i+1]))/f)*get(nxtState);
-        nxtState[i+1]--;
-    }
-    DP[state] *= (1.0*f)/(f - wc);
-    // db(state, DP[state]);
-    return DP[state];
-}
+    ans *= n, ans /= n - c0;
+    return ans;
+};
 
 void solve(){
-    DP.clear();
-    fill(rng(reqState), 0);
-    cin>>nd>>f>>k;
-
-    for (int i = 0; i < k; ++i){
-        int sz; cin>>sz;
-        reqState[sz]++;
-    } 
-    reqState[0] = f - k;
-    for (int i = mxN-2; i >= 0; --i){
-        reqState[i] += reqState[i+1];
+    for (int i = 0; i < mxN; ++i)
+        for (int j = 0; j < mxN; ++j)
+            for (int k = 0; k < mxN; ++k)
+                DP[i][j][k] = -1.0;
+    cin>>n;
+    int c0 = 0, c1 = 0, c2 = 0;
+    for (int i = 0; i < n; ++i){
+        int x; cin>>x;
+        c0 += (x == 0);
+        c1 += (x == 1);
+        c2 += (x == 2);
     }
-    // db(reqState);
-
-    vi st(mxN);
-    st[0] = f;
-    cout<<setprecision(6)<<fixed;
-    cout<<get(st)<<el;
+    cout<<setprecision(14)<<fixed;
+    cout<<get(c0, c1, c2)<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
+    // cin>>T; 
     while(T--){
-        cout<<"Case #"<<tc<<": ";
-        tc++;
         solve();
     }
     return 0; 
