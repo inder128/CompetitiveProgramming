@@ -10,7 +10,9 @@ https://atcoder.jp/contests/dp/tasks/dp_j -> p48.cpp
 https://codeforces.com/problemset/problem/1313/B
 https://www.codechef.com/CZEN2020/problems/AVVST -> p51.cpp
 https://codeforces.com/problemset/problem/1327/D -> p50.cpp
-
+https://www.codechef.com/OCT20A/problems/INVSMOD2 -> CC-LONG-OCT20/D.cpp
+https://www.codechef.com/problems/CORE2004 -> p52.cpp
 
 Todo :-
 https://codeforces.com/problemset/problem/1284/D
+ATC-HHKB20 contest upsolve -> https://atcoder.jp/contests/hhkb2020
