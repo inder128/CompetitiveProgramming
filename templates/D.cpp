@@ -2,6 +2,8 @@
 using namespace std;
  
 #define rng(x) x.begin(), x.end()
+#define maxi(x, y) x = max(x, (y))
+#define mini(x, y) x = min(x, (y))
 #define pb push_back
 #define F first
 #define S second

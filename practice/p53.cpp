@@ -28,15 +28,54 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+vi DP(1<<20);
+
+void insert(int msk, int ind){
+    if(DP[msk]) return;
+    DP[msk] = ind;
+    for (int i = 0; i < 20; ++i){
+        if((msk & (1<<i)) == 0) continue;
+        insert(msk - (1<<i), ind);
+    }
+}
+
 void solve(){
-    
+    fill(rng(DP), 0);
+    int n, k; cin>>n>>k;
+    string str; cin>>str;
+    for (int i = 1; i <= k; ++i){
+        string pat; cin>>pat;
+        int msk = 0;
+        for(char c : pat){
+            msk += (1<<(c - 'a'));
+        }
+        insert(msk, i);
+    }
+    int msk = 0;
+    vi ans(n);
+    for (int i = 0; i < n; ++i){
+        char c = str[i];
+        if(DP[msk | (1<<(c - 'a'))]){
+            msk |= (1<<(c - 'a'));
+        }
+        else{
+            ans[i-1] = DP[msk];
+            msk = (1<<(c - 'a'));
+        }
+    }
+    ans[n-1] = DP[msk];
+    for (int i = n-1; i >= 0; --i){
+        if(ans[i]) continue;
+        ans[i] = ans[i+1];
+    }
+    for(int i : ans) cout<<i<<" "; cout<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    // cin>>T; 
+    cin>>T; 
     while(T--){
         solve();
     }

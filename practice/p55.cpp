@@ -29,7 +29,45 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    
+    int n, k; cin>>n>>k;
+    map <int, int> cnt;
+    for (int i = 0; i < n; ++i){
+    	int x; cin>>x;
+    	cnt[x]++;
+    }
+    vl sum, occ;
+    vector <pair <ll, ll>> cp; 
+    for(pi p : cnt){
+    	sum.pb(p.F*1ll*p.S + (sum.empty() ? 0 : sum.back()));
+    	occ.pb(p.S + (occ.empty() ? 0 : occ.back()));
+    	if(p.S >= k){
+    		cout<<0<<el;
+    		return;
+    	}
+    	cp.pb(p);
+    }
+    ll tsum = sum.back(), cost = LLONG_MAX;
+    for (int i = 0; i < cp.size(); ++i){
+    	ll c1 = (occ[i] - cp[i].S)*(cp[i].F - 1) - (sum[i] - cp[i].F*cp[i].S);
+    	int toAdd = min(k - cp[i].S, occ[i] - cp[i].S);
+    	c1 += toAdd;
+    	if(toAdd + cp[i].S < k){
+    		c1 += (tsum - sum[i]) - (n - occ[i])*(cp[i].F + 1);
+    		c1 += min(n - occ[i], k - (toAdd + cp[i].S));
+    	}
+
+    	ll c2 = (tsum - sum[i]) - (n - occ[i])*(cp[i].F + 1);
+    	toAdd = min(k - cp[i].S, n - occ[i]);
+    	c2 += toAdd;
+    	if(toAdd + cp[i].S < k){
+    		c2 += (occ[i] - cp[i].S)*(cp[i].F - 1) - (sum[i] - cp[i].F*cp[i].S);
+    		c2 += min(occ[i] - cp[i].S, k - (toAdd + cp[i].S));
+    	}
+
+    	mini(cost, min(c1, c2));
+    }
+
+    cout<<cost<<el;
 }
  
 int main(){
