@@ -28,15 +28,54 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+const int N = 1e5;
+vi adj[N], mxComp(N, 1);
+int n;
+
+int dfs(int node = 0, int par = -1){
+    int sz = 1;
+    for(int child : adj[node]){
+        if(child == par) continue;
+        int chSz = dfs(child, node);
+        maxi(mxComp[node], chSz);
+        sz += chSz;
+    }
+    maxi(mxComp[node], n - sz);
+    return sz;
+}
+
 void solve(){
+    cin>>n;
+    for (int i = 0; i < n; ++i){
+        mxComp[i] = 1;
+        adj[i].clear();
+    }
+    for (int i = 0; i < n-1; ++i){
+        int u, v; cin>>u>>v;
+        u--, v--;
+        adj[u].pb(v);
+        adj[v].pb(u);
+    }
+    dfs();
+    int mnCompSz = *min_element(mxComp.begin(), mxComp.begin() + n);
+    int mnCnt = count(mxComp.begin(), mxComp.begin() + n, mnCompSz);
     
+
+    int x = 0, y = n-1;
+    while(mxComp[x] != mnCompSz) x++;
+    while(mxComp[y] != mnCompSz) y--;
+
+    int z = (adj[y][0] == x ? adj[y][1] : adj[y][0]);
+
+    cout<<y+1<<" "<<z+1<<el;
+    cout<<x+1<<" "<<z+1<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    // cin>>T; 
+    cin>>T; 
     while(T--){
         solve();
     }

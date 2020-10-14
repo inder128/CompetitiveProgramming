@@ -29,14 +29,25 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    
+	ll n; cin>>n;
+
+    ll sum = 0, i;
+    for (i = 0; sum <= n; ++i){
+    	ll ts = 0;
+    	for (ll j = 0; j <= i; ++j){
+    		ts += (1ll<<(2*j))*(1ll<<(i - j));
+    	}
+    	sum += ts;
+    }
+
+    cout<<i - 1<<el;
 }
- 
+
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    // cin>>T; 
+    cin>>T; 
     while(T--){
         solve();
     }

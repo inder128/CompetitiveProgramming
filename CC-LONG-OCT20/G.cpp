@@ -2,8 +2,6 @@
 using namespace std;
  
 #define rng(x) x.begin(), x.end()
-#define maxi(x, y) x = max(x, (y))
-#define mini(x, y) x = min(x, (y))
 #define pb push_back
 #define F first
 #define S second
@@ -28,14 +26,68 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+const int N = 1e5 + 5;
+vector <pi> adj[N];
+vi change(N);
+
+void dfs(int node = 1, int par = -1){
+    for (pi &chPr : adj[node]){
+        if(chPr.F == par) continue;
+        change[chPr.F] -= chPr.S;
+        dfs(chPr.F, node);
+    }
+}
+
 void solve(){
-    
+    int n, m; cin>>n>>m;
+    vector <pair <int, pi>> edges(m);
+    for(auto &eg : edges){
+        cin>>eg.S.F>>eg.S.S>>eg.F;
+    }
+
+    sort(rng(edges));
+
+    vi par(n+1), sz(n+1, 1);
+    iota(rng(par), 0);
+    function <int(int)> getPar = [&](int k) {
+        return k == par[k] ? k : par[k] = getPar(par[k]);
+    };
+
+    ll wgt = 0;
+    for (auto &eg : edges){
+        int u = eg.S.F, v = eg.S.S;
+        if(u == 1 or v == 1){
+            change[u + v - 1] = eg.F;
+            continue;
+        }
+        int pu = getPar(u), pv = getPar(v);
+        if(pu == pv) continue;
+        adj[u].pb({v, eg.F});
+        adj[v].pb({u, eg.F});
+        wgt += eg.F;
+        if(sz[pu] > sz[pv]) swap(pu, pv);
+        par[pu] = pv, sz[pv] += sz[pu];
+    }
+
+    auto itr = min_element(change.begin() + 2, change.begin() + n + 1);
+    adj[1].pb({itr - change.begin(), 1e9});
+    wgt += *itr;
+    dfs();
+
+    sort(change.begin() + 2, change.begin() + n + 1);
+
+    cout<<wgt<<" ";
+    for (int i = 3; i <= n; ++i){
+        wgt += change[i];
+        cout<<wgt<<" ";
+    }
+    cout<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1, tc = 1;
+    int T = 1, tc = 1;
     // cin>>T; 
     while(T--){
         solve();

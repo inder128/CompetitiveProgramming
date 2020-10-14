@@ -29,14 +29,29 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    
+    int n, x; cin>>n>>x;
+    vi arr(n); 
+    int diff = 0;
+    for(int &i : arr){
+    	cin>>i;
+    	diff += i - x;
+    }
+    if(count(rng(arr), x) == n){
+    	cout<<0<<el;
+    }
+    else if(diff == 0 or count(rng(arr), x)){
+    	cout<<1<<el;
+    }
+    else{
+    	cout<<2<<el;
+    }
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    // cin>>T; 
+    cin>>T; 
     while(T--){
         solve();
     }
