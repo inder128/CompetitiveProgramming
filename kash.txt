@@ -13,6 +13,7 @@ https://codeforces.com/problemset/problem/1327/D -> p50.cpp
 https://www.codechef.com/OCT20A/problems/INVSMOD2 -> CC-LONG-OCT20/D.cpp
 https://www.codechef.com/problems/CORE2004 -> p52.cpp
 https://codeforces.com/contest/1404/problem/C -> p56.cpp
+https://codeforces.com/contest/1417/problem/E -> CF-673-Div2/C.cpp
 
 Todo :-
 https://codeforces.com/problemset/problem/1284/D
