@@ -28,39 +28,39 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+const int N = 1e5, mod = 1e9 + 7;
+vector <vl> DP(N, vl(2, 1));
+vi adj[N];
+
+void dfs(int node = 0, int par = -1){
+    for (int child : adj[node]){
+        if(child == par) continue;
+        dfs(child, node);
+        DP[node][0] *= (DP[child][1] + DP[child][0]) % mod;
+        DP[node][0] %= mod;
+        DP[node][1] *= DP[child][0];
+        DP[node][1] %= mod;
+    }
+}
 
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
+    for (int i = 0; i < n - 1; ++i){
+        int u, v; cin>>u>>v;
+        u--, v--;
+        adj[u].pb(v);
+        adj[v].pb(u);
     }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
-    }
-
-    cout<<DP[0][n-1]<<el;
+    dfs();
+    cout<<(DP[0][0] + DP[0][1]) % mod<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

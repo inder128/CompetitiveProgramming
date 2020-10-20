@@ -2,8 +2,6 @@
 using namespace std;
  
 #define rng(x) x.begin(), x.end()
-#define maxi(x, y) x = max(x, (y))
-#define mini(x, y) x = min(x, (y))
 #define pb push_back
 #define F first
 #define S second
@@ -28,28 +26,34 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+// tricky question
+// very nice editorial
+// https://atcoder.jp/contests/hhkb2020/tasks/hhkb2020_d
+const ll mod = 1e9 + 7;
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
+    ll n, a, b; cin>>n>>a>>b;
+    if(a + b > n){
+        cout<<0<<el;
+        return;
     }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    if(a > b){
+    	swap(a, b);
     }
 
-    cout<<DP[0][n-1]<<el;
+    ll sd = min(n - b + 1, a - 1);
+
+    ll ls = ((sd*(sd - 1))/2 + max(0ll, (n - b + 1) - sd)*max(0ll, a - 1)) % mod;;
+    // db(sd, ls);
+
+    ll ovp = (2*ls + (((n - b + 1)*(b - a + 1)) % mod)) % mod;
+
+    ll ans =  ((n - a + 1)*(n - a + 1)) % mod;
+    ans *= ((n - b + 1)*(n - b + 1)) % mod;
+    ans %= mod;
+    ans -= (ovp*ovp) % mod;
+    cout<<(ans +  mod) % mod<<el;
+
 }
  
 int main(){
@@ -57,10 +61,7 @@ int main(){
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
     cin>>T; 
-    cout<<setprecision(9)<<fixed;
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

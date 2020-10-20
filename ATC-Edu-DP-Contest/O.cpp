@@ -28,39 +28,42 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+vvi DP(21, vi(1<<21));
+const int mod = 1e9 + 7;
 
 void solve(){
     int n; cin>>n;
+    bool comp[n][n];
     for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
-    }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+        for (int j = 0; j < n; ++j){
+            cin>>comp[i][j];
+        }
     }
 
-    cout<<DP[0][n-1]<<el;
+    for (int i = 0; i < n; ++i){
+        DP[0][1<<i] = comp[0][i];
+    }
+    for (int i = 1; i < n; ++i){
+        for (int j = 0; j < (1<<n); ++j){
+            if(__builtin_popcount(j) != i + 1) continue;
+            for (int b = 0; b < n; ++b){
+                if(!(j&(1<<b))) continue;
+                if(!comp[i][b]) continue;
+                DP[i][j] += DP[i - 1][j^(1<<b)];
+                DP[i][j] %= mod;
+            }
+        }
+    }
+
+    cout<<DP[n - 1][(1<<n) - 1]<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

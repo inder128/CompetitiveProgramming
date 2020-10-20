@@ -28,39 +28,39 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
-
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
-    }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    double prob[n + 1];
+    for (int i = 1; i <= n; ++i){
+        cin>>prob[i];
     }
 
-    cout<<DP[0][n-1]<<el;
+    double DP[n + 1][n + 1];
+    // DP[i][j] -> prob of getting j heads in i tosses;
+    DP[0][0] = 1.0;
+
+    for (int i = 1; i <= n; ++i){
+        for (int j = 0; j <= i; ++j){
+            DP[i][j] = (j ? DP[i - 1][j - 1]*prob[i] : 0.0);
+            DP[i][j] += (j <= i - 1 ? DP[i - 1][j]*(1.0 - prob[i]) : 0);
+        }
+    }
+
+    double ans = 0;
+    for (int i = n/2 + 1; i <= n; ++i){
+        ans += DP[n][i];
+    }
+
+    cout<<ans<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
+    cout<<setprecision(10);
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

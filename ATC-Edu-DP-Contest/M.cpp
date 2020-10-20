@@ -28,39 +28,45 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+// nice question;
+// recursive solution will not work beacuse of prefix sum technique in DP array;
+// recursive solution will be O(k*k*n), if implemented;
+// similar technique is used in kickstart20RoundG/B.cpp
+
+const int mod = 1e9 + 7;
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
+    int n, k; cin>>n>>k;
+    vi arr(n + 1);
+    for (int i = 1; i <= n; ++i){
+        cin>>arr[i];
     }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    
+    vi oldDP(k + 1, 1);
+    for (int i = 1; i <= n; ++i){
+        vi newDP(k + 1);
+        for (int j = 0; j <= k; ++j){
+            // keep -> 0, 1, 2, 3 ---- min(j, arr[i]);
+            // rem -> j, j - 1, j - 2, ---- j - min(j, arr[i]);
+            newDP[j] = oldDP[j] - (j > arr[i] ? oldDP[j - arr[i] - 1] : 0);
+            newDP[j] = (newDP[j] + mod) % mod;
+
+            // -----
+            if(j) newDP[j] = (newDP[j] + newDP[j - 1]) % mod;
+        }
+        oldDP = newDP;
     }
 
-    cout<<DP[0][n-1]<<el;
+    // make sure to check for negative value and k == 0;
+    cout<<(oldDP[k] - (k ? oldDP[k - 1] : 0) + mod) % mod<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

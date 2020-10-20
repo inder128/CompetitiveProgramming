@@ -28,39 +28,37 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
-
 void solve(){
+    set <pair <int, ll>> DP;
     int n; cin>>n;
+    vi h(n), a(n);
+    for(int &i : h) cin>>i;
+    for(int &i : a) cin>>i;
+        
     for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
-    }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
-    }
+        auto itr = DP.upper_bound({h[i], 0ll});
+        ll lmt;
+        if(itr == DP.begin()){
+            lmt = a[i];   
+        }
+        else{
+            lmt = prev(itr)->S + a[i];
+        }
 
-    cout<<DP[0][n-1]<<el;
+        DP.insert({h[i], lmt});
+        for(itr = DP.upper_bound({h[i], 1e18}); itr != DP.end() and itr->S <= lmt; itr = DP.upper_bound(*itr))
+            DP.erase(itr);
+    } 
+
+    cout<<DP.rbegin()->S<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

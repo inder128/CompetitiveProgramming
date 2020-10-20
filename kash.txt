@@ -6,7 +6,7 @@ https://codeforces.com/problemset/problem/1295/D
 https://codeforces.com/contest/1304/problem/E -> p43.cpp
 https://codeforces.com/problemset/problem/1312/E -> p47.cpp
 ACL-BEG-26SEPT20 folder;
-https://atcoder.jp/contests/dp/tasks/dp_j -> p48.cpp
+https://atcoder.jp/contests/dp/tasks/dp_j -> ATC-Edu-DP-Contest/J.cpp
 https://codeforces.com/problemset/problem/1313/B
 https://www.codechef.com/CZEN2020/problems/AVVST -> p51.cpp
 https://codeforces.com/problemset/problem/1327/D -> p50.cpp

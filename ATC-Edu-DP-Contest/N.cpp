@@ -28,39 +28,39 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+// similar technique is used in kickstart20RoundG/B.cpp
 
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
-    }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    vl arr(n);
+    for(ll &i : arr) cin>>i;
+    for (int i = 1; i < n; ++i){
+        arr[i] += arr[i - 1];
     }
 
-    cout<<DP[0][n-1]<<el;
+    vector <vl> DP(n, vl(n));
+    // DP[l][r] = minimum cost to merge arr[l ---- r] in a single element;
+    // DP[l][r] will be formed by some merge of DP[l][m] and DP[m + 1][r] for some m in {l, r - 1};
+
+    for (int ln = 2; ln <= n; ++ln){
+        for (int l = 0, r = ln - 1; r < n; ++l, ++r){
+            ll tmpCost = LLONG_MAX;
+            for (int m = l; m < r; ++m){
+                mini(tmpCost, DP[l][m] + DP[m + 1][r]);
+            }
+            DP[l][r] = tmpCost + arr[r] - (l ? arr[l - 1] : 0);
+        }
+    }
+
+    cout<<DP[0][n - 1]<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

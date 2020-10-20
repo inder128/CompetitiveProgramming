@@ -28,39 +28,42 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
-
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
+    string s, t; cin>>s>>t;
+    int sn = s.length(), tn = t.length();
+    vvi DP(sn + 1, vi(tn + 1));
+    for (int i = 1; i <= sn; ++i){
+        for (int j = 1; j <= tn; ++j){
+            if(s[i - 1] == t[j - 1])
+                DP[i][j] = DP[i - 1][j - 1] + 1;
+            else
+                DP[i][j] = max(DP[i - 1][j], DP[i][j - 1]);
+        }
     }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    int i = sn, j = tn;
+    string ans;
+    while(i and j){
+        if(s[i - 1] == t[j - 1]){
+            ans.pb(s[i - 1]);
+            i--, j--;
+        }
+        else if(DP[i][j] == DP[i - 1][j]){
+            i--;
+        }
+        else{
+            j--;
+        }
     }
-
-    cout<<DP[0][n-1]<<el;
+    reverse(rng(ans));
+    cout<<ans<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

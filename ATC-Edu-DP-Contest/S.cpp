@@ -28,39 +28,47 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+
+// nice problem;
+const int mod = 1e9 + 7;
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
-    }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    string str; cin>>str;
+    int d, n = str.length(); cin>>d;
+    str = "$" + str;
+
+    vi pre(n + 1);
+    for (int i = 1; i <= n; ++i){
+        pre[i] = pre[i - 1] + (str[i] - '0');
     }
 
-    cout<<DP[0][n-1]<<el;
+    vvi DP(n + 1, vi(d));
+    // DP[i][j] -> no of ways to make sumDig(str[1---i])%d = j and digit < k;
+
+    for (int i = 0; i < n; ++i){
+        for (int dg = 0; dg < str[i + 1] - '0'; ++dg){
+            DP[i + 1][(pre[i] + dg) % d]++;
+            DP[i + 1][(pre[i] + dg) % d] %= mod;
+        }
+        for (int pd = 0; pd < d; ++pd){
+            for (int dg = 0; dg < 10; ++dg){
+                DP[i + 1][(pd + dg) % d] += DP[i][pd];
+                DP[i + 1][(pd + dg) % d] %= mod;
+            }
+        }
+    }
+
+    // -1 for removing 0;
+    // (pre[n]%d == 0) for adding str if sumdigs of str is divisible by d; 
+    cout<<(DP[n][0] - 1 + (pre[n]%d == 0) + mod) % mod<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

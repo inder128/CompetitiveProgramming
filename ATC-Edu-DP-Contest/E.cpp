@@ -28,39 +28,38 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
-
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
+    int n, w, totVal = 0; cin>>n>>w;
+    vi wgt(n + 1), val(n + 1);
+    for (int i = 1; i <= n; ++i){
+        cin>>wgt[i]>>val[i];
+        totVal += val[i];
     }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    vector <vl> DP(n + 1, vl(totVal + 1, 1e15));
+    DP[0][0] = 0;
+    for (int i = 1; i <= n; ++i){
+        for (int j = 0; j <= totVal; ++j){
+            DP[i][j] = DP[i - 1][j];
+            if(val[i] <= j){
+                mini(DP[i][j], DP[i - 1][j - val[i]] + wgt[i]);
+            }
+        }
     }
 
-    cout<<DP[0][n-1]<<el;
+    for (int i = totVal; i >= 0; i--){
+        if(DP[n][i] <= w){
+            cout<<i<<el;
+            return;
+        }
+    }
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

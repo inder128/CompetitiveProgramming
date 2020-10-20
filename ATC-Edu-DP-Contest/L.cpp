@@ -28,39 +28,40 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+// minimax algorithm similar to kickstart20RoundF/C.cpp
+// but there is DP in following algo;
+// and it is a iterative algo
+
 
 void solve(){
     int n; cin>>n;
+    vi arr(n);
     for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
-    }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+        cin>>arr[i];
     }
 
-    cout<<DP[0][n-1]<<el;
+    vector <vl> DPmn(n, vl(n)), DPmx(n, vl(n));
+    for (int i = 0; i < n; ++i){
+        DPmx[i][i] = arr[i];
+        DPmn[i][i] = -arr[i];
+    }
+
+    for (int ln = 2; ln <= n; ++ln){
+        for (int l = 0, r = ln - 1; r < n; ++l, ++r){
+            DPmx[l][r] = max(arr[l] + DPmn[l + 1][r], arr[r] + DPmn[l][r - 1]);
+            DPmn[l][r] = min(-arr[l] + DPmx[l + 1][r], -arr[r] + DPmx[l][r - 1]);
+        }
+    }
+
+    cout<<DPmx[0][n - 1]<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

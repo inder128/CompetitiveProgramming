@@ -28,39 +28,62 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-const int N = 1e3;
-long double DP[N][N], DPl[N][N], DPr[N][N];
-ll sum[N][N];
+const int mod = 1e9 + 7;
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	cin>>sum[i][i];
-    	for (int j = 0; j < n; ++j){
-    		DP[i][j] = DPl[i][j] = DPr[i][j] = 0;
-    	}
-    }
-    for (int ln = 2; ln <= n; ++ln){
-    	for (int l = 0, r = ln - 1; r < n; ++l, ++r){
-    		sum[l][r] = sum[l][l] + sum[l + 1][r];
-    		DP[l][r] = (DPl[l][r - 1] + DPr[l + 1][r] + sum[l][r]*(ln - 1))/(ln - 1);
-    		DPl[l][r] = DPl[l][r - 1] + DP[l][r];
-    		DPr[l][r] = DPr[l + 1][r] + DP[l][r];
-    	}
+    int h, w; cin>>h>>w;
+    vector <string> mat(h);
+    for(string &s : mat) cin>>s;
+
+    vvi DPu(h, vi(w));
+    vvi DPl = DPu, DPr = DPu, DPd = DPu;
+
+    int td = 0;
+    for (int i = 0; i < h; ++i){
+        for (int j = 0; j < w; ++j){
+            if(mat[i][j] == '#') continue;
+            DPu[i][j] = (i ? DPu[i - 1][j] : 0) + 1;
+
+            DPl[i][j] = (j ? DPl[i][j - 1] : 0) + 1;
+
+            td++;
+        }
     }
 
-    cout<<DP[0][n-1]<<el;
+    for (int i = h - 1; i >= 0; --i){
+        for (int j = w - 1; j >= 0; --j){
+            if(mat[i][j] == '#') continue;
+            DPd[i][j] = (i < h - 1 ? DPd[i + 1][j] : 0) + 1;
+
+            DPr[i][j] = (j < w - 1 ? DPr[i][j + 1] : 0) + 1;
+        }
+    }
+
+    vi pow2(h*w + 1);
+    pow2[0] = 1;
+    for (int i = 1; i <= h*w; ++i){
+        pow2[i] = (pow2[i - 1] * 2) % mod;
+    }
+
+    int ans = 0;
+    for (int i = 0; i < h; ++i){
+        for (int j = 0; j < w; ++j){
+            if(mat[i][j] == '#') continue;
+            int lgtn = DPl[i][j] + DPr[i][j] + DPu[i][j] + DPd[i][j] - 3;
+            ans += (pow2[lgtn] - 1) * 1ll * pow2[td - lgtn] % mod;
+            ans %= mod;
+        }
+    }
+
+    cout<<ans<<el;
 }
  
 int main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1, tc = 1;
-    cin>>T; 
-    cout<<setprecision(9)<<fixed;
+    // cin>>T; 
     while(T--){
-    	cout<<"Case #"<<tc<<": ";
-    	tc++;
         solve();
     }
     return 0; 

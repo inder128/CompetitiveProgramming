@@ -26,6 +26,10 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+// minimax algorithm similar to ATC-Edu-DP-Contest/J.cpp
+// but there is no DP in following algo, we are checking all possiple sequences;
+// and it is a recursive algo
+
 vb occ(36);
 int s;
 
