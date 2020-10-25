@@ -28,8 +28,41 @@ typedef vector<int> vi; typedef vector<ll> vl; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+typedef pair <ll, ll> pl;
+
+// intersection of two lines;
+double its(pl p1, pl p2){
+    return (p1.S - p2.S)/(double)(p2.F - p1.F);
+}
+
+// nice question;
+// convex hull trick;
+// https://cp-algorithms.com/geometry/convex_hull_trick.html
+
+
 void solve(){
-    
+    ll n, C; cin>>n>>C;
+    vl h(n);
+    for(ll &i : h) cin>>i;
+
+    ll tmpDP = 0;
+    vector <pl> lines(1, {-2*h[0], h[0]*h[0]});
+    vector <long double> pnts(1, (long double)h[0]);
+
+    for (int i = 1; i < n; ++i){
+        int j = lower_bound(rng(pnts), (long double)h[i]) - pnts.begin() - 1;
+        tmpDP = lines[j].F*h[i] + lines[j].S  + h[i]*h[i] + C;
+        pl ln = {-2*h[i], tmpDP + h[i]*h[i]};
+
+        while(lines.size() >= 2 and its(lines[lines.size() - 2], lines[lines.size() - 1]) >= its(lines[lines.size() - 2], ln)){
+            lines.pop_back();
+            pnts.pop_back();
+        }
+
+        pnts.pb(its(lines.back(), ln));
+        lines.pb(ln);
+    }
+    cout<<tmpDP<<el;
 }
  
 int main(){
