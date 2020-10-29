@@ -15,7 +15,9 @@ https://www.codechef.com/problems/CORE2004 -> p52.cpp
 https://codeforces.com/contest/1404/problem/C -> p56.cpp
 https://codeforces.com/contest/1417/problem/E -> CF-673-Div2/C.cpp
 https://codeforces.com/contest/1436/problem/E -> CF-678-Div2/C.cpp
+https://codeforces.com/contest/1422/problem/D -> CF-675-Div2/D.cpp
+https://codeforces.com/contest/442/problem/B -> p61.cpp
 
 Todo :-
 https://codeforces.com/problemset/problem/1284/D
-ATC-HHKB20 contest upsolve -> https://atcoder.jp/contests/hhkb2020
+https://codeforces.com/contest/678/problem/E
