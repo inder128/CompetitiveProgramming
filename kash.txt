@@ -17,7 +17,18 @@ https://codeforces.com/contest/1417/problem/E -> CF-673-Div2/C.cpp
 https://codeforces.com/contest/1436/problem/E -> CF-678-Div2/C.cpp
 https://codeforces.com/contest/1422/problem/D -> CF-675-Div2/D.cpp
 https://codeforces.com/contest/442/problem/B -> p61.cpp
+https://codeforces.com/contest/1427/problem/C -> CF-Global-11/D.cpp
+https://codeforces.com/contest/280/problem/C -> p62.cpp
+https://codeforces.com/contest/1428/problem/D -> CF-Raif/C.cpp (implementation heavy)
+https://codeforces.com/contest/1428/problem/E -> CF-Raif/D.cpp and CF-Raif/F.cpp
+
 
 Todo :-
 https://codeforces.com/problemset/problem/1284/D
 https://codeforces.com/contest/678/problem/E
+Maximum xor subsequence
+Alternate houses and towers in circle (codeforces)
+https://codeforces.com/contest/280/problem/C -> weird linearity of expectation
+https://codeforces.com/problemset/problem/678/E
+https://codeforces.com/contest/268/problem/E -> exchange arguments
+

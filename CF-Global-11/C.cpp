@@ -28,53 +28,68 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/280/problem/C
-// read editorial
+// implementation heavy;
 
 void solve(){
-    int n, k, m; cin>>n>>k>>m;
-    int tot = n*m;
+    int n; cin>>n;
     vi arr(n); cin>>arr;
-    vector <pi> stk;
-    for(int i : arr){
-    	if(stk.empty() or stk.back().F != i){
-    		stk.pb({i, 1});
+    bool sorted = true;
+    vector <vi> ans;
+    for (int i = 2; i <= n; ++i){
+    	int occi = find(rng(arr), i) - arr.begin();
+    	int occ1 = find(rng(arr), 1) - arr.begin();
+    	vi lens, lens2;
+    	if(sorted and occi < occ1){
+    		lens.pb(occi);
+    		lens.pb(occ1 - occi);
+    		lens.pb(i - 1);
+    		lens.pb(n - occ1 - i + 1);
+    	}
+    	else if(sorted and occi > occ1){
+    		lens.pb(occ1);
+    		lens.insert(lens.end(), i - 1, 1);
+    		lens.pb(occi + 1 - i + 1 - occ1);
+    		lens.pb(n - occi - 1);
+    		sorted = false;
+    	}
+    	else if(!sorted and occi < occ1){
+    		lens.pb(occi);
+    		lens.pb(occ1 + 1 - i + 1 - occi);
+    		lens.insert(lens.end(), i - 1, 1);
+    		lens.pb(n - occ1 - 1);
+    		sorted = true;
     	}
     	else{
-    		stk.back().S++;
-    		if(stk.back().S == k){
-    			stk.pop_back();
-    			tot -= k*m;
-    		} 
+    		lens.pb(occ1 + 1 - i + 1);
+    		lens.pb(i - 1);
+    		lens.pb(occi - occ1);
+    		lens.pb(n - occi - 1);
     	}
-    }
-
-    if(stk.size() == 0){
-    	cout<<0<<el;
-    	return;
-    }
-
-
-    int i = 0, j = stk.size() - 1;
-    while(j > i){
-    	if(stk[i].F == stk[j].F and stk[i].S + stk[j].S >= k){
-    		tot -= k*(m - 1);
-    		if(stk[i].S + stk[j].S == k) i++, j--;
-    		else break;
+    	
+    	vi narr;
+    	int lst = n;
+    	reverse(rng(lens));
+    	for(int ln : lens){
+    		if(ln) lens2.pb(ln);
+    		lst -= ln;
+    		narr.insert(narr.end(), arr.begin() + lst, arr.begin() + lst + ln);
     	}
-    	else{
-    		break;
-    	}
+    	// db(lst);
+    	reverse(rng(lens2));
+    	ans.pb(lens2);
+    	arr = narr;
     }
-    
-    if(j > i){
-    	cout<<tot<<el;
+    if(!sorted){
+    	ans.pb(vi(n, 1));
+    	reverse(rng(arr));
     }
-    else if((m*stk[i].S) % k == 0){
-    	cout<<0<<el;
-    }
-    else{
-    	cout<<tot - m*stk[i].S/k*k<<el;
+    // db(arr);
+
+    cout<<ans.size()<<el;
+    for(vi lens : ans){
+    	cout<<lens.size()<<" ";
+    	for(int ln : lens) cout<<ln<<" ";
+    	cout<<el;
     }
 }
  

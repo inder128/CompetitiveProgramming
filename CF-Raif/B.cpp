@@ -28,61 +28,26 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/280/problem/C
-// read editorial
-
 void solve(){
-    int n, k, m; cin>>n>>k>>m;
-    int tot = n*m;
-    vi arr(n); cin>>arr;
-    vector <pi> stk;
-    for(int i : arr){
-    	if(stk.empty() or stk.back().F != i){
-    		stk.pb({i, 1});
+	string str; cin>>str;
+    stack <char> stk;
+    for(char c : str){
+    	if(stk.empty() or c == 'A'){
+    		stk.push(c);
     	}
     	else{
-    		stk.back().S++;
-    		if(stk.back().S == k){
-    			stk.pop_back();
-    			tot -= k*m;
-    		} 
+    		stk.pop();
     	}
     }
 
-    if(stk.size() == 0){
-    	cout<<0<<el;
-    	return;
-    }
-
-
-    int i = 0, j = stk.size() - 1;
-    while(j > i){
-    	if(stk[i].F == stk[j].F and stk[i].S + stk[j].S >= k){
-    		tot -= k*(m - 1);
-    		if(stk[i].S + stk[j].S == k) i++, j--;
-    		else break;
-    	}
-    	else{
-    		break;
-    	}
-    }
-    
-    if(j > i){
-    	cout<<tot<<el;
-    }
-    else if((m*stk[i].S) % k == 0){
-    	cout<<0<<el;
-    }
-    else{
-    	cout<<tot - m*stk[i].S/k*k<<el;
-    }
+    cout<<stk.size()<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1;
-    //cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

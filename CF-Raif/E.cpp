@@ -28,54 +28,39 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/280/problem/C
-// read editorial
+// nice problem;
+// check wrong soln in D.cpp;
+// nice editorial;
+
+int cost(int l, int gp){
+	return (l%gp)*(l/gp + 1)*(l/gp + 1) + (gp - l%gp)*(l/gp)*(l/gp);
+}
+
+struct comp{
+	bool operator()(const pi &p1, const pi &p2){
+		return cost(p1.F, p1.S) - cost(p1.F, p1.S + 1) < cost(p2.F, p2.S) - cost(p2.F, p2.S + 1);
+	}
+};
 
 void solve(){
-    int n, k, m; cin>>n>>k>>m;
-    int tot = n*m;
-    vi arr(n); cin>>arr;
-    vector <pi> stk;
-    for(int i : arr){
-    	if(stk.empty() or stk.back().F != i){
-    		stk.pb({i, 1});
-    	}
-    	else{
-    		stk.back().S++;
-    		if(stk.back().S == k){
-    			stk.pop_back();
-    			tot -= k*m;
-    		} 
-    	}
+    int n, k; cin>>n>>k;
+
+    priority_queue <pi, vector <pi>, comp> PQ;
+    int ans = 0;
+    for (int i = 0; i < n; ++i){
+    	int l; cin>>l;
+    	ans += l*l;
+    	PQ.push({l, 1});
     }
 
-    if(stk.size() == 0){
-    	cout<<0<<el;
-    	return;
+    k -= n;
+    while(k--){
+    	pi tp = PQ.top(); PQ.pop();
+    	ans -= cost(tp.F, tp.S) - cost(tp.F, tp.S + 1);
+    	PQ.push({tp.F, tp.S + 1});
     }
 
-
-    int i = 0, j = stk.size() - 1;
-    while(j > i){
-    	if(stk[i].F == stk[j].F and stk[i].S + stk[j].S >= k){
-    		tot -= k*(m - 1);
-    		if(stk[i].S + stk[j].S == k) i++, j--;
-    		else break;
-    	}
-    	else{
-    		break;
-    	}
-    }
-    
-    if(j > i){
-    	cout<<tot<<el;
-    }
-    else if((m*stk[i].S) % k == 0){
-    	cout<<0<<el;
-    }
-    else{
-    	cout<<tot - m*stk[i].S/k*k<<el;
-    }
+    cout<<ans<<el;
 }
  
 int32_t main(){

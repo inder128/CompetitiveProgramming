@@ -28,54 +28,49 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/280/problem/C
-// read editorial
+// wrong soln;
+// check correct soln in E.cpp;
+// hint in limits;
 
 void solve(){
-    int n, k, m; cin>>n>>k>>m;
-    int tot = n*m;
-    vi arr(n); cin>>arr;
-    vector <pi> stk;
-    for(int i : arr){
-    	if(stk.empty() or stk.back().F != i){
-    		stk.pb({i, 1});
+    int n, k; cin>>n>>k;
+    vi a(n); cin>>a;
+    int l = 1, r = 1e6, sz;
+    while(l <= r){
+    	int m = (l + r)>>1;
+    	int comps = 0;
+    	for (int i : a){
+    		comps += (i + m - 1)/m;
+    	}
+    	if(comps <= k){
+    		r = m - 1;
+    		/*
+			this is wrong because it might happen that this condition never becomes true :-
+			EX -> n = 2, k = 5, a = [20,60];
+
+			hint was given in limits;
+			The could have given large value of k if this algo (binary search) worked;
+			instead k was 1e6, this means solution is O(k) not O(n*log(k));
+    		*/
+    		if(comps == k) sz = m;
     	}
     	else{
-    		stk.back().S++;
-    		if(stk.back().S == k){
-    			stk.pop_back();
-    			tot -= k*m;
-    		} 
+    		l = m + 1;
     	}
     }
 
-    if(stk.size() == 0){
-    	cout<<0<<el;
-    	return;
-    }
-
-
-    int i = 0, j = stk.size() - 1;
-    while(j > i){
-    	if(stk[i].F == stk[j].F and stk[i].S + stk[j].S >= k){
-    		tot -= k*(m - 1);
-    		if(stk[i].S + stk[j].S == k) i++, j--;
-    		else break;
+    int ans = 0;
+    for(int i : a){
+    	int gp = (i + sz - 1)/sz;
+    	if(gp == 1){
+    		ans += i*i;
     	}
     	else{
-    		break;
+    		ans += (i%gp)*(i/gp + 1)*(i/gp + 1);
+    		ans += (gp - i%gp)*(i/gp)*(i/gp);
     	}
     }
-    
-    if(j > i){
-    	cout<<tot<<el;
-    }
-    else if((m*stk[i].S) % k == 0){
-    	cout<<0<<el;
-    }
-    else{
-    	cout<<tot - m*stk[i].S/k*k<<el;
-    }
+    cout<<ans<<el;
 }
  
 int32_t main(){

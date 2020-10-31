@@ -28,54 +28,40 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/280/problem/C
-// read editorial
+// nice question;
+// https://codeforces.com/contest/1427/problem/C
+// hint in limits;
 
 void solve(){
-    int n, k, m; cin>>n>>k>>m;
-    int tot = n*m;
-    vi arr(n); cin>>arr;
-    vector <pi> stk;
-    for(int i : arr){
-    	if(stk.empty() or stk.back().F != i){
-    		stk.pb({i, 1});
+    int n, r; cin>>r>>n;
+    vi DP(n + 1, -1e9), mxDP(n + 1);
+   	DP[0] = 0;
+    vector <pi> coords(n + 1);
+    vi time(n + 1);
+    coords[0] = {1, 1};
+    for (int i = 1; i <= n; ++i){
+    	cin>>time[i];
+    	cin>>coords[i].F>>coords[i].S;
+    }
+    for (int i = 1; i <= n; ++i){
+    	int j = i - 1;
+
+    	// it is only possible because r is small;
+    	// ********* r being small ans increasing t was a hint to use this **********;
+    	// otherwise r could have large;
+    	for(; j >= 0 and time[i] - time[j] < 2*r - 2; j--){
+    		if(abs(coords[i].F - coords[j].F) + abs(coords[i].S - coords[j].S) <= time[i] - time[j]){
+    			maxi(DP[i], DP[j] + 1);
+    		}
     	}
-    	else{
-    		stk.back().S++;
-    		if(stk.back().S == k){
-    			stk.pop_back();
-    			tot -= k*m;
-    		} 
-    	}
+
+    	// it is always possible to reach from positions less than equal to j if this condition is true;
+    	if(j >= 0 and time[i] - time[j] >= 2*r - 2) maxi(DP[i], mxDP[j] + 1);
+    	mxDP[i] = max(mxDP[i - 1], DP[i]);
     }
 
-    if(stk.size() == 0){
-    	cout<<0<<el;
-    	return;
-    }
 
-
-    int i = 0, j = stk.size() - 1;
-    while(j > i){
-    	if(stk[i].F == stk[j].F and stk[i].S + stk[j].S >= k){
-    		tot -= k*(m - 1);
-    		if(stk[i].S + stk[j].S == k) i++, j--;
-    		else break;
-    	}
-    	else{
-    		break;
-    	}
-    }
-    
-    if(j > i){
-    	cout<<tot<<el;
-    }
-    else if((m*stk[i].S) % k == 0){
-    	cout<<0<<el;
-    }
-    else{
-    	cout<<tot - m*stk[i].S/k*k<<el;
-    }
+    cout<<mxDP[n]<<el;
 }
  
 int32_t main(){

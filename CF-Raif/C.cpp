@@ -28,54 +28,67 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/280/problem/C
-// read editorial
+// implementation heavy :(
 
 void solve(){
-    int n, k, m; cin>>n>>k>>m;
-    int tot = n*m;
-    vi arr(n); cin>>arr;
-    vector <pi> stk;
-    for(int i : arr){
-    	if(stk.empty() or stk.back().F != i){
-    		stk.pb({i, 1});
-    	}
-    	else{
-    		stk.back().S++;
-    		if(stk.back().S == k){
-    			stk.pop_back();
-    			tot -= k*m;
-    		} 
-    	}
-    }
-
-    if(stk.size() == 0){
-    	cout<<0<<el;
-    	return;
-    }
-
-
-    int i = 0, j = stk.size() - 1;
-    while(j > i){
-    	if(stk[i].F == stk[j].F and stk[i].S + stk[j].S >= k){
-    		tot -= k*(m - 1);
-    		if(stk[i].S + stk[j].S == k) i++, j--;
-    		else break;
-    	}
-    	else{
-    		break;
-    	}
+    int n; cin>>n;
+    vi p(n + 1);
+    for (int i = 1; i <= n; ++i){
+    	cin>>p[i];
     }
     
-    if(j > i){
-    	cout<<tot<<el;
+
+    set <pi> ans;
+    vi fp(n + 1);
+    vector <bool> taken1(n + 1), taken23(n + 1);
+    for (int i = 1; i <= n; ++i){
+    	if(p[i] != 1) taken1[i] = true;
+    	if(p[i] < 2) taken23[i] = true;
     }
-    else if((m*stk[i].S) % k == 0){
-    	cout<<0<<el;
+    int l23 = n, l1 = n, h = n;
+
+    for (int c = n; c; --c){
+    	if(p[c] == 0) continue;
+    	else if(p[c] == 1){
+    		ans.insert({h, c});
+    		fp[c] = h;
+    		h--;
+    	}
+    	else if(p[c] == 2){
+    		while(l1 and taken1[l1]) l1--;
+    		if(l1 < c){
+    			cout<<"-1\n";
+    			return;
+    		}
+    		fp[c] = fp[l1];
+    		ans.insert({fp[l1], c});
+    		taken1[l1] = true;
+    	}
+    	else{
+    		while(l23 and taken23[l23]) l23--;
+    		int l;
+    		if(l23 <= c){
+    			while(l1 and taken1[l1]) l1--;
+	    		if(l1 < c){
+	    			cout<<"-1\n";
+	    			return;
+	    		}
+	    		taken1[l1] = true;
+	    		l = l1;
+    		}
+    		else{
+    			taken23[l23] = true;
+    			l = l23;
+    		}
+    		fp[c] = h;
+    		ans.insert({h, l});
+    		ans.insert({h, c});	
+    		h--;
+    	}
     }
-    else{
-    	cout<<tot - m*stk[i].S/k*k<<el;
-    }
+
+    cout<<ans.size()<<el;
+    for(pi p : ans) cout<<p.F<<" "<<p.S<<el;
 }
  
 int32_t main(){
