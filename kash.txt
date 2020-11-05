@@ -21,6 +21,9 @@ https://codeforces.com/contest/1427/problem/C -> CF-Global-11/D.cpp
 https://codeforces.com/contest/280/problem/C -> p62.cpp
 https://codeforces.com/contest/1428/problem/D -> CF-Raif/C.cpp (implementation heavy)
 https://codeforces.com/contest/1428/problem/E -> CF-Raif/D.cpp and CF-Raif/F.cpp
+https://codeforces.com/contest/1444/problem/C -> p67.cpp
+https://codeforces.com/blog/entry/8219
+https://codeforces.com/problemset/problem/1335/F -> p71.cpp
 
 
 Todo :-
