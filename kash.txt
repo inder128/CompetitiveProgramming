@@ -24,6 +24,8 @@ https://codeforces.com/contest/1428/problem/E -> CF-Raif/D.cpp and CF-Raif/F.cpp
 https://codeforces.com/contest/1444/problem/C -> p67.cpp
 https://codeforces.com/blog/entry/8219
 https://codeforces.com/problemset/problem/1335/F -> p71.cpp
+https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D -> ITMO/f.cpp
+https://codeforces.com/edu/course/2/lesson/6/4/practice/contest/285069/problem/B -> ITMO/h.cpp
 
 
 Todo :-

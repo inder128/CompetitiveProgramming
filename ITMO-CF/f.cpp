@@ -28,92 +28,86 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-#define lsi 2*si + 1
-#define rsi 2*si + 2
-class segmentTree{
-public :
-	int size, n;
-	int neutral = 0;
-	vi ST;
-	segmentTree(int _n){
-		n = _n;
-		size = 1;
-		while(size < n) size <<= 1;
-		ST.assign(2 * size, neutral);
-	}
+// nice question;
+// https://codeforces.com/edu/course/2/lesson/6/3/practice/contest/285083/problem/D
+const int N = 1e5;
+int n, m, d;
+vector <pi> adj[N];
 
-
-	inline int getMid(int &sl, int &sr){
-		return (sl + sr) >> 1;
-	}
-	void printUtil(int si, int sl, int sr){
-		cout<<si<<" : "<<sl<<" - "<<sr<<" : "<<ST[si]<<el;
-
-		if(sl == sr) return;
-
-		int mid = getMid(sl, sr);
-		printUtil(lsi, sl, mid);
-		printUtil(rsi, mid + 1, sr);
-	}
-	void print(){
-		return printUtil(0, 0, n - 1);
-	}
-
-
-	void updateUtil(int si, int sl, int sr, int i){
-		if(sl == sr){
-			ST[si] = !ST[si];
-			return;
-		}
-
-		int mid = getMid(sl, sr);
-		if(i <= mid)
-			updateUtil(lsi, sl, mid, i);
-		else
-			updateUtil(rsi, mid + 1, sr, i);
-
-		ST[si] = ST[lsi] + ST[rsi];
-	}
-	void update(int i){
-		return updateUtil(0, 0, n - 1, i);
-	}
-
-
-	int getUtil(int si, int sl, int sr, int k){
-		if(sl == sr) return sl;
-
-		int mid = getMid(sl, sr);
-		if(ST[lsi] > k){
-			return getUtil(lsi, sl, mid, k);
-		}
-		else{
-			return getUtil(rsi, mid + 1, sr, k - ST[lsi]);
+bool good(int mxW, bool print = false){
+	vi dist(n, -1);
+	dist[0] = 0;
+	queue <int> Q;
+	Q.push(0);
+	while(Q.size()){
+		int node = Q.front(); Q.pop();
+		if(dist[node] == d) break;
+		for(pi ch : adj[node]){
+			if(dist[ch.F] != -1) continue;
+			if(ch.S > mxW) continue;
+			dist[ch.F] = dist[node] + 1;
+			Q.push(ch.F);
 		}
 	}
-	int get(int k){
-		return getUtil(0, 0, n - 1, k);
+
+	if(print == false) return dist[n - 1] != -1;
+
+	vector <pi> adj2[n];
+	for (int i = 0; i < n; ++i){
+		for(pi ch : adj[i]){
+			adj2[ch.F].pb({i, ch.S});
+		}
 	}
-};
+
+	cout<<dist[n - 1]<<el;
+	vi path;
+	int curr = n - 1;
+	while(curr){
+		path.pb(curr + 1);
+		for(pi ch : adj2[curr]){
+			// see wrong submission;
+			if(dist[ch.F] == dist[curr] - 1 and ch.S <= mxW){
+				curr = ch.F;
+				break;
+			}
+		}
+	}
+	path.pb(1);
+	reverse(rng(path));
+	for(int v : path) cout<<v<<" ";
+	cout<<el;
+
+	return true;
+}
 
 void solve(){
-    int n, q; cin>>n>>q;
-    segmentTree st(n);
-    for (int i = 0; i < n; ++i){
-    	int val; cin>>val;
-    	if(val) st.update(i);
-    }
-    while(q--){
-    	int op; cin>>op;
-    	if(op == 1){
-    		int i; cin>>i;
-    		st.update(i);
-    	}
-    	else{
-    		int k; cin>>k;
-    		cout<<st.get(k)<<el;
-    	}
-    }
+	cin>>n>>m>>d;
+	for (int i = 0; i < m; ++i){
+		int u, v, w; cin>>u>>v>>w;
+		u--, v--;
+		adj[u].pb({v, w});
+	}
+	int l = -1; // bad;
+	int r = 1e9 + 1; // possibly good;
+	while(l + 1 < r){
+		int m = (l + r) >> 1;
+		if(good(m)){
+			r = m;
+		}
+		else{
+			l = m;
+		}
+	}
+
+	if(r == 1e9 + 1){
+		cout<<-1<<el;
+		return;
+	}
+
+	good(r, true);
 }
+
+
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
