@@ -25,6 +25,12 @@ https://codeforces.com/contest/1444/problem/C -> p67.cpp
 https://codeforces.com/blog/entry/8219
 https://codeforces.com/problemset/problem/1335/F -> p71.cpp
 ITMO -> questions
+https://codeforces.com/blog/entry/77491 -> problem-D proof
+https://codeforces.com/contest/1354/problem/E -> p77.cpp
+https://codeforces.com/contest/1355/problem/E -> p78.cpp
+https://codeforces.com/contest/1361/problem/B -> p79.cpp
+https://codeforces.com/contest/1363/problem/D -> p80.cpp (Interactive)
+https://codeforces.com/contest/1364/problem/D -> p82.cpp
 
 
 Todo :-
