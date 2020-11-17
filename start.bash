@@ -7,23 +7,9 @@ set -u
 
 for testdir in "$@"; do
     mkdir -p $testdir
-    testfile=$testdir/A.cpp
-    echo "create file '$testfile'"
-    echo "" > $testfile
-
-    testfile=$testdir/B.cpp
-    echo "create file '$testfile'"
-    echo "" > $testfile
-
-    testfile=$testdir/C.cpp
-    echo "create file '$testfile'"
-    echo "" > $testfile
-
-    testfile=$testdir/D.cpp
-    echo "create file '$testfile'"
-    echo "" > $testfile
-
-    testfile=$testdir/E.cpp
-    echo "create file '$testfile'"
-    echo "" > $testfile
+    touch $testdir/A.cpp
+    touch $testdir/B.cpp
+    touch $testdir/C.cpp
+    touch $testdir/D.cpp
+    touch $testdir/E.cpp  
 done
