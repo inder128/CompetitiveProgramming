@@ -28,52 +28,86 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/1433/problem/F
-// reminder DP;
-// k is small -> hint in limits;
+const int N = 2000;
+const int MOD = 1e9 + 7;
+
+// operation keeping MOD in mind;
+int add(int x, int y){
+    x += y;
+    while(x >= MOD) x -= MOD;
+    while(x < 0) x += MOD;
+    return x;
+}
+
+int mul(int x, int y){
+    // to avoid overflow;
+    return (x * 1ll * y) % MOD;
+}
+
+int fact[N];
+
+// return (x raised to power y) % MOD;
+int binpow(int x, int y){
+    int z = 1;
+    while(y){
+        if(y & 1) z = mul(z, x);
+        x = mul(x, x);
+        y >>= 1;
+    }
+    return z;
+}
+
+int inv(int x){
+    return binpow(x, MOD - 2);
+}
+
+// return x/y;
+int divide(int x, int y){
+    return mul(x, inv(y));
+}
+
+// array of factorials;
+void precalc(){
+    fact[0] = 1;
+    for(int i = 1; i < N; i++)
+        fact[i] = mul(fact[i - 1], i);
+}
+
+// returns nCk;
+int C(int n, int k){
+    if(k > n) return 0;
+    return divide(fact[n], mul(fact[k], fact[n - k]));
+}
 
 void solve(){
-    int n, m, k; cin>>n>>m>>k;
-    vvi mat(n, vi(m));
-    for (int i = 0; i < n; ++i){
-        for (int j = 0; j < m; ++j){
-            cin>>mat[i][j];
-        }
+    int n; cin>>n;
+    char aa, ab, ba, bb; cin>>aa>>ab>>ba>>bb;
+    if(n == 2){
+        cout<<1<<el;
+        return;
+    }
+    if(ab == aa and ab == 'A'){
+        cout<<"1\n";
+        return;
+    }
+    if(ab == bb and ab == 'B'){
+        cout<<"1\n";
+        return;
     }
 
-    vvi valid(n, vi(k, -1));
-    for (int i = 0; i < n; ++i){
-        vi DP(70*m + 1, 1e9);
-        DP[0] = 0;
-        for (int j = 0; j < m; ++j){
-            for (int sm = 70*m; sm >= mat[i][j]; --sm){
-                mini(DP[sm], DP[sm - mat[i][j]] + 1); 
-            } 
+    if(ab == ba){
+        // not consequtive;
+        n--;
+        int ans = 0;
+        for (int bs = 0; bs <= n; ++bs){
+            ans += C(n - bs - 1, bs + 1 - 1);
+            ans %= MOD;
         }
-        for (int sm = 70*m; sm >= 0; --sm){
-            if(DP[sm] <= m / 2 and valid[i][sm % k] == -1){
-                valid[i][sm % k] = sm
-            }
-        }
+        cout<<ans<<el;
     }
-
-    vi DP(k, -1);
-    DP[0] = 0;
-    for (int i = 0; i < n; ++i){
-        vi newDP = DP;
-        for(int val : valid[i]){
-            if(val == -1) continue;
-            for (int rem = 0; rem < k; ++rem){
-                if(DP[rem] == -1) continue;
-                if(newDP[(rem + val) % k] < DP[rem] + val){
-                    newDP[(rem + val) % k] = DP[rem] + val;
-                }
-            }
-        }
-        DP = newDP;
+    else{
+        cout<<binpow(2, n - 3)<<el;
     }
-
-    cout<<DP[0]<<el;
 }
  
 int32_t main(){
@@ -81,6 +115,7 @@ int32_t main(){
     cin.tie(0); cout.tie(0);
     int T=1;
     // cin>>T;
+    precalc();
     while(T--){
         solve();
     }
