@@ -28,27 +28,58 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-void solve(){
-    int d, k; cin>>d>>k;
-    int l = 0; // (l^2 + l^2) <= d^2
-    int r = d / k + 1; // (r^2 + r^2) > d^2
-    while(l + 1 < r){
-    	int m = (l + r) >> 1;
-    	if(2*m*m*k*k <= d*d){
-    		l = m;
-    	}
-    	else{
-    		r = m;
-    	}
-    }
+int get(int n, vi &fac, int rem){
+	if(rem == 1){
+		return n;
+	}
+	if(n == 1){
 
-    // k*(l + 1), k*l; -> k*k*(l*l + 1 + 2*l + l*l)
-    if(k*k*(2*l*l + 2*l + 1) <= d*d){
-    	cout<<"Ashish\n";
+		return rem;
+	}
+
+	int sz = fac.size(), ans = LLONG_MAX;
+	for (int msk = 0; msk < (1<<sz); ++msk){
+		int mul = 1;
+		for (int i = 0; i < sz; ++i){
+			if((msk & (1<<i)) == 0) continue;
+			mul *= fac[i];
+		}
+		if(rem % mul) continue;
+		mini(ans, mul + get(n - 1, fac, rem / mul));
+	}
+
+	return ans;
+}
+
+void solve(){
+    int n, x; cin>>n>>x;
+    int xx = x;
+
+    vi fac;
+    for (int i = 2; i*i <= x; ++i){
+    	if(x % i) continue;
+        fac.pb(1);
+        while(x % i == 0){
+        	x /= i;
+        	fac.back() *= i;
+        }
+    }
+    if(x > 1) fac.pb(x);
+
+    // db(fac);
+
+    int ans = 0;
+    if(fac.size() <= n){
+    	for (int i = 0; i < n; ++i){
+    		ans += (i < fac.size() ? fac[i] : 1);
+    	}
     }
     else{
-    	cout<<"Utkarsh\n";
+    	
+    	ans = get(n, fac, xx);
     }
+
+    cout<<ans<<el;
 }
  
 int32_t main(){

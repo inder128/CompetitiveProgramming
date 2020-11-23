@@ -29,33 +29,42 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int d, k; cin>>d>>k;
-    int l = 0; // (l^2 + l^2) <= d^2
-    int r = d / k + 1; // (r^2 + r^2) > d^2
-    while(l + 1 < r){
-    	int m = (l + r) >> 1;
-    	if(2*m*m*k*k <= d*d){
-    		l = m;
-    	}
-    	else{
-    		r = m;
-    	}
+    int n, k; cin>>n>>k;
+
+    vi deg(n); cin>>deg;
+
+    int mxU = max_element(rng(deg)) - deg.begin();
+
+    
+
+    if(deg[mxU] >= k){
+    	cout<<"2 "<<mxU + 1<<el; cout.flush();
+    	int d; cin>>d;
+    	vi childs(d); cin>>childs;
+	    for (int ch : childs){
+	    	cout<<"1 "<<ch<<el; cout.flush();
+	    	int x; cin>>x;
+	    	vi bin(x); cin>>bin;
+	    }
+
+	    cout<<"3\n"; cout.flush();
+	    return;
     }
 
-    // k*(l + 1), k*l; -> k*k*(l*l + 1 + 2*l + l*l)
-    if(k*k*(2*l*l + 2*l + 1) <= d*d){
-    	cout<<"Ashish\n";
+    vector <bool> vis(n);
+    for (int i = 0; i < n; ++i){
+    	if(vis[i]) continue;
+    	
     }
-    else{
-    	cout<<"Utkarsh\n";
-    }
+	    
+
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }

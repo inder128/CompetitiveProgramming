@@ -29,25 +29,47 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int d, k; cin>>d>>k;
-    int l = 0; // (l^2 + l^2) <= d^2
-    int r = d / k + 1; // (r^2 + r^2) > d^2
-    while(l + 1 < r){
-    	int m = (l + r) >> 1;
-    	if(2*m*m*k*k <= d*d){
-    		l = m;
+    int n, k; cin>>n>>k;
+    if(n == 2){
+    	cout<<1<<el;
+    	cout<<1<<" "<<2<<el;
+    	return;
+    }
+
+    if(k == n * (n - 1) / 2){
+    	cout<<k<<el;
+    	for (int i = 1; i <= n; ++i){
+    		for (int j = i + 1; j <= n; ++j){
+    			cout<<i<<" "<<j<<el;
+    		}
     	}
-    	else{
-    		r = m;
+    	return;
+    }
+
+    if((n - 1) * (n - 2) / 2 < k){
+    	cout<<-1<<el;
+    	return;
+    }
+
+    
+
+    vector <pi> edges;
+    for (int i = 1; i < n; ++i){
+    	edges.pb({i, 0});
+    }
+
+    k = (n - 1) * (n - 2) / 2 - k;
+
+    for (int i = 1; i < n and k; ++i){
+    	for (int j = i + 1; j < n and k; ++j){
+    		k--;
+    		edges.pb({i, j});
     	}
     }
 
-    // k*(l + 1), k*l; -> k*k*(l*l + 1 + 2*l + l*l)
-    if(k*k*(2*l*l + 2*l + 1) <= d*d){
-    	cout<<"Ashish\n";
-    }
-    else{
-    	cout<<"Utkarsh\n";
+    cout<<edges.size()<<el;
+    for(pi eg : edges){
+    	cout<<eg.F + 1<<" "<<eg.S + 1<<el;
     }
 }
  

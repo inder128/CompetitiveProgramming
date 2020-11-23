@@ -29,26 +29,37 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int d, k; cin>>d>>k;
-    int l = 0; // (l^2 + l^2) <= d^2
-    int r = d / k + 1; // (r^2 + r^2) > d^2
-    while(l + 1 < r){
-    	int m = (l + r) >> 1;
-    	if(2*m*m*k*k <= d*d){
-    		l = m;
+    string a, b; cin>>a>>b;
+    bool oddOn = false, evenOn = false;
+    int ans = 0;
+    for (int i = 0; i < a.length(); ++i){
+    	if(i % 2 == 0){
+            if(a[i] == b[i]){
+            	evenOn = false;
+            }
+            else if(evenOn == false){
+            	evenOn = true;
+            	ans++;
+            }
+            else{
+
+            }
     	}
     	else{
-    		r = m;
+    		if(a[i] == b[i]){
+            	oddOn = false;
+            }
+            else if(oddOn == false){
+            	oddOn = true;
+            	ans++;
+            }
+            else{
+
+            }
     	}
     }
 
-    // k*(l + 1), k*l; -> k*k*(l*l + 1 + 2*l + l*l)
-    if(k*k*(2*l*l + 2*l + 1) <= d*d){
-    	cout<<"Ashish\n";
-    }
-    else{
-    	cout<<"Utkarsh\n";
-    }
+    cout<<ans<<el;
 }
  
 int32_t main(){

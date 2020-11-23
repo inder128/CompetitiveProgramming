@@ -31,6 +31,8 @@ https://codeforces.com/contest/1355/problem/E -> p78.cpp
 https://codeforces.com/contest/1361/problem/B -> p79.cpp
 https://codeforces.com/contest/1363/problem/D -> p80.cpp (Interactive)
 https://codeforces.com/contest/1364/problem/D -> p82.cpp
+https://codeforces.com/contest/1433/problem/F -> p89.cpp
+https://codeforces.com/contest/1451/problem/E2 -> CF-685-Div2/D.cpp (Interactive)
 
 
 Todo :-

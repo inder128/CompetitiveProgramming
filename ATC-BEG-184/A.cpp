@@ -29,33 +29,50 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int d, k; cin>>d>>k;
-    int l = 0; // (l^2 + l^2) <= d^2
-    int r = d / k + 1; // (r^2 + r^2) > d^2
-    while(l + 1 < r){
-    	int m = (l + r) >> 1;
-    	if(2*m*m*k*k <= d*d){
-    		l = m;
-    	}
-    	else{
-    		r = m;
-    	}
+    int sx, sy; cin>>sx>>sy;
+    int ex, ey; cin>>ex>>ey;
+    if(sx == ex and ey == sy){
+    	cout<<0<<el;
+    	return;
+    }
+    if(sx + sy == ex + ey){
+    	cout<<1<<el;
+    	return;
+    }
+    if(sx - sy == ex - ey){
+    	cout<<1<<el;
+    	return;
+    }
+    int dx = abs(sx - ex);
+    int dy = abs(sy - ey);
+    if(dx + dy <= 3){
+    	cout<<1<<el;
+    	return;
     }
 
-    // k*(l + 1), k*l; -> k*k*(l*l + 1 + 2*l + l*l)
-    if(k*k*(2*l*l + 2*l + 1) <= d*d){
-    	cout<<"Ashish\n";
+    if(abs(dx - dy) <= 3){
+    	cout<<2<<el;
+    	return;
     }
-    else{
-    	cout<<"Utkarsh\n";
+
+    // if(dx + dy <= 6){
+    // 	cout<<2<<el;
+    // 	return;
+    // }
+
+    if(dx%2 == dy%2){
+    	cout<<2<<el;
+    	return;
     }
+
+    cout<<3<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }

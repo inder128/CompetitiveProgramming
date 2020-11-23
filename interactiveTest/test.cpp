@@ -8,7 +8,6 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
@@ -29,33 +28,60 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int d, k; cin>>d>>k;
-    int l = 0; // (l^2 + l^2) <= d^2
-    int r = d / k + 1; // (r^2 + r^2) > d^2
-    while(l + 1 < r){
-    	int m = (l + r) >> 1;
-    	if(2*m*m*k*k <= d*d){
-    		l = m;
+    int n = (1<<4);
+    vi arr(n);
+    iota(rng(arr), 1);
+    for (int i = 0; i < n; ++i){
+    	int j = rand()%n;
+    	swap(arr[i], arr[j]);
+    }
+    cout<<n<<el; cout.flush();
+
+    while(true){
+    	string op; cin>>op;
+    	if(op == "!"){
+            // terminating condition;
+    		bool isWrong = false;
+    		int wr = -1;
+    		for (int i = 0; i < n; ++i){
+    			int x; cin>>x;
+    			if(x != arr[i]){
+    				isWrong = true;
+    				wr = i + 1;
+    			}
+    		}
+
+            // write anything;
+    		if(isWrong){
+    			cout<<"wrong!!!\n";
+    		}
+    		else{
+    			cout<<"right!!!\n";
+    		}
+    		cout<<arr<<el;
+    		return;
+    	}
+    	int i, j; cin>>i>>j;
+		i--, j--;
+    	if(op == "AND"){
+    		cout<<(arr[i] & arr[j])<<el;
+    	}
+    	else if(op == "XOR"){
+    		cout<<(arr[i] ^ arr[j])<<el;
     	}
     	else{
-    		r = m;
+    		cout<<(arr[i] | arr[j])<<el;
     	}
-    }
-
-    // k*(l + 1), k*l; -> k*k*(l*l + 1 + 2*l + l*l)
-    if(k*k*(2*l*l + 2*l + 1) <= d*d){
-    	cout<<"Ashish\n";
-    }
-    else{
-    	cout<<"Utkarsh\n";
+    	cout.flush();
     }
 }
  
-int32_t main(){
+int main(int agg, char *argv[]){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    cin>>T;
+    int T = 1;
+    // cin>>T;
+    srand(stoi(argv[1]));
     while(T--){
         solve();
     }

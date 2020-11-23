@@ -28,34 +28,45 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-void solve(){
-    int d, k; cin>>d>>k;
-    int l = 0; // (l^2 + l^2) <= d^2
-    int r = d / k + 1; // (r^2 + r^2) > d^2
-    while(l + 1 < r){
-    	int m = (l + r) >> 1;
-    	if(2*m*m*k*k <= d*d){
-    		l = m;
-    	}
-    	else{
-    		r = m;
-    	}
-    }
+const int N = 100;
+double DP[N + 1][N + 1][N + 1];
 
-    // k*(l + 1), k*l; -> k*k*(l*l + 1 + 2*l + l*l)
-    if(k*k*(2*l*l + 2*l + 1) <= d*d){
-    	cout<<"Ashish\n";
+double dfs(int a, int b, int c){
+	if(DP[a][b][c] != -1){
+		return DP[a][b][c];
+	}
+	double &ans = DP[a][b][c];
+	ans = 0.0;
+	ans += a * (1 + dfs(a + 1, b, c));
+	ans += b * (1 + dfs(a, b + 1, c));
+	ans += c * (1 + dfs(a, b, c + 1));
+	ans /= (a + b + c);
+	return ans;
+}
+
+void solve(){
+    for (int i = 0; i < N + 1; ++i){
+    	for (int j = 0; j < N + 1; ++j){
+    		for (int k = 0; k < N + 1; ++k){
+    			if(i == N or j == N or k == N){
+    				DP[i][j][k] = 0;
+    			}
+    			else{
+    				DP[i][j][k] = -1;
+    			}
+    		}
+    	}
     }
-    else{
-    	cout<<"Utkarsh\n";
-    }
+    int a, b, c; cin>>a>>b>>c;
+    cout<<setprecision(12)<<fixed;
+    cout<<dfs(a, b, c)<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T=1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }
