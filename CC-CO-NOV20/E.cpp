@@ -32,32 +32,40 @@ void solve(){
     int n, k; cin>>n>>k;
 
     vi deg(n); cin>>deg;
-
     int mxU = max_element(rng(deg)) - deg.begin();
 
-    
+    vector <bool> vis(n);
 
     if(deg[mxU] >= k){
     	cout<<"2 "<<mxU + 1<<el; cout.flush();
     	int d; cin>>d;
     	vi childs(d); cin>>childs;
+        vis[mxU] = true;
 	    for (int ch : childs){
 	    	cout<<"1 "<<ch<<el; cout.flush();
-	    	int x; cin>>x;
-	    	vi bin(x); cin>>bin;
+	    	int d; cin>>d;
+            vis[ch - 1] = true;
+            for(int i = 0; i < d; ++i){
+                int x; cin>>x;
+                x--;
+                vis[x] = true;
+            }
 	    }
-
-	    cout<<"3\n"; cout.flush();
-	    return;
     }
-
-    vector <bool> vis(n);
+    
     for (int i = 0; i < n; ++i){
     	if(vis[i]) continue;
-    	
+    	vis[i] = true;
+        cout<<"1 "<<i + 1<<el; cout.flush();
+        int d; cin>>d;
+        for(int j = 0; j < d; ++j){
+            int x; cin>>x;
+            x--;
+            vis[x] = true;
+        }
     }
-	    
-
+	
+    cout<<"3\n"; cout.flush();
 }
  
 int32_t main(){

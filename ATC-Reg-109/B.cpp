@@ -28,48 +28,50 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
-
-
 const int N = 100;
-vi adj[N];
-vi vis(N);
 
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
+
+char get(char a, char b){
+	if(a == b) return a;
+	if(a == 'R' and b == 'S') return a;
+	if(a == 'S' and b == 'P') return a;
+	if(a == 'P' and b == 'R') return a;
+	return b;
 }
 
+
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
+    int n, k; cin>>n>>k;
+    char DP[n][k + 1];
+
+    vi pow2modn(k + 1);
+    pow2modn[0] = 1 % n;
+    for(int i = 1; i <= k; ++i){
+    	pow2modn[i] = 2 * pow2modn[i - 1] % n;
+    }
+
+	string rps; cin>>rps;
+
+    // DP[i][k] -> winner of rps[i..((i + 2^k - 1) % n)];
+    for(int p = 0; p <= k; ++p){
+    	for(int i = 0; i < n; ++i){
+    		if(p == 0){
+    			DP[i][p] = rps[i];
     		}
+    		else{
+    			DP[i][p] = get(DP[i][p - 1], DP[(i + pow2modn[p - 1]) % n][p - 1]);
+    		}
+    		// db(DP[i][p], i, p);
     	}
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
-
-    cout<<setprecision(12)<<ans<<el;
+    cout<<DP[0][k]<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
     while(T--){
         solve();

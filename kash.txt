@@ -33,17 +33,21 @@ https://codeforces.com/contest/1363/problem/D -> p80.cpp (Interactive)
 https://codeforces.com/contest/1364/problem/D -> p82.cpp
 https://codeforces.com/contest/1433/problem/F -> p89.cpp
 https://codeforces.com/contest/1451/problem/E2 -> CF-685-Div2/D.cpp (Interactive)
-
+https://www.codechef.com/COOK124A/problems/COMMCHA -> CC-CO-NOV20/F.cpp
+https://codeforces.com/contest/1455/problem/C -> editorial
+https://codeforces.com/contest/1455/problem/E -> p109.cpp
+https://www.codechef.com/problems/FRCTNS -> p110.cpp / nice way to find divisors of [1, n]
 
 Todo :-
 https://codeforces.com/problemset/problem/1284/D
 https://codeforces.com/contest/678/problem/E
 Maximum xor subsequence
 Alternate houses and towers in circle (codeforces)
-https://codeforces.com/contest/280/problem/C -> weird linearity of expectation
+https://codeforces.com/contest/280/problem/C -> ATC-GRAND-049/A.cpp
 https://codeforces.com/problemset/problem/678/E
 https://codeforces.com/contest/268/problem/E -> exchange arguments
 https://codeforces.com/contest/1045/problem/D
+https://codeforces.com/blog/entry/85186 -> editorial E
 
 
 https://codeforces.com/blog/entry/48417

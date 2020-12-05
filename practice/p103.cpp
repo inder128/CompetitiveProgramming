@@ -28,48 +28,55 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
-
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
-}
-
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
+    int q; cin>>q;
+    while(q--){
+    	int b, w; cin>>b>>w;
+    	int mx = max(b, w), mn = min(b, w);
+    	if(mx > 3*mn + 1){
+    		cout<<"NO\n";
+    		continue;
+    	}
+    	vector <pi> cells;
+    	for(int i = 2; i < 2*mn + 2; ++i){
+    		cells.pb({2, i});
+    	}
+    	mx -= mn;
+    	for(int j = 3; j < 2*mn + 2 and mx; j += 2, mx--){
+    		cells.pb({1, j});
+    	}
+    	for(int j = 3; j < 2*mn + 2 and mx; j += 2, mx--){
+    		cells.pb({3, j});
+    	}
+    	if(mx) cells.pb({2, 2*mn + 2});
+    	if(b > w){
+    		for(auto &pr : cells){
+    			pr.F++;
     		}
     	}
-    }
-
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
+    	// db(w, b);
+    	assert(cells.size() == w + b);
+    	for(auto pr : cells){
+    		if(pr.F % 2 == pr.S % 2){
+    			w--;
+    		}
+    		else{
+    			b--;
+    		}
     	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
+    	// db(w, b);
+    	assert(w == 0 and b == 0);
+    	cout<<"YES\n";
+    	for(auto pr : cells){
+    		cout<<pr.F<<" "<<pr.S<<el;
+    	}
     }
-
-    cout<<setprecision(12)<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
     while(T--){
         solve();

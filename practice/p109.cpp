@@ -28,49 +28,77 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
-
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
-}
+// https://codeforces.com/contest/1455/problem/E
+// nice explanation by neal_wu;
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
-    	}
+    array <int, 4> tX, tY, X, Y;
+    for(int i = 0; i < 4; ++i){
+        cin>>tX[i]>>tY[i];
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
+    array <int, 4> perm{0, 1, 2, 3};
 
-    cout<<setprecision(12)<<ans<<el;
+    auto cost = [&](int k){
+        array <int, 4> nX = X, nY = Y;
+
+        // similar trick in 3rd question of google kickstart H 20;
+        nX[1] -= k;
+        nX[3] -= k;
+        nY[2] += k;
+        nY[3] += k;
+        sort(rng(nX));
+        sort(rng(nY));
+
+        int cst = 0;
+        for(int i = 0; i < 4; ++i){
+            cst += abs(nX[i] - nX[1]);
+            cst += abs(nY[i] - nY[1]);
+        }
+
+        return cst;
+    };
+
+    int ans = LLONG_MAX;
+
+    do{
+        
+        for(int i = 0; i < 4; ++i){
+            X[i] = tX[perm[i]];
+            Y[i] = tY[perm[i]];
+        }
+
+        int l = -1, r = 1e9 + 8;
+
+        // invarients;
+        // cost(r + 1) > cost(r);
+        // cost(l) <= cost(l + 1);
+        // rightmost most r;
+
+        // ternary search;
+        while(l + 1 < r){
+            int m = (l + r) >> 1;
+            if(cost(m + 1) > cost(m)){
+                r = m;
+            }
+            else{
+                l = m;
+            }
+        }
+
+        mini(ans, cost(r));
+
+    }while(next_permutation(rng(perm)));
+
+
+    cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }

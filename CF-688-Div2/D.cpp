@@ -28,49 +28,75 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
 
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
+bool get(vi &A, int k, int n){
+	// sum is n;
+	// no are k;
+	int sum = k * 2;
+	for(int i = k - 1; i >= 0; --i){
+		while (sum + A[i] <= n){ 
+            sum += A[i]; 
+            A[i] *= 2; 
+        }
 	}
+
+	if(sum != n) return false;
+	return true;
 }
 
+int give(vi A){
+	int sum = 0;
+	for(int i : A){
+		while(i != 1){
+			i /= 2;
+			sum++;
+		}
+	}
+	return sum;
+}
+
+
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
+    int k; cin>>k;
+    if(k % 2 ){
+    	cout<<-1<<el;
+    	return;
+    }
+    k /= 2;
+
+    for(int n = 1; n <= 2000; ++n){
+    	vi ans(n, 2);
+    	bool sol = get(ans, n, k + n);
+    	if(sol == false) continue;
+    	int cnt = give(ans);
+    	if(cnt > 2000) continue;
+
+    	cout<<cnt<<el;
+    	cout<<"1 ";
+    	int ptr = 0;
+    	for(int i = 1; i < cnt; ++i){
+    		ans[ptr] /= 2;
+    		if(ans[ptr] == 1){
+    			cout<<1<<" ";
     		}
+    		else{
+    			cout<<0<<" ";
+    		}
+    		if(ans[ptr] == 1) ptr++;
     	}
+    	cout<<el;
+
+    	return;
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
-
-    cout<<setprecision(12)<<ans<<el;
+    cout<<-1<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }

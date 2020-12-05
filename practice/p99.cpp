@@ -28,49 +28,53 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
+const int N = 1e6 + 6;
+vi properDivisor[N], lenCnt(N), pow2(N);
 
+const int mod = 1e9 + 7;
 
-const int N = 100;
-vi adj[N];
-vi vis(N);
+void preCalc(){
+    pow2[0] = 1, pow2[1] = 2;
+    for(int i = 2; i <= 1e6; ++i){
+        pow2[i] = pow2[i - 1] * 2 % mod;
+        for(int j = i; j <= 1e6; j += i){
+            properDivisor[j].pb(i);
+        }
+    }
+}
 
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
+int calc(int n){
+    return (n * (n + 1) * (n + 1) / 2 % mod - n * (n + 1) * (2*n + 1) / 6 % mod + mod) % mod;
 }
 
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
-    	}
+    vi arr(n); cin>>arr;
+    for(int i = 0; i < n; ++i){
+        for(int div : properDivisor[arr[i]]){
+            lenCnt[div]++;
+        }
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
+    int ans = 0;
+    // 1 *n + 2* n - 1 + 
+    for(int i = 1e6; i >= 2; --i){
+        if(lenCnt[i]) lenCnt[i] = lenCnt[i] * pow2[lenCnt[i] - 1];
+        for(int j = 2*i; j <= 1e6; j += i){
+            lenCnt[i] = (lenCnt[i] - lenCnt[j] + mod) % mod;
+        }
+        ans = (ans + i * lenCnt[i]) % mod;
     }
 
-    cout<<setprecision(12)<<ans<<el;
+    cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
+    preCalc();
     while(T--){
         solve();
     }

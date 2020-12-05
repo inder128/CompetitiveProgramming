@@ -9,6 +9,7 @@ using namespace std;
 #define S second
 #define el '\n'
 #define int long long
+#define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
@@ -28,48 +29,76 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
+// https://www.codechef.com/problems/FRCTNS
+// see tle submissions;
+// nice question;
+// fast way to find divisors;
 
+const int N = 1e6;
+vi divs[N + 1], spf(N + 1, -1);
 
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
+void sieve(){
+	for(int i = 2; i <= N; ++i){
+		if(spf[i] != -1) continue;
+		spf[i] = i;
+		for(int j = i * i; j <= N; j += i){
+			spf[j] = i;
+		}
 	}
 }
 
+// this way of computing divisors is faster that normal linear sieve way;
+void getDivisors(vi &div, int n){
+	map <int, int> prPow;
+	while(n != 1){
+		prPow[spf[n]]++;
+		n /= spf[n];
+	}
+	div.pb(1);
+	for(auto prPowPr : prPow){
+		int lastSz = SZ(div);
+		for(int i = 0; i < lastSz * prPowPr.S; ++i){
+			div.pb(div[i] * prPowPr.F);
+		}
+	}
+	sort(rng(div));
+}
+
+
 void solve(){
+	sieve();
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
+    for(int i = 1; i <= n; ++i){
+    	getDivisors(divs[i], i);
+    }
+
+    int ans = 0;
+    for(int i = 1; i < n; ++i){
+    	int mxD = n - i;
+
+    	// two pointers;
+    	int r = SZ(divs[i + 1]) - 1;
+    	for(int l = 0; l < SZ(divs[i]) and divs[i][l] <= mxD; ++l){
+    		while(r >= 0 and divs[i][l] * 1ll * divs[i + 1][r] > mxD){
+    			r--;
     		}
+    		ans += r + 1;
     	}
+
+    	// binary search;
+    	// for(auto di : divs[i]){
+    	// 	if(di > mxD) break;
+    	// 	ans += upper_bound(rng(divs[i + 1]), mxD / di) - divs[i + 1].begin();
+    	// }
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
-
-    cout<<setprecision(12)<<ans<<el;
+    cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
     while(T--){
         solve();

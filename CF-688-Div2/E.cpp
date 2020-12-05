@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
@@ -28,49 +28,85 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
+const int N = 2e5;
+vi adj[N], level(N);
 
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
+void dfs(int node = 0, int par = -1){
 	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
+		if(child == par) continue;
+		level[child] = level[node] + 1;
+		dfs(child, node);
 	}
 }
 
+int k;
+
+
+int dp(int node = 0, int par = -1){
+	int mn = 1e9;
+	bool occ = false;
+	int lvl = 0;
+
+	for(int child : adj[node]){
+		if(child == par) continue;
+		
+		int ans = dp(child, node);
+		if(ans == 1e9) return ans;
+
+		if(ans - level[node] > k) return 1e9;
+
+		if(ans - level[node] == k and occ) return 1e9;
+
+		if(ans - level[node] == k and occ == false){
+			lvl = ans;
+			occ = true;
+		}
+		else{
+			mini(mn, ans);
+		}
+	}
+
+	if(occ) return lvl;
+
+	if(mn == 1e9) return level[node];
+	
+
+	return mn;
+}
+
+
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
+    for(int i = 0; i < n; ++i){
+    	adj[i].clear();
+    }
+    for(int i = 0; i < n - 1; ++i){
+    	int u, v; cin>>u>>v;
+    	u--, v--;
+    	adj[u].pb(v);
+    	adj[v].pb(u);
+    }
+    dfs();
+
+    int l = 0, r = 2e5 + 3; 
+    while(l + 1 < r){
+    	k = (l + r) >> 1;
+    	if(dp() <= k){
+    		r = k;
+    	}
+    	else{
+    		l = k;
     	}
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
-
-    cout<<setprecision(12)<<ans<<el;
+    cout<<r<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }

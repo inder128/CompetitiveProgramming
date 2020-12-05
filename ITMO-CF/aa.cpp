@@ -28,48 +28,62 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
+struct ordPair{
+	int leftOrd, rightOrd, ind;
+};
 
 
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
+vi get(string str){
+	str.pb('a' - 1);
+	int n = str.size();
+	vi pos(n);
+	for(int i = 0; i < n; ++i){
+		pos[i] = str[i] - 'a' + 1;
 	}
+	int k = 0;
+	while((1 << k) < n){
+		// k -> k + 1;
+		vector <ordPair> subStrOrd(n);
+		for(int i = 0; i < n; ++i){
+		 	subStrOrd[i] = {pos[i], pos[(i + (1 << k)) % n], i};
+		} 
+		sort(rng(subStrOrd), [&](const ordPair &s1, const ordPair &s2){
+			if(s1.leftOrd == s2.leftOrd){
+				return s1.rightOrd < s2.rightOrd;
+			}
+			return s1.leftOrd < s2.leftOrd;
+		});
+		pos[subStrOrd[0].ind] = 0;
+		for(int i = 1; i < n; ++i){
+			ordPair lastOrd = subStrOrd[i - 1];
+			ordPair currOrd = subStrOrd[i];
+			if(lastOrd.leftOrd == currOrd.leftOrd and lastOrd.rightOrd == currOrd.rightOrd){
+				pos[currOrd.ind] = pos[lastOrd.ind];
+			}
+			else{
+				pos[currOrd.ind] = pos[lastOrd.ind] + 1;
+			}
+		}
+		if(pos[subStrOrd.back().ind] == n - 1) break;
+		k++;
+	}
+	return pos;
 }
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
-    	}
-    }
-
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
-
-    cout<<setprecision(12)<<ans<<el;
+    string str; cin>>str;
+   	vi ordering = get(str);
+   	vi ans = ordering;
+   	for(int i = 0; i < str.length() + 1; ++i){
+   		ans[ordering[i]] = i;
+   	}
+   	for(int i : ans) cout<<i<<" "; cout<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
     while(T--){
         solve();

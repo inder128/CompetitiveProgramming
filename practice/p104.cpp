@@ -28,48 +28,68 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
 
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
-}
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
-    	}
-    }
+	int n, k; cin>>n>>k;
+	string str; cin>>str;
+	str = "$" + str;
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
+	vvi last(n + 1, vi(26));
+	for(int i = 1; i <= n; ++i){
+		last[i] = last[i - 1];
+		last[i][str[i] - 'a'] = i;
+	}
 
-    cout<<setprecision(12)<<ans<<el;
+	int DP[n + 1][n + 1][27];
+	for(int i = 0; i < n + 1; ++i){
+		for(int j = 0; j < n + 1; ++j){
+			for(int kk = 0; kk < 27; ++kk){
+				DP[i][j][kk] = 0;
+			}
+		}
+	}
+	// DP[ln][pre][ls] -> no of distinct subsequences of length ln from str[1..pre] ending with letter ls;
+	for(int i = 0; i <= n; ++i){
+		for(int j = 0; j < 26; ++j){
+			DP[1][i][j] = last[i][j] > 0;
+			DP[1][i][26] += last[i][j] > 0;
+		}
+	}
+
+	for(int ln = 2; ln <= n; ++ln){
+		for(int pre = 0; pre <= n; ++pre){
+			for(int ls = 0; ls < 26; ++ls){
+				if(last[pre][ls]){
+					DP[ln][pre][ls] = DP[ln - 1][last[pre][ls] - 1][26];
+				}
+				DP[ln][pre][26] += DP[ln][pre][ls];
+			}	
+		}
+	}
+
+	int ln = n, ans = 0;
+	while(ln and k){
+		int toDel = min(DP[ln][n][26], k);
+		ans += (n - ln) * toDel;
+		k -= toDel;
+		ln--;
+	}
+
+	if(k){ // empty string;
+		k--;
+		ans += n;
+	}
+
+	if(k) ans = -1;
+
+	cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
     while(T--){
         solve();

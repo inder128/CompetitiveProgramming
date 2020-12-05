@@ -28,49 +28,68 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
-
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
-}
-
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
-    	}
+    vi arr(n); cin>>arr;
+    map <int, vi> inds;
+    for(int i = 0; i < n; ++i){
+    	inds[arr[i]].pb(i);
+    }
+    vi mxPre = arr;
+    for(int i = 1; i < n; ++i){
+    	mxPre[i] = max(mxPre[i - 1], arr[i]);
+    }
+    vi mxSuff = arr;
+    for(int i = n - 2; i >= 0; --i){
+    	mxSuff[i] = max(mxSuff[i + 1], arr[i]);
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
+    vi nextSmaller(n);
+    vector <pi> stk;
+    for(int i = n - 1; i >= 0; --i){
+    	if(stk.empty() or stk[0].F >= mxPre[i]){
+    		nextSmaller[i] = n;
     	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
+    	else{
+    		pi pr = {mxPre[i], 0};
+    		int j = lower_bound(rng(stk), pr) - stk.begin() - 1;
+    		nextSmaller[i] = stk[j].S;
+    	}
+    	while(stk.size() and stk.back().F >= arr[i]){
+    		stk.pop_back();
+    	}
+    	stk.pb({arr[i], i});
     }
 
-    cout<<setprecision(12)<<ans<<el;
+    // db(nextSmaller);
+
+
+    for(int i = 0; i < n - 2; ++i){
+    	int j = nextSmaller[i];
+    	if(j == n or mxSuff[j] != mxPre[i]) j--;
+    	if(j - i < 2 or mxSuff[j] != mxPre[i]){
+    		continue;
+    	}
+
+    	// db(i, 1);
+    	auto itr = upper_bound(rng(inds[mxPre[i]]), i);
+    	if(itr == inds[mxPre[i]].end() or (*itr) >= j) continue;
+
+    	// db(i);
+
+    	cout<<"YES\n";
+    	cout<<(i + 1)<<" "<<(n - (i + 1) - (n - j))<<" "<<(n - j)<<el;
+    	return;
+    }
+
+    cout<<"NO\n";
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }

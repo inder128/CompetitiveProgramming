@@ -28,49 +28,88 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
+// https://www.codechef.com/COOK124A/problems/COMMCHA
+// divide and conquer DP;
 
+#warning TODO
+const int N = 1e5;
+vector <double> f(N + 1), fSum(N + 1);
 
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
+double cost(int l, int r){
+	return (fSum[r - 1] - (l ? fSum[l - 1] : 0)) / f[r];
 }
 
+
+struct lr{
+	// to compute range;
+	int tl, tr;
+
+	// available range;
+	int al, ar;
+};
+
+
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
+    int n, k; cin>>n>>k;
+    for(int i = 0; i < n + 1; ++i){
+    	cin>>f[i];
+    	if(i == 0){
+    		fSum[i] = f[i];
+    	}
+    	else{
+    		fSum[i] = fSum[i - 1] + f[i];
+    	}
+    }
+
+
+    vector <double> DP(n + 1, 1e18);
+    DP[0] = 0;
+
+    for(int i = 1; i <= k + 1; ++i){
+    	vector <double> newDP(n + 1, 1e18);
+    	newDP[0] = 0;
+
+    	stack <lr> dnc;
+    	
+    	// newDP[0] is already computed;
+    	dnc.push({1, n, 0, n});
+
+    	while(dnc.size()){
+    		auto tp = dnc.top(); dnc.pop();
+
+    		int m = (tp.tl + tp.tr) >> 1;
+
+    		// db(tp.tl, tp.tr, m);
+
+    		int oj = -1;
+    		for(int j = tp.al; j < min(m, tp.ar + 1); ++j){
+    			if(DP[j] + cost(j, m) < newDP[m]){
+    				newDP[m] = DP[j] + cost(j, m);
+    				oj = j;
+    			}
+    		}
+
+    		assert(oj >= 0);
+    		if(tp.tl <= m - 1){
+    			dnc.push({tp.tl, m - 1, tp.al, oj});
+    		}
+    		if(m + 1 <= tp.tr){
+    			dnc.push({m + 1, tp.tr, oj, tp.ar});
     		}
     	}
+
+    	DP = newDP;
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
 
-    cout<<setprecision(12)<<ans<<el;
+    cout<<setprecision(12)<<fixed<<DP[n]<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }

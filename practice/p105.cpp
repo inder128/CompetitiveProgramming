@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
@@ -28,49 +28,46 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
+const int N = 2e5;
+vector <pi> freq(N + 1);
 
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
-}
 
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
-    	}
+    for(int i = 0; i <= n; ++i){
+    	freq[i] = {0, 0};
+    }
+    for(int i = 0; i < n; ++i){
+    	int x, f; cin>>x>>f;
+    	freq[x].F++;
+    	if(f) freq[x].S++;
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
+    sort(freq.begin(), freq.begin() + n + 1, greater<pi>());
+
+    int i = 0, curr = n, tot = 0, one = 0;
+    priority_queue <int> PQ;
+    while(curr){
+    	while(i <= n and freq[i].F >= curr){
+    		PQ.push(freq[i].S);
+    		i++;
     	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
+    	if(PQ.size()){
+    		auto tp = PQ.top(); PQ.pop();
+    		tot += curr;
+    		one += min(curr, tp);
+    	}
+    	curr--;
     }
 
-    cout<<setprecision(12)<<ans<<el;
+    cout<<tot<<" "<<one<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }

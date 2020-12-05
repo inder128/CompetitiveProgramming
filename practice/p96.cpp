@@ -28,48 +28,44 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
-
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
-}
 
 void solve(){
-    int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
+    int n, k; cin>>n>>k;
+    vector <pi> lg;
+    vi gsz(n), gcurrsz(n);
+    for(int i = 0; i < n; ++i){
+    	cin>>gsz[i];
+    	for(int j = 0; j < gsz[i]; ++j){
+    		int x; cin>>x;
+    		lg.pb({x, i});
     	}
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
+    sort(rng(lg));
+    int ans = LLONG_MAX, l = 0, gcnt = 0;
+    for(int i = 0; i < lg.size(); ++i){
+    	gcurrsz[lg[i].S]++;
+    	if(gcurrsz[lg[i].S] == gsz[lg[i].S]) gcnt++;
 
-    cout<<setprecision(12)<<ans<<el;
+    	while((gcurrsz[lg[l].S] > gsz[lg[l].S]) or 
+    		(gcnt > k and gcurrsz[lg[l].S] == gsz[lg[l].S]) or 
+    		(gcnt >= k and gcurrsz[lg[l].S] < gsz[lg[l].S])){
+    		gcurrsz[lg[l].S]--;
+    		if(gcurrsz[lg[l].S] == gsz[lg[l].S] - 1) gcnt--;
+    		l++;
+    	}
+
+    	if(gcnt >= k){
+    		mini(ans, lg[i].F - lg[l].F);
+    	}
+    }
+    cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
     while(T--){
         solve();

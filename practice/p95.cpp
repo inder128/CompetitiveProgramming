@@ -28,49 +28,76 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
+const int N = 2e5;
+vi adj[N], vis(N), cyc(N);
 
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
+int dfs(int node = 0, int par = -1){
 	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
+	for(int ch : adj[node]){
+		if(ch == par) continue;
+		if(vis[ch]){
+			cyc[node] = true;
+			return ch;
+		}
+		int res = dfs(ch, node);
+		if(res == node){
+			cyc[node] = true;
+			return -1;
+		}
+		if(res != -1){
+			cyc[node] = true;
+			return res;
+		}
 	}
+	return -1;
+}
+
+int dfs2(int node, int par = -1){
+	int ans = 1;
+	for(int ch : adj[node]){
+		if(ch == par) continue;
+		if(cyc[ch]) continue;
+		ans += dfs2(ch, node);
+	}
+	return ans;
 }
 
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
-    		}
-    	}
+    for(int i = 0; i < n; ++i){
+    	cyc[i] = vis[i] = 0;
+    	adj[i].clear();
+    }
+    for(int i = 0; i < n; ++i){
+    	int u, v; cin>>u>>v;
+    	u--, v--;
+    	adj[u].pb(v);
+    	adj[v].pb(u);
+    }
+    dfs();
+
+    vi cmpSizes;
+    for(int i = 0; i < n; ++i){
+    	if(cyc[i] == false) continue;
+    	cmpSizes.pb(dfs2(i));
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
+
+    int tot = accumulate(rng(cmpSizes), 0ll);
+    int ans = 0;
+    for(int cs : cmpSizes){
+    	ans += cs * (cs - 1) / 2;
+    	ans += cs * (tot - cs);
     }
 
-    cout<<setprecision(12)<<ans<<el;
+    cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }

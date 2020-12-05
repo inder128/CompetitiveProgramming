@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
@@ -28,49 +28,42 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://atcoder.jp/contests/agc049/editorial/331
-
-
-const int N = 100;
-vi adj[N];
-vi vis(N);
-
-void dfs(int node){
-	vis[node] = 1;
-	for(int child : adj[node]){
-		if(vis[child]) continue;
-		dfs(child);
-	}
-}
+// tricky time complexity;
+// maximise the sum of three mutually coprime integers;
 
 void solve(){
     int n; cin>>n;
-    for (int i = 0; i < n; ++i){
-    	string str; cin>>str;
-    	for (int j = 0; j < n; ++j){
-    		if(str[j] == '1'){
-    			adj[j].pb(i);
+    vi arr(n); cin>>arr;
+    sort(rng(arr));
+    arr.resize(unique(rng(arr)) - arr.begin());
+    n = arr.size();
+
+    int ans = arr.back();
+
+    // time complexity -> O(n*log(n) + n*n^(1 / 3)*n^(1 / 3));
+    for(int a = 0; a < n; ++a){
+    	int l = -1;
+    	for(int b = a - 1; b > l; b--){
+    		if(arr[a] % arr[b] == 0) continue;
+    		maxi(ans, arr[a] + arr[b]);
+    		for(int c = b - 1; c > l; --c){
+    			if(arr[a] % arr[c] == 0) continue;
+    			if(arr[b] % arr[c] == 0) continue;
+    			maxi(ans, arr[a] + arr[b] + arr[c]);
+    			l = c;
+    			break;
     		}
     	}
     }
 
-    double ans = 0;
-    for (int i = 0; i < n; ++i){
-    	for (int j = 0; j < n; ++j){
-    		vis[j] = 0;
-    	}
-    	dfs(i);
-    	ans += 1.0 / (count(rng(vis), 1));
-    }
-
-    cout<<setprecision(12)<<ans<<el;
+    cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
+    int T = 1;
+    cin>>T;
     while(T--){
         solve();
     }
