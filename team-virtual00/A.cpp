@@ -34,33 +34,20 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+	int k; cin >> k;
+    int cnt = 0;
+    
+    string a, b; cin >> a >> b;
+    int n = SZ(a);
+    for(int i = 0; i < n; ++i){
+    	cnt += (a[i] == b[i]);
     }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    if(cnt < k){
+    	cout << n - (k - cnt) << el;
     }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
+    else{
+    	cout << n - (cnt - k) << el;
+    }
 }
  
 int32_t main(){

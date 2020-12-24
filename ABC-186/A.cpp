@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -33,41 +33,75 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
+int EED(int a, int b, int& x, int& y){
+    if(b == 0){
+        x = 1, y = 0;
+        return a;
+    }
+    int x1, y1;
+    int d = EED(b, a % b, x1, y1);
+    x = y1;
+    y = x1 - y1 * (a / b);
+    return d;
+}
+
+bool findAnySolution(int a, int b, int c, int &x, int &y){
+	// degenerate case;
+	if(a == 0 and b == 0){
+		x = y = 0;
+		return c == 0;
+	}
+
+    int g = EED(abs(a), abs(b), x, y);
+    if(c % g){
+        return false;
+    }
+
+    x *= c / g;
+    y *= c / g;
+    if(a < 0) x = -x;
+    if(b < 0) y = -y;
+
+    return true;
+}
+
+int gcd(int a, int b){
+	if(b == 0) return a;
+	return gcd(b, a % b);
+}
+
+
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+    int n, r, k; 
+    cin >> n >> r >> k;
+
+    int x, y;
+
+    int sol = findAnySolution(k, n, n - r, x, y);
+
+    if(sol == false){
+    	cout<<-1<<el;
     }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    else{
+    	int diff = n / gcd(k, n);
+    	if(x <= 0){
+    		x += (-x) / diff * diff + diff;
+    	}
+    	assert(x > 0);
+    	if(x > 0){
+    		x %= diff;
+    	}
+    	assert(x < diff and x > 0);
+    	cout<<x<<el;
     }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

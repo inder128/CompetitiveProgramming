@@ -8,7 +8,8 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
+#define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
@@ -28,97 +29,52 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
-// https://codeforces.com/contest/1451/problem/E2
-// nice interactive;
+// int a = 35242353;
+
+
+bool q(int x, int y){
+    cout<<"? "<<x<<" "<<y<<endl;// cout.flush();
+    char res; cin>>res;
+    return res == 'y';
+    // return (y % a) > (x % a);
+}
+
+
 
 void solve(){
-    int n; cin>>n;
 
-    int u = -1, v = -1, c = -1;
-    vi xr(n + 1);
-    for (int i = 2; i <= n; ++i){
-        cout<<"XOR 1 "<<i<<el; cout.flush();
-        cin>>xr[i];
-        if(xr[i] == 0){
-            u = 1, v = i;
-        }
-        if(xr[i] == n - 1){
-            c = i;
-        }
+    int x = 0, y = 1;
+    for(int i = 0; i <= 30; ++i){
+        bool res = q(x, y);
+        if(res == false) break;
+        x = y;
+        y <<= 1;
     }
 
-    if(u == -1){
-        vector <pi> inds;
-        for (int i = 2; i <= n; ++i){
-            inds.pb({xr[i], i});
+    int l = x, r = y;
+    while(l + 1 < r){
+        int m = (l + r) >> 1;
+        if(q(x, m) == false){
+            r = m;
         }
-        sort(rng(inds));
-        for (int i = 1; i < inds.size(); ++i){
-            if(inds[i - 1].F == inds[i].F){
-                u = inds[i - 1].S, v = inds[i].S;
-                break;
-            }
+        else{
+            l = m;
         }
     }
 
-    vi arr(n + 1, -1);
-    if(u != -1){
-        cout<<"AND "<<u<<" "<<v<<el; cout.flush();
-        cin>>arr[u];
-        if(arr[1] == -1){
-            arr[1] = xr[u]^arr[u];
-        }        
-    }
-    else{
-        assert(c != -1);
-        // distinct;
-        int d = (c == 2 ? 3 : 2);
-
-        // 1, c ,d;
-        // arr[1] + arr[c] = n - 1;
-        int s1c = n - 1;
-
-        cout<<"AND 1 "<<d<<el; cout.flush();
-        int a1d; cin>>a1d;
-        // arr[1] + arr[d] = xr[d] + 2*a1d;
-        int s1d = xr[d] + 2*a1d;
-
-        cout<<"AND "<<c<<" "<<d<<el; cout.flush();
-        int acd; cin>>acd;
-        // arr[c] + arr[d] = xr[d]^xr[c] + 2*acd;
-
-        // check wrong submission;
-        // precedence;
-        int scd = (xr[c] ^ xr[d]) + 2*acd;
-
-        // s1c - s1d = dcd -> arr[c] - arr[d];
-        int dcd = s1c - s1d;
-
-        // 2*arr[c] = dcd + scd;
-        assert((dcd + scd) % 2 == 0 and (dcd + scd) >= 0);
-        arr[c] = (dcd + scd) >> 1;
-
-        arr[1] = xr[c]^arr[c];
-    }
-
-    for (int i = 2; i <= n; ++i){
-        arr[i] = xr[i]^arr[1];
-    }
-
-    cout<<"! "; 
-    for (int i = 1; i <= n; ++i){
-        cout<<arr[i]<<" ";
-    } 
-    cout<<el; cout.flush();
+    cout<<"! "<<r<<endl;// cout.flush();
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
+    int T = 1;
     // cin>>T;
-    while(T--){
+    while(true){
+        string str; cin>>str;
+        if(str == "end") return 0;
         solve();
+        // cin>>str;
     }
     return 0;
 }

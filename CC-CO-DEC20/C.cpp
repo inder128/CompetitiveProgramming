@@ -34,40 +34,45 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
-    }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    unordered_map <int, int> prefix;
+   	int x = 0;
+   	vi cnt(26);
+   	string str; cin >> str;
+   	for(char &c : str){
+   		if(c != '?'){
+   			cnt[c - 'a']++;
+   		}
+   		else{
+   			c = (char)('z' + 1);
+   		}
+   	}
+   	for(int i = 0; i < 26; ++i){
+   		x += (cnt[i] % 2) * (1 << i);
+   	}
 
 
-    cout << ans << el;
+   	int curr = 0;
+   	ll ans = 0;
+   	prefix[0] = 1;
+   	for(int i = 0; i < SZ(str); ++i){
+   		curr ^= (1 << (str[i] - 'a'));
+
+   		ans += prefix[curr ^ x];
+   		for(int j = 0; j < 26; ++j){
+   			ans += prefix[curr ^ ((1 << j) ^ x ^ (1 << 26))];
+   		}
+
+   		prefix[curr]++;
+   	}
+
+   	cout << ans << el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

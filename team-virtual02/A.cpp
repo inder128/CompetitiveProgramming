@@ -33,34 +33,60 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
+map <char, char> inv = {{'<', 'v'}, {'v', '>'}, {'^', '<'}, {'>', '^'}, {'.', '.'}};
+
+void rotate(vector <string>& mat, int n){
+    for (int x = 0; x < n / 2; x++) { 
+        for (int y = x; y < n - x - 1; y++) { 
+            int temp = mat[x][y]; 
+  
+            mat[x][y] = mat[y][n - 1 - x]; 
+  
+            mat[y][n - 1 - x] = mat[n - 1 - x][n - 1 - y]; 
+  
+            mat[n - 1 - x][n - 1 - y] = mat[n - 1 - y][x]; 
+  
+            mat[n - 1 - y][x] = temp; 
+        } 
+    }
+    for(int i = 0; i < n; ++i){
+    	for(int j = 0; j < n; ++j){
+    		mat[i][j] = inv[mat[i][j]];
+    	}
+    }
+}
+
+
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+    int n; cin >> n;
+
+    string op; cin >> op;
+    int r = 0;
+    for(char c : op){
+    	if(c == 'L'){
+    		r = (r + 1) % 4;
+    	}
+    	else{
+    		r = (r - 1 + 4) % 4;
+    	}
     }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+
+
+
+
+    vector <string> mat(n);
+    for(int i = 0; i < n; ++i){
+    	cin >> mat[i];
     }
 
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    for(int k = 0; k < r; ++k){
+    	rotate(mat, n);
+    }
 
-
-    cout << ans << el;
+    for(int i = 0; i < n; ++i){
+    	cout << mat[i] << el;
+    }
 }
  
 int32_t main(){

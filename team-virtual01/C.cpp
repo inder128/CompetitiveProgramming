@@ -33,42 +33,60 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
+
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    map <string, int> ind;
+    int n; cin >> n;
+    vector <double> x(n), y(n), z(n);
+    for(int i = 0; i < n; ++i){
+    	string name; cin >> name;
+    	ind[name] = i;
+    	cin >> x[i] >> y[i] >> z[i];
     }
 
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    double dist[n][n];
+
+    for(int i = 0; i < n; ++i){
+    	for(int j = 0; j < n; ++j){
+    		dist[i][j] = sqrt((x[i] - x[j]) * (x[i] - x[j]) + (y[i] - y[j]) * (y[i] - y[j]) + (z[i] - z[j]) * (z[i] - z[j]));
+    	}
+    }
 
 
-    cout << ans << el;
+    int m; cin >> m;
+
+    for(int i = 0; i < m; ++i){
+    	string name1, name2; cin >> name1 >> name2;
+    	int u = ind[name1], v = ind[name2];
+    	dist[u][v] = 0;
+    }
+
+
+    for (int k = 0; k < n; ++k) {
+	    for (int i = 0; i < n; ++i) {
+	        for (int j = 0; j < n; ++j) {
+	            dist[i][j] = min(dist[i][j], dist[i][k] + dist[k][j]); 
+	        }
+	   	}
+    }
+
+    int q; cin >> q;
+    while(q--){
+    	string name1, name2; cin >> name1 >> name2;
+    	int u = ind[name1], v = ind[name2];
+    	cout << "The distance from " << name1 << " to " << name2 << " is " << (int)(round(dist[u][v])) << " parsecs." << el;
+    }
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T = 1;
-    // cin>>T;
+    int T = 1, tc = 1;
+    cin>>T;
     while(T--){
+    	cout << "Case " << tc << ":" << el;
+    	tc++;
         solve();
     }
     return 0;

@@ -33,41 +33,36 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+int gcd(int a, int b){
+	if(b == 0) return a;
+	return gcd(b, a % b);
+}
+
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+    int n, m; cin >> n >> m;
+    vi arr(m); cin >> arr;
+    int g = 0;
+    for(int i = 0; i < m; ++i){
+    	g = gcd(arr[i], g);
     }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    if(n > g){
+    	cout << n - g << el;
     }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
+    else{ // n <= g;
+    	for(int i = n; i ; --i){
+    		if(g % i == 0){
+    			cout << n - i << el;
+    			return;
+    		}
+    	}
+    }
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

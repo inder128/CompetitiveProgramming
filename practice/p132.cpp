@@ -29,64 +29,95 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+const int N = 200043;
+const int mod = 1e9 + 7;
+int fact[N], invFact[N];
+
+int add(int x, int y){
+    x += y;
+    while(x >= mod) x -= mod;
+    while(x < 0) x += mod;
+    return x;
+}
+
+int sub(int x, int y){
+    return add(x, -y);
+}
+
+int mul(int x, int y){
+    return (x * 1ll * y) % mod;
+}
+
+int binPow(int x, int y){
+    int z = 1;
+    while(y){
+        if(y & 1) z = mul(z, x);
+        x = mul(x, x);
+        y >>= 1;
+    }
+    return z;
+}
+
+int inv(int x){
+    return binPow(x, mod - 2);
+}
+
+int divide(int x, int y){
+    return mul(x, inv(y));
+}
+
+void preCalc(){
+    fact[0] = 1;
+    for(int i = 1; i < N; i++)
+        fact[i] = mul(fact[i - 1], i);
+    invFact[N - 1] = inv(fact[N - 1]);
+    for(int i = N - 2; i >= 0; i--)
+        invFact[i] = mul(i + 1, invFact[i + 1]);
+}
+
+int C(int n, int k){
+    if(k > n) return 0;
+    return mul(fact[n], mul(invFact[k], invFact[n - k]));
+}
+
 void solve(){
-    int n; cin>>n;
-    vi curr(n), req(n);
-    vector <pi> arr;
-    for (int i = 0; i < n; ++i){
-        cin>>req[i];
-        for (int j = 0; j < req[i]; ++j){
-            int x; cin>>x;
-            arr.pb({x, i});
-        }
-        req[i] = (req[i] + 1) / 2;
+    int n, m, k; cin>>n>>m>>k;
+    
+    map <int, int> cnt;
+    for(int i = 0; i < n; ++i){
+    	int x; cin>>x;
+    	cnt[x]++;
+    }
+    cnt[5e5] = 0;
+
+    vector <pi> cntPr;
+    for(auto p : cnt){
+    	cntPr.pb(p);
     }
 
-    sort(rng(arr));
+    int r = 0, nos = 0, ans = 0;
 
-    if(n == 1 and req[0] == 1){
-        cout<<arr[1].F - arr[0].F<<" 2\n";
-        return;
+    for(int l = 0; l < SZ(cntPr) - 1; ++l){
+
+    	while(cntPr[r].F - cntPr[l].F <= k){
+    		nos += cntPr[r].S;
+    		r++;
+    	}
+
+    	ans = add(ans, sub(C(nos, m), C(nos - cntPr[l].S, m)));
+
+    	nos -= cntPr[l].S;
     }
 
-    int l = 0, cnt = 0, ans = 2e9, len = 0;
-    for(int r = 0; r < SZ(arr); ++r){
-        curr[arr[r].S]++;
-
-        if(curr[arr[r].S] == req[arr[r].S]){
-            cnt++;
-        }
-
-        while(curr[arr[l].S] > req[arr[l].S]){
-            curr[arr[l].S]--;
-            l++;
-        }
-
-        if(cnt < n) continue;
-            
-        int currAns = arr[r].F - arr[l].F;
-        if(currAns > ans) continue;
-
-        int currLen = upper_bound(rng(arr), make_pair(arr[r].F, n - 1)) - lower_bound(rng(arr), make_pair(arr[l].F, 0));
-
-        if(currAns == ans){
-            maxi(len, currLen);
-        }
-
-        if(currAns < ans){
-            ans = currAns, len = currLen;
-        }
-
-    }
-
-    cout<<ans<<" "<<len<<el;
+    cout<<ans<<el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    preCalc();
+    cin>>T;
     while(T--){
         solve();
     }

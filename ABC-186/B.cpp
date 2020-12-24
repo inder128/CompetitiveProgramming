@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -33,34 +33,93 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
+class BIT{
+public :
+	int n;
+	vi f;
+	BIT(int n){
+		this->n = n + 1000;
+		f.assign(n, 0);
+	}
+
+	int get(int pos){
+		int res = 0;
+		for (; pos >= 0; pos = (pos & (pos + 1)) - 1){
+		    res += f[pos];
+		}
+		return res;
+	}
+
+	int get(int l, int r){
+		return get(r) - get(l - 1);
+	}
+
+	void increase(int pos, int val){
+		for (; pos < SZ(f); pos = (pos | (pos + 1))) {
+			f[pos] += val;
+		}
+	}
+};
+
+
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    int n, m; cin>>n>>m;
+
+    vi up(m, n), left(n, m);
+
+    vi cols[n];
+
+    int b; cin>>b;
+
+    int l = m, d = n;
+
+    while(b--){
+    	int i, j; cin>>i>>j;
+    	i--, j--;
+
+    	cols[i].pb(j);
+
+    	mini(up[j], i);
+    	mini(left[i], j);
+
+    	if(i == 0){
+    		mini(l, j);
+    	}
+    	if(j == 0){
+    		mini(d, i);
+    	}
     }
 
     int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    for(int j = 0; j < l; ++j){
+    	ans += up[j];
+    	assert(up[j] > 0);
+    }
 
 
-    cout << ans << el;
+    BIT bit(m);
+
+    // bit.increase(2, 1);
+    // bit.increase(1, 1);
+    // int x = bit.get(1, 2);
+    // db(x);
+
+    for(int j = l; j < m; ++j){
+    	bit.increase(j, 1);
+    }
+    
+    for(int i = 0; i < d; ++i){
+    	ans += bit.get(0, left[i] - 1);
+    	for(int j : cols[i]){
+    		if(bit.get(j, j)){
+    			continue;
+    		}
+    		bit.increase(j, 1);
+    	}
+    }
+
+    cout<<ans<<el;
 }
  
 int32_t main(){

@@ -37,12 +37,26 @@ https://www.codechef.com/COOK124A/problems/COMMCHA -> CC-CO-NOV20/F.cpp
 https://codeforces.com/contest/1455/problem/C -> editorial
 https://codeforces.com/contest/1455/problem/E -> p109.cpp
 https://www.codechef.com/problems/FRCTNS -> p110.cpp / nice way to find divisors of [1, n]
+https://codeforces.com/problemset/problem/1153/E -> p120.cpp
+https://codeforces.com/contest/467/problem/E -> p121.cpp
+https://codeforces.com/contest/1286/problem/B -> p122.cpp
+https://codeforces.com/blog/entry/65136 -> Question E / Randomised Algo
+https://codeforces.com/contest/1117/problem/E -> p124.cpp
+https://codeforces.com/contest/1155/problem/E -> p127.cpp / gaussian elimination
+https://codeforces.com/contest/1147/problem/C -> editorial / game / nim
+https://codeforces.com/contest/1450/problem/D -> p131.cpp / two pointer
+https://codeforces.com/contest/1450/problem/C2 -> editorial
+https://atcoder.jp/contests/agc046/tasks/agc046_c -> p134.cpp
+https://atcoder.jp/contests/agc046/tasks/agc046_B
+https://www.codechef.com/problems/GUESSPRM -> p137.cpp
+https://codeforces.com/contest/1463/problem/E -> p138.cpp
+
 
 Todo :-
 https://codeforces.com/problemset/problem/1284/D
 https://codeforces.com/contest/678/problem/E
-Maximum xor subsequence
-Alternate houses and towers in circle (codeforces)
+Maximum xor subsequence -> reduced row echelon form;
+Alternate houses and towers in circle (code-forces)
 https://codeforces.com/contest/280/problem/C -> ATC-GRAND-049/A.cpp
 https://codeforces.com/problemset/problem/678/E
 https://codeforces.com/contest/268/problem/E -> exchange arguments

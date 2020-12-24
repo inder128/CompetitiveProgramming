@@ -18,49 +18,50 @@ template<class T> ostream& operator<<(ostream &os, vector<T> V) {
     os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
 template<class T> ostream& operator<<(ostream &os, set<T> S){
     os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-#ifndef ONLINE_JUDGE 
 #define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
-#else
-#define db(...)
-#endif
 template <typename Arg1>
-void __f(const char* name, Arg1&& arg1) { cerr<<name<<" : "<<arg1<<'\n';}
+void __f(const char* name, Arg1&& arg1) { cout<<name<<" : "<<arg1<<'\n';}
 template <typename Arg1, typename... Args>
 void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
-    cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
+    cout.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
-/*-----------------------------Code Begins--------------------------------*/
+/*-----------------------------Code begins----------------------------------*/
+
+// https://codeforces.com/contest/1117/problem/E
+// nice editorial;
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
-    }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
+    string str; cin>>str;
+    int n = SZ(str);
+    map <string, int> ind;
+    int i = 0;
+    string as, bs, cs;
+    for(char a = 'a'; a <= 'z' and i < n; ++a){
+        for(char b = 'a'; b <= 'z' and i < n; ++b){
+            for(char c = 'a'; c <= 'z' and i < n; ++c){
+                ind[{a, b, c}] = i++;
+                as.pb(a);
+                bs.pb(b);
+                cs.pb(c);
             }
         }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    }
 
+    cout<<"? "<<as<<endl;
+    cin>>as;
+    cout<<"? "<<bs<<endl;
+    cin>>bs;
+    cout<<"? "<<cs<<endl;
+    cin>>cs;
 
-    cout << ans << el;
+    string ans(n, '$');
+    for(int i = 0; i < n; ++i){
+        ans[ind[{as[i], bs[i], cs[i]}]] = str[i];
+    }
+
+    cout<<"! "<<ans<<endl;
 }
  
 int32_t main(){

@@ -1,54 +1,133 @@
-#include <bits/stdc++.h>
+
+#include <stdio.h>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <iterator>
+#include <string>
+#include <cmath>
+#include <set>
+#include <stack>
+#include <queue>
+#include <numeric>
+#include <deque>
+#include <cstring>
+#include <iterator>
+#include <map>
+#include <cstdlib>
+#include <unordered_map>
+#include <unordered_set>
+#include <iomanip>
+#include <complex>
+#include <bitset>
+#include <chrono>
+#include <random>
+#include <assert.h>
+#include <array>
+
 using namespace std;
- 
-#define rng(x) x.begin(), x.end()
-#define maxi(x, y) x = max(x, (y))
-#define mini(x, y) x = min(x, (y))
+
+template<typename M, typename N>
+istream& operator>>(istream&is, pair<M,N> & p){is >> p.first >> p.second; return is;}
+template<typename M>
+istream& operator>>(istream&is, vector<M> & v){for(auto &it:v) is >> it; return is; }
+template<typename M>
+istream& operator>>(istream&is, vector<vector<M>> & v){for(auto &it:v) is >> it; return is; }
+template<typename M, typename N>
+ostream& operator<<(ostream&os, const pair<M,N> &p){os << p.first << ' ' << p.second << '\n';return os;}
+template<typename M>
+ostream& operator<<(ostream&os, const vector<M> &v){for(auto it: v)os << it << ' ';cout << '\n';return os;}
+template<typename M>
+ostream& operator<<(ostream&os, const vector<vector<M>> &v){for(auto it: v)os << it;return os;}
+
 #define pb push_back
-#define F first
-#define S second
+#define fi first
+#define se second
+#define all(x) (x).begin(),(x).end()
+#define mn(x) *min_element((x).begin(),(x).end())
+#define mx(x) *max_element((x).begin(),(x).end())
+#define acc(x) accumulate((x).begin(),(x).end(),0ll)
+#define unique(x) sort(all(x)); x.erase(unique(all(x)),x.end());
+#define eb emplace_back
 #define el '\n'
-#define int long long
-template<typename T>
-istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
-template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
-    return os << "(" << P.F << "," << P.S << ")"; }
-template<class T> ostream& operator<<(ostream &os, vector<T> V) {
-    os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
-template<class T> ostream& operator<<(ostream &os, set<T> S){
-    os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-#define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
-template <typename Arg1>
-void __f(const char* name, Arg1&& arg1) { cout<<name<<" : "<<arg1<<'\n';}
-template <typename Arg1, typename... Args>
-void __f(const char* names, Arg1&& arg1, Args&&... args) {
-    const char* comma = strchr(names + 1, ',');
-    cout.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
-typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
- 
-/*-----------------------------Code begins----------------------------------*/
+typedef  long long  ll;
+typedef  unsigned long long  ull;
+typedef long double ld;
+typedef complex<long double> cd;
+typedef pair<ll, ll> pll;
+typedef pair<int, int> pii;
+typedef vector<ll> vll;
+typedef vector<int> vi;
+typedef vector<pii> vpi;
+typedef vector<pll> vpll;
+typedef vector<vi> vvi;
+typedef vector<vll> vvll;
+typedef vector<bool> vb;
+typedef vector<string> vs;
 
-int rand(int a, int b){
-	return a + rand() % (b - a + 1);
-}
+const ld pi=acos(-1);
+const ll inf=(ll)1e9+10;
+const int mod=1000000007;
+//const int mod=998244353;
 
-void solve(){
-    int n = rand(5, 10);
-    cout<<n<<el;
-    for (int i = 0; i < n; ++i){
-    	int x = rand(0, 100);
-    	cout<<x<<" ";
+int n, m, k;
+const int N=2e3+10;
+
+int dp[N][(1<<9)+10];
+int dont[N][N];
+
+
+int main()
+{   ios_base::sync_with_stdio(false);cin.tie(NULL);
+    int n, e, k;
+    cin >> n >> e >> k;
+    for(int i=0, u, v; i<k; i++){
+        cin >> u >> v;
+        dont[u][v]=1;
     }
-    cout<<el;
-}
- 
-int32_t main(){
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
-    int T=1;
-    // cin>>T;
-    while(T--){
-        solve();
+    e=min(e,n-1);
+    const int c=1<<(2*e+1);
+    int con=0;
+    for(int i=0; i<=e; i++){
+        con|=(1<<i);
     }
+    dp[0][con]=1;
+    for(int i=1; i<=n; i++){
+        for(int k=0; k<c; k++){
+            bool cond=true;
+            for(int p=0; p<2*e+1; p++){
+                int pos=i-1-(e-p);
+                if(pos<0 && pos>n)continue;
+                if(k>>p&1)continue;
+                else if(cond){
+                    if(pos<i-e){
+                        break;
+                    }
+                    else if(pos==i-e){
+                        if(dont[i][pos])break;
+                        (dp[i][(k|(1<<p))>>1]+=dp[i-1][k])%=mod;
+                        break;
+                    }
+                    else{
+                        if(!dont[i][pos])
+                            (dp[i][(k|(1<<p))>>1]+=dp[i-1][k])%=mod;
+                        if(!dont[i][i+e])
+                            (dp[i][(k>>1)|(1<<(2*e))]+=dp[i-1][k])%=mod;
+                    }
+                    cond=false;
+                }
+                else{
+                    if(!dont[i][pos])
+                        (dp[i][(k|(1<<p))>>1]+=dp[i-1][k])%=mod;
+                }
+            }
+        }
+    }
+    con=0;
+    for(int i=e; i>=max(0,e-n+1); i--){
+        con|=(1<<i);
+    }
+
+    cout << dp[n][con] << el;
     return 0;
 }

@@ -29,57 +29,84 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+struct node{
+	int c[2];
+};
+
+class BitTrie{
+public :
+	vector <node> trie;
+	int D;
+	BitTrie(){
+		// numbers should be less that (2 ^ D);
+		// size of trie containing all elements less than (2 ^ D) will be (2 ^ (D + 1) - 1);
+		D = 19;
+		trie.pb({{-1, -1}});
+	}
+
+	void insert(int k){
+		int curr = 0;
+		for(int i = D - 1; i >= 0; --i){
+			if(trie[curr].c[k >> i & 1] == -1){
+				trie[curr].c[k >> i & 1] = SZ(trie);
+				trie.pb({{-1, -1}});
+			}
+			curr = trie[curr].c[k >> i & 1];
+		}
+	}
+
+	int minXOR(int xr){
+		int curr = 0, num = 0;
+
+		for(int i = D - 1; i >= 0; --i){
+			if(xr >> i & 1){
+				if(trie[curr].c[1] != -1){
+					curr = trie[curr].c[1];
+					num += (1 << i);
+				}
+				else{
+					curr = trie[curr].c[0];
+				}
+			}
+			else{
+				if(trie[curr].c[0] != -1){
+					curr = trie[curr].c[0];
+				}
+				else{
+					curr = trie[curr].c[1];
+					num += (1 << i);
+				}
+			}
+		}
+
+		return num ^ xr;
+	}
+};
+
+
 void solve(){
-    int n; cin>>n;
-    vi curr(n), req(n);
-    vector <pi> arr;
-    for (int i = 0; i < n; ++i){
-        cin>>req[i];
-        for (int j = 0; j < req[i]; ++j){
-            int x; cin>>x;
-            arr.pb({x, i});
-        }
-        req[i] = (req[i] + 1) / 2;
+    int n, q; cin>>n>>q;
+
+    vector <bool> vis(1 << 19);
+    for(int i = 0; i < n; ++i){
+    	int x; cin>>x;
+    	vis[x] = true;
     }
 
-    sort(rng(arr));
-
-    if(n == 1 and req[0] == 1){
-        cout<<arr[1].F - arr[0].F<<" 2\n";
-        return;
+    BitTrie trie;
+    for(int i = 0; i < (1 << 19); ++i){
+    	// if(vis[i]) continue;
+    	trie.insert(i);
     }
 
-    int l = 0, cnt = 0, ans = 2e9, len = 0;
-    for(int r = 0; r < SZ(arr); ++r){
-        curr[arr[r].S]++;
+    int xr = 0;
+    while(q--){
+    	int txr; cin>>txr;
+    	xr ^= txr;
+    	cout<<trie.minXOR(xr)<<el;
 
-        if(curr[arr[r].S] == req[arr[r].S]){
-            cnt++;
-        }
-
-        while(curr[arr[l].S] > req[arr[l].S]){
-            curr[arr[l].S]--;
-            l++;
-        }
-
-        if(cnt < n) continue;
-            
-        int currAns = arr[r].F - arr[l].F;
-        if(currAns > ans) continue;
-
-        int currLen = upper_bound(rng(arr), make_pair(arr[r].F, n - 1)) - lower_bound(rng(arr), make_pair(arr[l].F, 0));
-
-        if(currAns == ans){
-            maxi(len, currLen);
-        }
-
-        if(currAns < ans){
-            ans = currAns, len = currLen;
-        }
-
+    	db(trie.trie.size());
     }
-
-    cout<<ans<<" "<<len<<el;
 }
  
 int32_t main(){

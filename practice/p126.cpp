@@ -18,56 +18,56 @@ template<class T> ostream& operator<<(ostream &os, vector<T> V) {
     os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
 template<class T> ostream& operator<<(ostream &os, set<T> S){
     os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-#ifndef ONLINE_JUDGE 
 #define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
-#else
-#define db(...)
-#endif
 template <typename Arg1>
-void __f(const char* name, Arg1&& arg1) { cerr<<name<<" : "<<arg1<<'\n';}
+void __f(const char* name, Arg1&& arg1) { cout<<name<<" : "<<arg1<<'\n';}
 template <typename Arg1, typename... Args>
 void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
-    cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
+    cout.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
-/*-----------------------------Code Begins--------------------------------*/
+/*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+	int n; cin>>n;
+    int l = 2, r = 2 * n - 2;
+    int mx = 0;
+    while(l != r){
+    	int m = (l + r) >> 1;
+    	cout<<1<<" "<<(m - l + 1)<<" ";
+    	cout<<1<<" ";
+    	for(int i = l; i <= m; ++i){
+    		cout<<i<<" ";
+    	}
+    	cout<<endl;
+    	int dis; cin>>dis;
+    	// db(dis, m, mx);
+    	if(dis < mx){
+    		l = m + 1;
+    	}
+    	else{
+    		mx = dis;
+    		r = m;
+    	}
     }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
-    }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
+    cout<<1<<" "<<n - 1<<" ";
+	cout<<l<<" ";
+	for(int i = 1; i <= n; ++i){
+		if(i == l) continue;
+		cout<<i<<" ";
+	}
+	cout<<endl;
+	cin>>mx;
+	cout<<-1<<" "<<mx<<endl;
 }
- 
+
+
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

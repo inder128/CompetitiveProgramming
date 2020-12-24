@@ -1,0 +1,2 @@
+http://acmicpc-pacnw.org/results.htm -> 2018 D1
+https://codeforces.com/gym/101982

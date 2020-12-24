@@ -29,57 +29,80 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+const int N = 1e3;
+vi adj[N];
+vector <bool> del(N);
+int alive, lca;
+
+void dfs(int node, int par, vi& path){
+	for(int child : adj[node]){
+		if(child == par) continue;
+		if(del[child]) continue;
+		path.pb(node);
+		dfs(child, node, path);
+		return;
+	}
+	path.pb(node);
+}
+
+
+void deleteDfs(int node){
+	alive--;
+	del[node] = true;
+	// db(node);
+	for(int child : adj[node]){
+		if(del[child]) continue;
+		if(child == lca) continue;
+		deleteDfs(child);
+	}
+}
+
+
 void solve(){
     int n; cin>>n;
-    vi curr(n), req(n);
-    vector <pi> arr;
-    for (int i = 0; i < n; ++i){
-        cin>>req[i];
-        for (int j = 0; j < req[i]; ++j){
-            int x; cin>>x;
-            arr.pb({x, i});
-        }
-        req[i] = (req[i] + 1) / 2;
+    alive = n;
+    for(int i = 0; i < n - 1; ++i){
+    	int u, v; cin>>u>>v;
+    	u--, v--;
+    	adj[u].pb(v);
+    	adj[v].pb(u);
+    }
+    while(alive > 1){
+    	for(int i = 0; i < n; ++i){
+    		if(del[i]) continue;
+    		int cnt = 0;
+    		for(int child : adj[i]){
+    			if(del[child]) continue;
+    			cnt++;
+    		}
+    		if(cnt > 1) continue;
+    		assert(cnt == 1);
+			vi path;
+			dfs(i, -1, path);
+			assert(SZ(path) >= 2);
+			cout<<"? "<<path[0] + 1<<" "<<path.back() + 1<<endl;
+			cin>>lca;
+			lca--;
+			assert(count(rng(path), lca) == 1);
+			for(int u : path){
+				if(u == lca) continue;
+				// check wrong submission;
+				if(del[u]) continue;
+				deleteDfs(u);
+			}
+			break;
+    	}
     }
 
-    sort(rng(arr));
+    assert(alive == 1);
+    // db(alive);
 
-    if(n == 1 and req[0] == 1){
-        cout<<arr[1].F - arr[0].F<<" 2\n";
-        return;
+    assert(count(del.begin(), del.begin() + n, false) == 1);
+
+    for(int i = 0; i < n; ++i){
+    	if(del[i]) continue;
+    	cout<<"! "<<i + 1<<endl;
     }
-
-    int l = 0, cnt = 0, ans = 2e9, len = 0;
-    for(int r = 0; r < SZ(arr); ++r){
-        curr[arr[r].S]++;
-
-        if(curr[arr[r].S] == req[arr[r].S]){
-            cnt++;
-        }
-
-        while(curr[arr[l].S] > req[arr[l].S]){
-            curr[arr[l].S]--;
-            l++;
-        }
-
-        if(cnt < n) continue;
-            
-        int currAns = arr[r].F - arr[l].F;
-        if(currAns > ans) continue;
-
-        int currLen = upper_bound(rng(arr), make_pair(arr[r].F, n - 1)) - lower_bound(rng(arr), make_pair(arr[l].F, 0));
-
-        if(currAns == ans){
-            maxi(len, currLen);
-        }
-
-        if(currAns < ans){
-            ans = currAns, len = currLen;
-        }
-
-    }
-
-    cout<<ans<<" "<<len<<el;
 }
  
 int32_t main(){

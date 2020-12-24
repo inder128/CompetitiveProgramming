@@ -18,49 +18,33 @@ template<class T> ostream& operator<<(ostream &os, vector<T> V) {
     os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
 template<class T> ostream& operator<<(ostream &os, set<T> S){
     os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-#ifndef ONLINE_JUDGE 
 #define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
-#else
-#define db(...)
-#endif
 template <typename Arg1>
-void __f(const char* name, Arg1&& arg1) { cerr<<name<<" : "<<arg1<<'\n';}
+void __f(const char* name, Arg1&& arg1) { cout<<name<<" : "<<arg1<<'\n';}
 template <typename Arg1, typename... Args>
 void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
-    cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
+    cout.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
-/*-----------------------------Code Begins--------------------------------*/
+/*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
-    }
+    int n, m; cin>>n>>m;
+
+    string s1, s2; cin>>s1>>s2;
+
+    vvi DP(n + 1, vi(m + 1));
 
     int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    for(int i = 1; i <= n; ++i){
+    	for(int j = 1; j <= m; ++j){
+    		DP[i][j] = max({DP[i - 1][j - 1] - 2 + 4 * (s1[i - 1] == s2[j - 1]), DP[i - 1][j] - 1, DP[i][j - 1] - 1, 0});
+    		maxi(ans, DP[i][j]);
+    	}
+    }
 
-
-    cout << ans << el;
+    cout<<ans<<el;
 }
  
 int32_t main(){

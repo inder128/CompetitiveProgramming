@@ -34,40 +34,51 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
+	int n; cin >> n;
+    int u = ceil(log2(n));
+    
+    int p = 0;
+    vector <pi> ans[n + 2];
     for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    	if(i <= 3){
+    		for(int j = 1; j <= i; ++j){
+    			ans[i].pb({j, i - 1});
+    		}
+    		ans[i].pb({i, 3}); // 2^3 == 8;
+    	}
+    	else if(i == 4){
+    		ans[i].pb({4, 3}); 
+    	}
+        else{
+        	ans[i].pb({i, p});
+        	int r = i - (1 << (p - 1));
+        	ans[i].pb({2 * r - 1, p + 1});
+        	ans[i].pb({2 * r, p + 1});
+        }
+        if((i & (i - 1)) == 0){
+        	p++;
+        }
     }
 
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
+    int pl = max(4, u + 2);
+    cout << pl << el;
+    for(int i = 0; i < pl; ++i){
+    	cout << min(n, (1 << i)) << " ";
+    }
+    cout << el;
+    for(int i = 1; i <= n; ++i){
+    	cout << SZ(ans[i]) << el;
+    	for(pi p : ans[i]){
+    		cout << p.F << " " << p.S + 1 << el;
+    	}
+    }
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

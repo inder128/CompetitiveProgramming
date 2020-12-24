@@ -33,34 +33,28 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+int x, y;
+
+double dist(int xx, int yy){
+	int sq = (xx - x) * (xx - x) + (yy - y) * (yy - y);
+	double d = sqrt(sq);
+	return d;
+}
+
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+    int x1, y1, x2, y2;
+    cin >> x >> y >> x1 >> y1 >> x2 >> y2;
+    double ans = 1e9;
+    for(int xx = x1; xx <= x2; ++xx){
+    	mini(ans, dist(xx, y1));
+    	mini(ans, dist(xx, y2));
     }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    for(int yy = y1; yy <= y2; ++yy){
+    	mini(ans, dist(x1, yy));
+    	mini(ans, dist(x2, yy));
     }
+    cout << setprecision(3) << fixed << ans << el;
 
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
 }
  
 int32_t main(){

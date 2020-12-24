@@ -29,57 +29,73 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+// https://codeforces.com/problemset/problem/1153/E
+// see submissions;
+
+int q(int x1, int y1, int x2, int y2){
+    cout<<"? "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<el; cout.flush();
+    int res; cin>>res;
+    assert(res >= 0);
+	return res % 2;
+}
+
+void print(int x1, int y1, int x2, int y2){
+	assert(q(x1, y1, x1, y1) == 1 and q(x2, y2, x2, y2) == 1);
+    cout<<"! "<<x1<<" "<<y1<<" "<<x2<<" "<<y2<<el; cout.flush();
+}
+
+
 void solve(){
     int n; cin>>n;
-    vi curr(n), req(n);
-    vector <pi> arr;
-    for (int i = 0; i < n; ++i){
-        cin>>req[i];
-        for (int j = 0; j < req[i]; ++j){
-            int x; cin>>x;
-            arr.pb({x, i});
-        }
-        req[i] = (req[i] + 1) / 2;
+
+    vi cols, rows;
+    for(int j = 1; j <= n; ++j){
+    	if(q(1, j, n, j)){
+    		cols.pb(j);
+    	}
+    }
+    for(int i = 1; i <= n; ++i){
+    	if(q(i, 1, i, n)){
+    		rows.pb(i);
+    	}
     }
 
-    sort(rng(arr));
-
-    if(n == 1 and req[0] == 1){
-        cout<<arr[1].F - arr[0].F<<" 2\n";
-        return;
+    if(SZ(rows) == 2 and SZ(cols) == 2){
+    	if(q(rows[0], cols[0], rows[0], cols[0]) == 1){
+    		print(rows[0], cols[0], rows[1], cols[1]);
+    	}
+    	else{
+    		print(rows[0], cols[1], rows[1], cols[0]);
+    	}
     }
-
-    int l = 0, cnt = 0, ans = 2e9, len = 0;
-    for(int r = 0; r < SZ(arr); ++r){
-        curr[arr[r].S]++;
-
-        if(curr[arr[r].S] == req[arr[r].S]){
-            cnt++;
-        }
-
-        while(curr[arr[l].S] > req[arr[l].S]){
-            curr[arr[l].S]--;
-            l++;
-        }
-
-        if(cnt < n) continue;
-            
-        int currAns = arr[r].F - arr[l].F;
-        if(currAns > ans) continue;
-
-        int currLen = upper_bound(rng(arr), make_pair(arr[r].F, n - 1)) - lower_bound(rng(arr), make_pair(arr[l].F, 0));
-
-        if(currAns == ans){
-            maxi(len, currLen);
-        }
-
-        if(currAns < ans){
-            ans = currAns, len = currLen;
-        }
-
+    else if(SZ(rows) == 2){
+    	assert(SZ(cols) == 0);
+    	int l = 0, r = n;
+    	while(l + 1 < r){
+    		int m = (l + r) >> 1;
+    		if(q(rows[0], 1, rows[0], m)){
+    			r = m;
+    		}
+    		else{
+    			l = m;
+    		}
+    	}
+    	print(rows[0], r, rows[1], r);
     }
-
-    cout<<ans<<" "<<len<<el;
+    else{
+    	assert(SZ(rows) == 0);
+    	int l = 0, r = n;
+    	while(l + 1 < r){
+    		int m = (l + r) >> 1;
+    		if(q(1, cols[0], m, cols[0])){
+    			r = m;
+    		}
+    		else{
+    			l = m;
+    		}
+    	}
+    	print(r, cols[0], r, cols[1]);
+    }
 }
  
 int32_t main(){

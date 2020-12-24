@@ -34,34 +34,36 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    int  x; cin >> x;
+    unordered_set <int> primes;
+    vi primesv;
+    vector <bool> isP(x, true);
+    for(int i = 2; i < x; ++i){
+    	if(isP[i] == false) continue;
+    	primes.insert(i);
+    	primesv.pb(i);
+    	for(ll j = i * 1ll * i; j < x; j += i){
+    		isP[j] = false;
+    	}
     }
 
     int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    while(x >= 4){
+    	for(int i = 0; i < SZ(primesv); ++i){
+    		if(primes.count(x - primesv[i])){
+    			x = abs(2 * primesv[i] - x);
+    			break;
+    		}
+    	}
+    	ans++;
+    }
+
+    // db(ans);
 
 
     cout << ans << el;
 }
+
  
 int32_t main(){
     ios_base::sync_with_stdio(0);

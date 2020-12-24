@@ -29,57 +29,86 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+multiset <int> diffs;
+set <int> ones, zeros;
+
+
+void insert(set <int>& vals, int i){
+	vals.insert(i);
+	auto itr = vals.lower_bound(i);
+
+	// auto itr = vals.insert(i) // will not work;
+
+	int prvi = *prev(itr), nxti = *next(itr);
+
+	diffs.erase(diffs.find(nxti - prvi));
+	diffs.insert(i - prvi);
+	diffs.insert(nxti - i);
+}
+
+void del(set <int>& vals, int i){
+	auto itr = vals.lower_bound(i);
+
+	int prvi = *prev(itr), nxti = *next(itr);
+
+	// erase after above line;
+	vals.erase(i);
+
+	diffs.erase(diffs.find(i - prvi));
+	diffs.erase(diffs.find(nxti - i));
+	diffs.insert(nxti - prvi);
+}
+
+
+
 void solve(){
-    int n; cin>>n;
-    vi curr(n), req(n);
-    vector <pi> arr;
-    for (int i = 0; i < n; ++i){
-        cin>>req[i];
-        for (int j = 0; j < req[i]; ++j){
-            int x; cin>>x;
-            arr.pb({x, i});
-        }
-        req[i] = (req[i] + 1) / 2;
+    string str; cin>>str;
+    int n = SZ(str);
+    
+    zeros.insert(-1);
+    ones.insert(-1);
+    for(int i = 0; i < n; ++i){
+    	if(str[i] == '0'){
+    		zeros.insert(i);
+    	}
+    	else{
+    		ones.insert(i);
+    	}
+    }
+    zeros.insert(n);
+    ones.insert(n);
+
+
+    int lastInd = -1;
+    for(int ind : ones){
+    	if(ind == -1) continue;
+    	diffs.insert(ind - lastInd);
+    	lastInd = ind;
+    }
+    lastInd = -1;
+    for(int ind : zeros){
+    	if(ind == -1) continue;
+    	diffs.insert(ind - lastInd);
+    	lastInd = ind;
     }
 
-    sort(rng(arr));
-
-    if(n == 1 and req[0] == 1){
-        cout<<arr[1].F - arr[0].F<<" 2\n";
-        return;
+    int m; cin>>m;
+    while(m--){
+    	int i; cin>>i; 
+    	i--;
+    	if(str[i] == '0'){
+			del(zeros, i);
+    		str[i] = '1';
+  			insert(ones, i);
+    	}
+    	else{
+    		del(ones, i);
+    		str[i] = '0';
+    		insert(zeros, i);
+    	}
+    	cout<<(*diffs.rbegin() - 1)<<" ";
     }
-
-    int l = 0, cnt = 0, ans = 2e9, len = 0;
-    for(int r = 0; r < SZ(arr); ++r){
-        curr[arr[r].S]++;
-
-        if(curr[arr[r].S] == req[arr[r].S]){
-            cnt++;
-        }
-
-        while(curr[arr[l].S] > req[arr[l].S]){
-            curr[arr[l].S]--;
-            l++;
-        }
-
-        if(cnt < n) continue;
-            
-        int currAns = arr[r].F - arr[l].F;
-        if(currAns > ans) continue;
-
-        int currLen = upper_bound(rng(arr), make_pair(arr[r].F, n - 1)) - lower_bound(rng(arr), make_pair(arr[l].F, 0));
-
-        if(currAns == ans){
-            maxi(len, currLen);
-        }
-
-        if(currAns < ans){
-            ans = currAns, len = currLen;
-        }
-
-    }
-
-    cout<<ans<<" "<<len<<el;
+    cout<<el;
 }
  
 int32_t main(){

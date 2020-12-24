@@ -33,34 +33,52 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+bool solve(){
+    int t, n; 
+    cin >> t;
+    if(t == 0){
+    	return true;
     }
-    vi perm;
+    cin >> n;
+
+    vi arr(n); cin >> arr;
+    reverse(rng(arr));
+
+    vector <vector <bool>> DP(n + 1, vector <bool>(t + 1));
+    DP[0][0] = true;
     for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    	DP[i] = DP[i - 1];
+    	for(int j = arr[i - 1]; j <= t; ++j){
+    		DP[i][j] = DP[i][j] | DP[i - 1][j - arr[i - 1]];
+    	}
     }
 
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    vi taken;
+    int currt;
+    for(int i = 0; i <= t; ++i){
+    	if(DP[n][i]){
+    		currt = i;
+    	}
+    }
+
+    for(int i = n; i ; --i){
+    	if(currt < arr[i - 1] or DP[i - 1][currt - arr[i - 1]] == false){
+    		continue;
+    	}
+    	else{
+    		taken.pb(arr[i - 1]);
+    		currt -= arr[i - 1];
+    	}
+    }
 
 
-    cout << ans << el;
+    for(int i : taken){
+    	cout << i << " ";
+    	currt += i;
+    }
+    cout << currt << el;
+
+    return false;
 }
  
 int32_t main(){
@@ -68,8 +86,10 @@ int32_t main(){
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin>>T;
-    while(T--){
-        solve();
+    while(true){
+        if(solve()){
+        	break;
+        }
     }
     return 0;
 }

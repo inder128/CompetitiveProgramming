@@ -27,51 +27,42 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code begins----------------------------------*/
 
+int rand(int l, int r){
+    return l + rand() % (r - l + 1);
+}
+
+
 void solve(){
-    int n = (1<<4);
-    vi arr(n);
-    iota(rng(arr), 1);
-    for (int i = 0; i < n; ++i){
-    	int j = rand()%n;
-    	swap(arr[i], arr[j]);
-    }
-    cout<<n<<el; cout.flush();
+    int a = rand(1, 1e9);
+
+    int q = 0;
 
     while(true){
     	string op; cin>>op;
     	if(op == "!"){
             // terminating condition;
-    		bool isWrong = false;
-    		int wr = -1;
-    		for (int i = 0; i < n; ++i){
-    			int x; cin>>x;
-    			if(x != arr[i]){
-    				isWrong = true;
-    				wr = i + 1;
-    			}
-    		}
+            int ans; cin>>ans;
+    		bool correct = (a == ans);
 
             // write anything;
-    		if(isWrong){
+    		if(correct == false){
     			cout<<"wrong!!!\n";
     		}
     		else{
-    			cout<<"right!!!\n";
+    			cout<<"right!!!"<<q<<el;
     		}
-    		cout<<arr<<el;
+    		// db(a, ans);
+            cout.flush();
     		return;
     	}
-    	int i, j; cin>>i>>j;
-		i--, j--;
-    	if(op == "AND"){
-    		cout<<(arr[i] & arr[j])<<el;
-    	}
-    	else if(op == "XOR"){
-    		cout<<(arr[i] ^ arr[j])<<el;
-    	}
-    	else{
-    		cout<<(arr[i] | arr[j])<<el;
-    	}
+        q++;
+    	int x, y; cin>>x>>y;
+		if((x % a) >= (y % a)){
+            cout<<"x"<<el;
+        }
+        else{
+            cout<<"y"<<el;
+        }
     	cout.flush();
     }
 }
@@ -79,11 +70,13 @@ void solve(){
 int main(int agg, char *argv[]){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T = 1;
+    int T = rand(2, 6);
     // cin>>T;
     srand(stoi(argv[1]));
     while(T--){
+        cout<<"start\n"; cout.flush();
         solve();
     }
+    cout<<"end\n"; cout.flush();
     return 0;
 }

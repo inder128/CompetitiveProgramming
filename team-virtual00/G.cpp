@@ -33,32 +33,38 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
-    }
 
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
+// make sure to initialise;
+const int N = 1e7;
+bitset <N + 1> isPrime;
+vi mue(N + 1);
+void mobius(){
+    isPrime.set();
+    isPrime[0] = isPrime[1] = false;
+    fill(rng(mue), 1);
+    for(int i = 2; i <= N; ++i){
+        if(isPrime[i] == false) continue;
+        mue[i] = -1;
+        for(int j = 2 * i; j <= N; j += i){
+            isPrime[j] = false;
+            if(j / i % i == 0){
+                mue[j] = 0;
             }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
+            mue[j] *= -1;
         }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
+    }
+}
 
+void solve(){
+    int l1, r1, l2, r2; 
+    cin >> l1 >> r1 >> l2 >> r2;
+
+    ll ans = 0;
+    for(int d = 1; d <= N; ++d){
+        ll fac = (r1 / d - (l1 - 1) / d);
+        fac *= (r2 / d - (l2 - 1) / d);
+        ans += mue[d] * fac;
+    }
 
     cout << ans << el;
 }
@@ -68,6 +74,7 @@ int32_t main(){
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin>>T;
+    mobius();
     while(T--){
         solve();
     }

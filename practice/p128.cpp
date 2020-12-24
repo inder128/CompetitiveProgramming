@@ -30,56 +30,74 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code begins----------------------------------*/
 
 void solve(){
-    int n; cin>>n;
-    vi curr(n), req(n);
-    vector <pi> arr;
-    for (int i = 0; i < n; ++i){
-        cin>>req[i];
-        for (int j = 0; j < req[i]; ++j){
-            int x; cin>>x;
-            arr.pb({x, i});
-        }
-        req[i] = (req[i] + 1) / 2;
-    }
+	int n, k; cin>>n>>k;
+   	string str; cin>>str;
+   	
 
-    sort(rng(arr));
+   	vi pos;
+   	for(int i = 0; i + 1 < n; ++i){
+   		if(str[i] == 'R' and str[i + 1] == 'L'){
+   			pos.pb(i);
+   		}
+   	}
 
-    if(n == 1 and req[0] == 1){
-        cout<<arr[1].F - arr[0].F<<" 2\n";
-        return;
-    }
+   	vvi moves;
+   	int tot = SZ(pos);
+   	while(tot <= n * n and SZ(pos)){
+   		// db(pos);
+   		moves.pb(pos);
+   		vi newPos;
 
-    int l = 0, cnt = 0, ans = 2e9, len = 0;
-    for(int r = 0; r < SZ(arr); ++r){
-        curr[arr[r].S]++;
+   		for(int i : pos){
+   			swap(str[i], str[i + 1]);
+   			if(i - 1 >= 0 and str[i - 1] == 'R'){
+   				newPos.pb(i - 1);
+   			}
+   			if(i + 2 <= n - 1 and str[i + 2] == 'L'){
+   				newPos.pb(i + 1);
+   			}
+   		}
 
-        if(curr[arr[r].S] == req[arr[r].S]){
-            cnt++;
-        }
+   		pos = newPos;
+   		tot += SZ(pos);
+   	}
 
-        while(curr[arr[l].S] > req[arr[l].S]){
-            curr[arr[l].S]--;
-            l++;
-        }
+   	// k not in range;
+   	if(tot > n * n or tot < k or SZ(moves) > k){
+   		cout<<-1<<el;
+   		return;
+   	}
 
-        if(cnt < n) continue;
-            
-        int currAns = arr[r].F - arr[l].F;
-        if(currAns > ans) continue;
+   	int pre = SZ(moves);
 
-        int currLen = upper_bound(rng(arr), make_pair(arr[r].F, n - 1)) - lower_bound(rng(arr), make_pair(arr[l].F, 0));
+   	vvi ans;
 
-        if(currAns == ans){
-            maxi(len, currLen);
-        }
+   	while(pre < k){
+   		if(SZ(moves.back()) == 1){
+   			ans.pb(moves.back());
+   			moves.pop_back();
+   		}
+   		else{
+   			ans.pb({moves.back().back()});
+   			moves.back().pop_back();
+   			pre++;
+   		}
+   	}
 
-        if(currAns < ans){
-            ans = currAns, len = currLen;
-        }
+   	while(SZ(moves)){
+   		ans.pb(moves.back());
+   		moves.pop_back();
+   	}
 
-    }
+   	reverse(rng(ans));
 
-    cout<<ans<<" "<<len<<el;
+   	for(vi &mv : ans){
+   		cout<<SZ(mv)<<" ";
+   		for(int &p : mv){
+   			cout<<p + 1<<" ";
+   		}
+   		cout<<el;
+   	}
 }
  
 int32_t main(){

@@ -18,49 +18,75 @@ template<class T> ostream& operator<<(ostream &os, vector<T> V) {
     os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
 template<class T> ostream& operator<<(ostream &os, set<T> S){
     os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-#ifndef ONLINE_JUDGE 
 #define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
-#else
-#define db(...)
-#endif
 template <typename Arg1>
-void __f(const char* name, Arg1&& arg1) { cerr<<name<<" : "<<arg1<<'\n';}
+void __f(const char* name, Arg1&& arg1) { cout<<name<<" : "<<arg1<<'\n';}
 template <typename Arg1, typename... Args>
 void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
-    cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
+    cout.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
-/*-----------------------------Code Begins--------------------------------*/
+/*-----------------------------Code begins----------------------------------*/
+
+
+class BIT{
+public :
+	int n;
+	vi f;
+	BIT(int n){
+		this->n = n;
+		f.assign(n, 0);
+	}
+
+	int get(int pos){
+		int res = 0;
+		for (; pos >= 0; pos = (pos & (pos + 1)) - 1){
+		    res += f[pos];
+		}
+		return res;
+	}
+
+	int get(int l, int r){
+		return get(r) - (l ? get(l - 1) : 0);
+	}
+
+	void increase(int pos, int val){
+		for (; pos < SZ(f); pos = (pos | (pos + 1))) {
+			f[pos] += val;
+		}
+	}
+};
+
 
 void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
+    int n, q; cin>>n>>q;
+    vector <BIT> bit(30, BIT(n));
+    for(int i = 0; i < n; ++i){
+    	int val; cin>>val;
+    	for(int b = 0; b < 30; ++b){
+    		bit[b].increase(i, val >> b & 1);
+    	}
     }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
+    while(q--){
+    	int op; cin>>op;
+    	if(op == 1){
+    		int i, val; cin>>i>>val;
+    		i--;
+    		for(int b = 0; b < 30; ++b){
+	    		bit[b].increase(i, val >> b & 1);
+	    	}
+    	}
+    	else{
+    		int l, r; cin>>l>>r;
+    		l--, r--;
+    		int ans = 0;
+    		for(int b = 0; b < 30; ++b){
+	    		ans += (bit[b].get(l, r) % 2) * (1 << b);
+	    	}
+	    	cout<<ans<<el;
+    	}
     }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
-        }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
 }
  
 int32_t main(){

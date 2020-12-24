@@ -31,55 +31,62 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 
 void solve(){
     int n; cin>>n;
-    vi curr(n), req(n);
-    vector <pi> arr;
-    for (int i = 0; i < n; ++i){
-        cin>>req[i];
-        for (int j = 0; j < req[i]; ++j){
-            int x; cin>>x;
-            arr.pb({x, i});
-        }
-        req[i] = (req[i] + 1) / 2;
-    }
-
+    vi arr(n); cin>>arr;
     sort(rng(arr));
 
-    if(n == 1 and req[0] == 1){
-        cout<<arr[1].F - arr[0].F<<" 2\n";
-        return;
+    if(n == 1){
+    	cout<<-1<<el;
+    	return;
     }
 
-    int l = 0, cnt = 0, ans = 2e9, len = 0;
-    for(int r = 0; r < SZ(arr); ++r){
-        curr[arr[r].S]++;
-
-        if(curr[arr[r].S] == req[arr[r].S]){
-            cnt++;
-        }
-
-        while(curr[arr[l].S] > req[arr[l].S]){
-            curr[arr[l].S]--;
-            l++;
-        }
-
-        if(cnt < n) continue;
-            
-        int currAns = arr[r].F - arr[l].F;
-        if(currAns > ans) continue;
-
-        int currLen = upper_bound(rng(arr), make_pair(arr[r].F, n - 1)) - lower_bound(rng(arr), make_pair(arr[l].F, 0));
-
-        if(currAns == ans){
-            maxi(len, currLen);
-        }
-
-        if(currAns < ans){
-            ans = currAns, len = currLen;
-        }
-
+    if(n == 2){
+    	if(arr[0] == arr[1]){
+    		cout<<1<<el;
+    		cout<<arr[0]<<el;
+    	}
+    	else{
+    		cout<<2 + ((arr[1] - arr[0]) % 2 == 0)<<el;
+    		cout<<arr[0] - (arr[1] - arr[0])<<" ";
+    		if(((arr[1] - arr[0]) % 2 == 0)){
+    			cout<<(arr[1] + arr[0]) / 2<<" ";
+    		}
+    		cout<<arr[1] + (arr[1] - arr[0])<<el;
+    	}
+    	return;
     }
 
-    cout<<ans<<" "<<len<<el;
+    // n >= 3;
+    map <int, int> freq;
+    for(int i = 1; i < n; ++i){
+    	freq[arr[i] - arr[i - 1]]++;
+    }
+
+    if(SZ(freq) == 1){
+    	if(freq.begin()->F == 0){
+    		cout<<1<<el;
+    		cout<<arr[0]<<el;
+    	}
+    	else{
+    		cout<<2<<el;
+    		cout<<arr[0] - (freq.begin()->F)<<" ";
+    		cout<<arr[n - 1] + (freq.begin()->F)<<"\n";
+    	}
+    	return;
+    }
+
+    if(SZ(freq) == 2){
+    	if(freq.rbegin()->S == 1 and freq.rbegin()->F == 2 * freq.begin()->F){
+    		cout<<1<<el;
+    		for(int i = 1; i < n; ++i){
+    			if(arr[i] - arr[i - 1] == freq.begin()->F) continue;
+    			cout<<(arr[i] + arr[i - 1]) / 2<<" ";
+    			break;
+    		}
+    		return;
+    	}
+    }
+
+    cout<<0<<el;
 }
  
 int32_t main(){
