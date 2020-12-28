@@ -1,7 +1,7 @@
 # change sublime build to fastStressTestCppBuild
 # command + shift + b -> to run;
 
-for((i = 1; i < 10; ++i)); do
+for((i = 1;; ++i)); do
     echo $i
     ./testGen $i > input
     ./sol < input > output

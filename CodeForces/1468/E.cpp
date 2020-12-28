@@ -31,33 +31,51 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 
-/*-----------------------------Code begins----------------------------------*/
+/*-----------------------------Code Begins--------------------------------*/
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
+double dist(double x1, double y1, double x2, double y2){
+	double dx = x2 - x1, dy = y2 - y1;
+	return sqrt(dx * dx + dy * dy);
 }
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 10);
-    int k = rand(1, n);
-    cout << n << " " << k << el;
+const double eps = 1e-9;
 
-    string str;
-    for(int i = 0; i < n; ++i){
-        str.pb('0' + rand() % 2);
-    }
-    cout << str << el;
+void solve(){
+	int n, h; cin >> n >> h;
+	vector <pi> xy(n);
+	for(int i = 0; i < n; ++i){
+		cin >> xy[i].F >> xy[i].S;
+	}
+	vector <double> x(n), y(n);
+	x[0] = 0, y[0] = -h;
+	for(int i = 1, j = n - 2; i < n; ++i, --j){
+		x[i] = x[i - 1] + (xy[j + 1].F - xy[j].F);
+		y[i] = y[i - 1] + (xy[j].S - xy[j + 1].S);
+	}
+
+	double m = y[1] / x[1];
+	double ans = dist(x[0], y[0], x[1], y[1]);
+	for(int i = 1; i < n - 1; ++i){
+		maxi(m, y[i] / x[i]);
+		if(abs(m * x[i] - y[i]) < eps and abs((y[i + 1] - y[i]) / (x[i + 1] - x[i]) - m) < eps){
+			ans += dist(x[i], y[i], x[i + 1], y[i + 1]);
+		}
+		else if(m * x[i + 1] < y[i + 1]){
+			double mx = (x[i] * y[i + 1] - x[i + 1] * y[i]) / (y[i + 1] - y[i] - m * (x[i + 1] - x[i]));
+			ans += dist(mx, m * mx, x[i + 1], y[i + 1]);
+		}
+	}
+
+	cout << setprecision(12) << fixed << ans << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

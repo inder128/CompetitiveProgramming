@@ -33,76 +33,102 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+const int mod = 1e9 + 7;
+
+void addSelf(int& x, int y){
+    x += y;
+    while(x >= mod) x -= mod;
+    while(x < 0) x += mod;
+}
+
+void subSelf(int& x, int y){
+    addSelf(x, -y);
+}
+
+void multSelf(int& x, int y){
+    x = x * 1ll * y % mod;
+}
+
+
+int mxC = 16;
+map <array <int, 4>, int> DP;
+
+int get(array <int, 4> state){
+	if(DP.count(state)){
+		return DP[state];
+	}
+
+	int ans, currLast = state[3];
+
+	if(state[currLast] == 0){
+		ans = 0;
+	}
+	else if(state[0] + state[1] + state[2] == 1){
+		ans = 1;
+	}
+	else{
+		ans = 0;
+		auto newState = state;
+		newState[currLast]--;
+		for(int last = 0; last < 3; ++last){
+			if(last == currLast){
+				continue;
+			}
+			newState[3] = last;
+			addSelf(ans, get(newState));
+		}
+	}
+
+	return DP[state] = ans;
+}
+
+
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
-
-    vi onesCnt(n);
+    int n, t; cin >> n >> t;
+    vi dur(n), ty(n);
     for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
-    }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
+    	cin >> dur[i] >> ty[i];
     }
 
-
-    int ln = min(20, k);
-
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
+    vi fact(16);
+    fact[0] = 1;
+    for(int i = 1; i < 16; ++i){
+    	fact[i] = i;
+    	multSelf(fact[i], fact[i - 1]);
     }
 
-    cout << "NO" << el;
-    return;
+    int ans = 0;
+    for(int msk = 0; msk < (1 << n); ++msk){
+    	int ct = 0;
+    	vi cnt(4);
+    	for(int i = 0; i < n; ++i){
+    		if(msk & (1 << i)){
+    			ct += dur[i];
+    			cnt[ty[i]]++;
+    		}
+    	}
+    	if(ct == t){
+    		int f = 1;
+    		multSelf(f, fact[cnt[1]]);
+    		multSelf(f, fact[cnt[2]]);
+    		multSelf(f, fact[cnt[3]]);
+    		for(int last = 0; last < 3; ++last){
+    			int nw = get({cnt[1], cnt[2], cnt[3], last});
+    			multSelf(nw, f);
+    			addSelf(ans, nw);
+    		}
+    		// db(msk);
+    	}
+    }
+
+    cout << ans << el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }

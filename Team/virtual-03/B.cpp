@@ -33,76 +33,44 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+int get(vi& curr){
+	map <int, int> cnt;
+	int mx = 0;
+	for(int i : curr){
+		cnt[i]++;
+		maxi(mx, cnt[i]);
+	}
+	return SZ(curr) - mx;
+}
+
+
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
-
-    vi onesCnt(n);
+    int mxl = 0;
+    int n, q; cin >> n >> q;
+    vi arr(n); cin >> arr;
+    map <int, int> last;
     for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
+    	maxi(last[arr[i]], i);
     }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
+    vi curr;
+    int ans = 0;
+    for(int i = 0; i < n; ++i){
+    	if(i > mxl){
+    		ans += get(curr);
+    		curr.clear();
+    	}
+    	curr.pb(arr[i]);
+    	maxi(mxl, last[arr[i]]);
     }
-
-
-    int ln = min(20, k);
-
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
-    }
-
-    cout << "NO" << el;
-    return;
+    ans += get(curr);
+    cout << ans << el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }

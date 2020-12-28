@@ -34,68 +34,33 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
-
-    vi onesCnt(n);
-    for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
+    int n, k, m; cin >> n >> k >> m;
+    set <int> arr;
+    for(int i = 0; i < m; ++i){
+    	int x; cin >> x;
+    	arr.insert(x);
     }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
+    k = (k - 1) / 2;
+    int l = 0, r = n - m;
+    for(int i = 1; i <= n; ++i){
+    	if(arr.count(i) == 0){
+    		l++, r--;
+    	}
+    	else{
+    		if(l % k or r % k){
+    			continue;
+    		}
+    		if(l == 0 or r == 0){
+    			continue;
+    		}
+    		int lc = l / k, rc = r / k;
+    		if((lc % 2) == (rc % 2)){
+    			cout << "YES" << el;
+    			return;
+    		}
+    	}
     }
-
-
-    int ln = min(20, k);
-
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
-    }
-
     cout << "NO" << el;
-    return;
 }
  
 int32_t main(){

@@ -34,68 +34,44 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
-
-    vi onesCnt(n);
-    for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
-    }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
+    int m, n, a, b; cin >> m >> n >> a >> b;
+    if(a > b){
+    	int d = a - b;
+    	b = m - (b - 1);
+    	a = b - d;
     }
 
+    vi arr(n); cin >> arr;	
+    sort(rng(arr)); 
 
-    int ln = min(20, k);
+    int l = 0, r = n + 1;
+    while(l + 1 < r){
+    	int m = (l + r) >> 1;
+    	bool sol = true;
+    	if(b - m > a){
 
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
+    	}
+    	else{
+    		sol = false;
+    	}
+    	for(int i = m - 1, s = 1; i >= 0 and sol; --i, s++){
+	    	if(arr[i] + s <= b - 1){
+	    		
+	    	}
+	    	else{
+	    		sol = false;
+	    	}
+	    }
+	    // db(m, sol);
+	    if(sol){
+	    	l = m;
+	    }
+	    else{
+	    	r = m;
+	    }
     }
 
-    cout << "NO" << el;
-    return;
+    cout << l << el;
 }
  
 int32_t main(){

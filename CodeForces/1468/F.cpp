@@ -34,68 +34,76 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
-
-    vi onesCnt(n);
+    int n; cin >> n;
+    vi arr[n], all;
     for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
-    }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
+    	int k; cin >> k;
+    	for(int j = 0; j < k; ++j){
+    		int x; cin >> x;
+    		arr[i].pb(x);
+    		all.pb(x);
+    	}
     }
 
+    sort(rng(all));
+    all.resize(unique(rng(all)) - all.begin());
+    int m = SZ(all);
 
-    int ln = min(20, k);
-
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
+    unordered_set <int> adj[n + m];
+    for(int u = 0; u < n; ++u){
+    	for(int j = 0; j < SZ(arr[u]); ++j){
+    		int v = lower_bound(rng(all), arr[u][j]) - all.begin() + n;
+    		adj[v].insert(u);
+    		adj[u].insert(v);
+    	}
     }
 
-    cout << "NO" << el;
-    return;
+    set <pi, greater <pi>> order;
+ 	for(int i = 0; i < n + m; ++i){
+ 		order.insert({SZ(adj[i]), i});
+ 	}
+
+ 	while(SZ(order)){
+ 		int u = order.begin()->S; order.erase(order.begin());
+
+ 		unordered_map <int, int> cameFrom;
+ 		int x, y, v = -1;
+ 		for(int child : adj[u]){
+ 			for(int neig : adj[child]){
+ 				if(neig == u) continue;
+ 				if(cameFrom.count(neig)){
+ 					v = neig;
+ 					x = child;
+ 					y = cameFrom[neig];
+ 				}
+ 				if(v != -1){
+ 					break;
+ 				}
+ 				cameFrom[neig] = child;
+ 			}
+ 			if(v != -1){
+ 				break;
+ 			}
+ 		}
+
+ 		if(v != -1){
+ 			if(u < n){
+ 				cout << u + 1 << " " << v + 1 << el;
+ 			}
+ 			else{
+ 				cout << x + 1 << " " << y + 1 << el;
+ 			}
+ 			return;
+ 		}
+
+ 		for(int child : adj[u]){
+ 			order.erase({SZ(adj[child]), child});
+ 			adj[child].erase(u);
+ 			order.insert({SZ(adj[child]), child});
+ 		}
+ 	}
+
+ 	cout << -1 << el;
 }
  
 int32_t main(){

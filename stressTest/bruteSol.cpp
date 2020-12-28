@@ -1,75 +1,47 @@
 #include <bits/stdc++.h>
-using namespace std;
- 
-#define rng(x) x.begin(), x.end()
-#define maxi(x, y) x = max(x, (y))
-#define mini(x, y) x = min(x, (y))
-#define pb push_back
-#define F first
-#define S second
-#define el '\n'
-#define ll long long
-#define SZ(x) ((int)(x).size()) 
-template<typename T>
-istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
-template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
-    return os << "(" << P.F << "," << P.S << ")"; }
-template<class T> ostream& operator<<(ostream &os, vector<T> V) {
-    os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
-template<class T> ostream& operator<<(ostream &os, set<T> S){
-    os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-#ifndef ONLINE_JUDGE 
-#define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
-#else
-#define db(...)
-#endif
-template <typename Arg1>
-void __f(const char* name, Arg1&& arg1) { cerr<<name<<" : "<<arg1<<'\n';}
-template <typename Arg1, typename... Args>
-void __f(const char* names, Arg1&& arg1, Args&&... args) {
-    const char* comma = strchr(names + 1, ',');
-    cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
-typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
- 
-/*-----------------------------Code Begins--------------------------------*/
-
-void solve(){
-    int n, e, k; cin >> n >> e >> k;
-    set <pi> forbidden;
-    for(int i = 0; i < k; ++i){
-        int u, v; cin >> u >> v;
-        forbidden.insert({u, v});
-    }
-    vi perm;
-    for(int i = 1; i <= n; ++i){
-        perm.pb(i);
-    }
-
-    int ans = 0;
-    do{
-        bool valid = true;
-        for(int i = 1; i <= n; ++i){
-            if(abs(i - perm[i - 1]) > e){
-                valid = false;
-            }
-            if(forbidden.count({i, perm[i - 1]})){
-                valid = false;
-            }
+using i64 = long long;
+using u64 = unsigned long long;
+using u32 = unsigned;
+int main() {
+    std::ios::sync_with_stdio(false);
+    std::cin.tie(nullptr);
+    int t;
+    std::cin >> t;
+    while (t--) {
+        int n, k;
+        std::string s;
+        std::cin >> n >> k >> s;
+        int lg = std::log2(n) + 1;
+        std::string t(std::max(0, k - lg), '0');
+        int l = k - t.length();
+        int mask = 0, cnt = 0;
+        for (int i = 0; i < k - l; ++i) {
+            cnt += s[i] - '0';
         }
-        ans += valid;
-    }while(next_permutation(rng(perm)));
-
-
-    cout << ans << el;
-}
- 
-int32_t main(){
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
-    int T = 1;
-    // cin>>T;
-    while(T--){
-        solve();
+        for (int i = k - l; i < k - 1; ++i) {
+            mask = (mask << 1) | (s[i] - '0');
+        }
+        std::vector<bool> bad(1 << l);
+        for (int i = k - 1; i < n; ++i) {
+            mask = ((mask << 1) | (s[i] - '0')) & ((1 << l) - 1);
+            if (cnt == k - l) {
+                bad[((1 << l) - 1) ^ mask] = true;
+            }
+            cnt = cnt - (s[i - k + 1] - '0') + (s[i - l + 1] - '0');
+        }
+        int ans = 0;
+        while (ans < (1 << l) && bad[ans]) {
+            ++ans;
+        }
+        if (ans == (1 << l)) {
+            std::cout << "NO\n";
+            continue;
+        }
+        for (int i = l - 1; i >= 0; --i) {
+            t += '0' + (ans >> i & 1);
+        }
+        std::cout << "YES\n";
+        std::cout << t << "\n";
     }
     return 0;
 }

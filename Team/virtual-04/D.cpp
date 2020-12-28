@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -33,76 +33,72 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
+#define cnt first
+#define seglenbyksum second
+
+const int N = 2e5;
+int n, k;
+vi adj[N];
+vector <vector <pi>> DP(N, vector <pi>(5));
+int ans = 0;
+
+
+void add(vector <pi>& par, vector <pi>& child){
+	for(int j = 0; j < k; ++j){
+		int i = (j + 1) % k;
+		par[i].cnt += child[j].cnt;
+		par[i].seglenbyksum += child[j].seglenbyksum + (j == k - 1 ? child[j].cnt : 0);
+	}
+}
+
+
+int compute(vector <pi>& par, vector <pi>& child){
+	int ans = 0;
+	for(int i = 0; i < k; ++i){
+		for(int j = 0; j < k; ++j){
+			int ci = par[i].cnt, cj = child[j].cnt;
+			ans += ((i + j + 1 + k - 1) / k * (ci * cj)) + child[j].seglenbyksum * ci + par[i].seglenbyksum * cj;
+		}
+	}
+	return ans;
+}
+
+
+void dfs(int node = 0, int par = -1){
+	DP[node][0].cnt = 1;
+
+	for(int child : adj[node]){
+		if(child == par){
+			continue;
+		}
+		dfs(child, node);
+
+		ans += compute(DP[node], DP[child]);
+
+		// add to DP[cnt];
+		add(DP[node], DP[child]);
+	}
+}
+
+
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
-
-    vi onesCnt(n);
-    for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
+    cin >> n >> k;
+    for(int i = 0; i < n - 1; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	adj[u].pb(v);
+    	adj[v].pb(u);
     }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
-    }
-
-
-    int ln = min(20, k);
-
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
-    }
-
-    cout << "NO" << el;
-    return;
+    dfs();
+    cout << ans << el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }

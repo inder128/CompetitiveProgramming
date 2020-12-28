@@ -34,75 +34,44 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
+    int q; cin >> q;
+    vector <double> pre, arr;
+    while(q--){
+    	int op; cin >> op;
+    	if(op == 1){
+    		double x; cin >> x;
+	    	if(SZ(arr) == 0){
+	    		pre.pb(x);
+	    		arr.pb(x);
+	    	} 
+	    	else{
+	    		arr.pb(x);
+	    		pre.pb(pre.back() + x);
+	    	}
+    	}
+    	else{
+    		int l = 0, r = SZ(arr);
+	    	while(l + 1 < r){
+	    		int m = (l + r) >> 1;
+	    		if(((m ? pre[m - 1] : 0) + arr.back()) / (m + 1) <= arr[m]){
+	    			r = m;
+	    		}
+	    		else{
+	    			l = m;
+	    		}
+	    	}
 
-    vi onesCnt(n);
-    for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
+	    	cout << arr.back() - ((r ? pre[r - 1] : 0) + arr.back()) / (r + 1) << el;
+    	}
     }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
-    }
-
-
-    int ln = min(20, k);
-
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
-    }
-
-    cout << "NO" << el;
-    return;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    cin>>T;
+    // cin>>T;
+    cout << setprecision(12) << fixed;
     while(T--){
         solve();
     }

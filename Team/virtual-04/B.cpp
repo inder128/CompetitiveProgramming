@@ -33,76 +33,72 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+set <int> badPrimes;
+
+
+int get(int g){
+	int ans = 0;
+	for(int i = 2; i * i <= g; ++i){
+		while(g % i == 0){
+			g /= i;
+			if(badPrimes.count(i)){
+				ans--;
+			}
+			else{
+				ans++;
+			}
+		}		
+	}
+	if(g > 1){
+		if(badPrimes.count(g)){
+			ans--;
+		}
+		else{
+			ans++;
+		}
+	}
+	return ans;
+}
+
+
+int gcd(int a, int b){
+	if(b == 0) return a;
+	return gcd(b, a % b);
+}
+
+
 void solve(){
-    int n, k; cin >> n >> k;
-    string str; cin >> str;
+    int n, m; cin >> n >> m;
+    vi arr(n); cin >> arr;
+    for(int i = 0; i < m; ++i){
+    	int x; cin >> x;
+    	badPrimes.insert(x);
+    }
+    for(int i = n - 1; i >= 0; --i){
+    	int g = 0;
+    	for(int j = 0; j <= i; ++j){
+    		g = gcd(g, arr[j]);
+    	}
+    	if(get(g) < 0){
+    		for(int j = 0; j <= i; ++j){
+    			arr[j] /= g;
+    		}
+    	}
+    }
 
-    vi onesCnt(n);
+    int ans = 0;
     for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
-    }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
-
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
+    	ans += get(arr[i]);
     }
 
-
-    int ln = min(20, k);
-
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
-    }
-
-    cout << "NO" << el;
-    return;
+    cout << ans << el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }

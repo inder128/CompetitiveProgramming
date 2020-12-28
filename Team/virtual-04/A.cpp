@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -33,76 +33,90 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+const int mod = 1e6 + 3;
+
+int add(int x, int y){
+    x += y;
+    while(x >= mod) x -= mod;
+    while(x < 0) x += mod;
+    return x;
+}
+
+int sub(int x, int y){
+    return add(x, -y);
+}
+
+int mul(int x, int y){
+    return (x * 1ll * y) % mod;
+}
+
+int binPow(int x, int y){
+    int z = 1;
+    while(y){
+        if(y & 1) z = mul(z, x);
+        x = mul(x, x);
+        y >>= 1;
+    }
+    return z;
+}
+
+int inv(int x){
+    return binPow(x, mod - 2);
+}
+
+int divide(int x, int y){
+    return mul(x, inv(y));
+}
+
 void solve(){
     int n, k; cin >> n >> k;
-    string str; cin >> str;
 
-    vi onesCnt(n);
-    for(int i = 0; i < n; ++i){
-        if(i == 0){
-            onesCnt[i] = (str[i] == '1');
-        }
-        else{
-            onesCnt[i] = onesCnt[i - 1] + (str[i] == '1');
-        }
+    if(n <= 60){
+    	if(k > (1ll << n)){
+    		cout << 1 << " " << 1 << el;
+	    	return;
+    	}
     }
-    auto check = [&](int l, int r){
-        if(l > r){
-            return false;
-        }
-        else{
-            return (onesCnt[r] - (l ? onesCnt[l - 1] : 0)) > 0;
-        }
-    };
+    // k <= n;
 
-
-    set <int> pre;
-    for(int r = k - 1, l = 0; r < n; ++l, ++r){
-        if(check(l, max(r - 20 + 1, l) - 1)){
-            continue;
-        }
-        int num = 0;
-        for(int m = r, i = 0; m >= max(r - 20 + 1, l); --m, ++i){
-            if(str[m] == '0'){
-                num += (1 << i);
-            }
-        }
-        pre.insert(num);
-        // db(num);
+    int cp = n % (mod - 1);
+    int f = 2;
+    while((k - 1) / f){
+    	cp = (cp + (k - 1) / f) % (mod - 1);
+    	f *= 2;
+    	db(f);
     }
 
+    int lp = ((n % (mod - 1)) * (k % (mod - 1)) - cp + mod - 1) % (mod - 1);
+    db(lp);
+    int b = binPow(2, lp);
 
-    int ln = min(20, k);
 
-    for(int i = 0; i < (1 << ln); ++i){
-        if(pre.count(i)){
-            continue;
-        }
-        cout << "YES" << el;
-        for(int j = 0; j < (k - ln); ++j){
-            cout << "0";
-        }
-        for(int j = ln - 1; j >= 0; --j){
-            if(i & (1 << j)){
-                cout << "1";
-            }
-            else{
-                cout << "0";
-            }
-        }
-        cout << el;
-        return;
+    int a = b;
+    if(k >= mod){
+    	cout << a << " " << b << el;
     }
-
-    cout << "NO" << el;
-    return;
+    else{
+    	int ml = 1;
+    	for(int i = 1; i <= (k - 1); ++i){
+    		int pp = 0;
+    		int j = i;
+    		while(j % 2 == 0){
+    			j /= 2;
+    			pp++;
+    		}
+	    	ml = mul(ml, sub(binPow(2, n - pp), j));
+	    }
+	    a = sub(a, ml);
+	    cout << a << " " << b << el;	
+    }   
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    cin>>T;
+    // cin>>T;
     while(T--){
         solve();
     }

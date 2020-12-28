@@ -7,5 +7,18 @@ for((i = 1; ; ++i)); do
     ./testGen $i > input
     ./sol < input > output1
     ./bruteSol < input > output2
-    diff -w output1 output2 || break
+    if !(diff -w output1 output2)
+    then
+    	echo "\nFailed on Test No. $i :( \n"
+    	echo "Failed Input : "
+    	cat input
+    	echo ""
+    	echo "Correct Output : "
+    	cat output2
+    	echo ""
+    	echo "Your Output : "
+    	cat output1
+    	echo ""
+    	break
+    fi
 done
