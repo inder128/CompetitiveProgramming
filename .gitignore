@@ -1,4 +1,2 @@
--*
--!*.*
--*.cpp_tests
--*.DS_Store
+.DS_Store
+.cpp__tests
