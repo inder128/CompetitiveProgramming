@@ -30,30 +30,82 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int N = 5e3;
+vi adj[N];
+vector <char> status(N);
+int root, in;
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
+
+bool dfs(int node){
+	status[node] = 'g';
+	for(int child : adj[node]){
+		if(status[child] == 'b'){
+			continue;
+		}
+		else if(status[child] == 'g'){
+			if(child == root){
+				if(in){
+					return false;
+				}
+				else{
+					in = 1;
+				}
+			}
+			else{
+				return false;
+			}
+		}
+		else if(dfs(child) == false){
+			return false;
+		}
+	}
+	status[node] = 'b';
+	return true;
 }
 
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+
+void solve(){
+    int n, m; cin >> n >> m;
+    for(int i = 0; i < m; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	adj[u].pb(v);
     }
-    cout << el;
+    for(int r = 0; r < n; ++r){
+    	root = r, in = 0;
+    	for(int i = 0; i < n; ++i){
+    		status[i] = 'w';
+    	}
+
+    	bool sol = true;
+    	for(int i = 0; i < n and sol; ++i){
+    		int j = (root + i) % n;
+    		if(status[j] == 'b'){
+    			continue;
+    		}
+    		sol = dfs(j);
+    	}
+    	if(sol == false){
+    		continue;
+    	}
+    	else{
+    		cout << "YES" << el;
+    		return;
+    	}
+    }
+    cout << "NO" << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

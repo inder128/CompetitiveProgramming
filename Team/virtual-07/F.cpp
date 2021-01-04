@@ -30,30 +30,61 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
+void solve(){
+    int n, m; cin >> n >> m;
+    set <pi> edges;
+    for(int i = 0; i < m; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	edges.insert({u, v});
+    }
+ 
+    set <int> rem;
     for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+        rem.insert(i);
+    }
+
+    vi ans;
+    do{
+        int csz = 0;
+        queue <int> Q;
+        Q.push(*rem.begin());
+        rem.erase(rem.begin());
+        while(SZ(Q)){
+            int node = Q.front(); Q.pop();
+            csz++;
+            for(auto itr = rem.begin(); itr != rem.end(); itr = rem.upper_bound(*itr)){
+                int child = *itr;
+                if(edges.count({node, child}) or edges.count({child, node})){
+                    continue;
+                }
+                rem.erase(*itr);
+                Q.push(child);
+            }
+        }
+        ans.pb(csz);
+    }while(SZ(rem));
+
+
+    sort(rng(ans));
+    cout << SZ(ans) << el;
+    for(int s : ans){
+    	cout << s << " ";
     }
     cout << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

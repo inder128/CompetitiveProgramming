@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,30 +30,63 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int N = 2e5 + 1;
+vector <pi> adj[N];
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
+void solve(){
+    int n, m; cin >> n >> m;
+    for(int i = 0; i < m; ++i){
+    	int u, v, w; cin >> u >> v >> w;
+    	w *= 2;
+    	adj[u].pb({v, w});
+    	adj[v].pb({u, w});
+    }
+    for(int i = 1; i <= n; ++i){
+    	int w; cin >> w;
+    	adj[0].pb({i, w});
+    	adj[i].pb({0, w});
+    }
 
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+    priority_queue <pi, vector<pi>, greater<pi>> PQ;
+    PQ.push({0, 0});
+    vector <bool> vis(n + 1);
+    vi dist(N + 1, 1e18);
+    while(SZ(PQ)){
+    	pi tp = PQ.top(); PQ.pop();
+    	int node = tp.S;
+    	if(vis[node]){
+    		continue;
+    	}
+    	vis[node] = true;
+    	dist[node] = tp.F;
+    	for(pi childPr : adj[node]){
+    		int child = childPr.F;
+    		if(vis[child]){
+    			continue;
+    		}
+    		if(dist[child] > dist[node] + childPr.S){
+    			dist[child] = dist[node] + childPr.S;
+    			PQ.push({dist[child], child});
+    		}
+    	}
+    }
+
+    for(int i = 1; i <= n; ++i){
+    	cout << dist[i] << " ";
     }
     cout << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

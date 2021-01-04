@@ -30,30 +30,57 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+void solve(){
+	int n, p; cin >> n >> p;
+	vi nums(n); cin >> nums;
+	sort(rng(nums));
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
+    int mn = 0, mx = nums.back();
     for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+    	maxi(mn, nums[i] - i);
     }
-    cout << el;
+
+    set <int> invalids;
+    for(int i = 0; i < n; ++i){
+
+    	int l = n - max(0, nums[i] - mn), r = n;
+    	l -= (n - 1 - i), r -= (n - 1 - i);
+
+    	if(r < p or l > p){
+    		continue;
+    	}
+
+    	if(r == p){
+    		mini(mx, mn + (p - l));
+    	}
+    	else{
+    		invalids.insert(mn + (p - l));
+    	}
+    }
+
+    vi ans;
+   	for(int i = mn; i < mx; ++i){
+   		if(invalids.count(i) == 0){
+   			ans.pb(i);
+   		}
+   	}
+   	cout << SZ(ans) << el;
+   	for(int i : ans){
+   		cout << i << " ";
+   	}
+   	cout << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

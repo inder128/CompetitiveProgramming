@@ -30,30 +30,73 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int N = 3e5;
+vector <bool> vis(N);
+vector <pi> adj[N];
+vector <bool> taken(N);
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
 
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+void solve(){
+    int n, k, d; cin >> n >> k >> d;
+
+    set <int> heads;
+    for(int i = 0; i < k; ++i){
+    	int x; cin >> x;
+    	x--;
+    	heads.insert(x);
+    }
+
+    queue <int> Q;
+
+    for(int x : heads){
+    	Q.push(x);
+    	vis[x] = true;
+    }
+
+    for(int i = 0; i < n - 1; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	adj[u].pb({v, i});
+    	adj[v].pb({u, i});
+    }
+
+    while(SZ(Q)){
+    	int node = Q.front(); Q.pop();
+    	for(auto cpr : adj[node]){
+    		if(vis[cpr.F]){
+    			continue;
+    		}
+    		Q.push(cpr.F);
+    		vis[cpr.F] = true;
+    		taken[cpr.S] = true; 
+    	}
+    }
+
+    vi ans;
+    for(int i = 0; i < n - 1; ++i){
+    	if(taken[i] == false){
+    		ans.pb(i);
+    	}
+    }
+
+    cout << SZ(ans) << el;
+    for(int i : ans){
+    	cout << i + 1 << " ";
     }
     cout << el;
+
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

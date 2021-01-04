@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,30 +30,77 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int N = 2e5;
+vi adj[N], par(N), weight(N);
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
+
+void dfs(int node = 0, int p = -1){
+	par[node] = p;
+	for(int child : adj[node]){
+		if(child == p){
+			continue;
+		}
+		weight[child] += weight[node];
+		dfs(child, node);
+	}
 }
 
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+
+void solve(){
+    int n; cin >> n;
+    vector <pi> edges(n - 1);
+    for(int i = 0; i < n - 1; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	adj[u].pb(v);
+    	adj[v].pb(u);
+    	edges[i] = {u, v};
     }
-    cout << el;
+
+    dfs();
+
+    int q; cin >> q;
+    while(q--){
+    	int op, i, inc; cin >> op >> i >> inc;
+    	i--;
+    	if(op == 1){ // a - b -> a ++;
+    		if(par[edges[i].F] == edges[i].S){ // b is par of a;
+    			weight[edges[i].F] += inc;
+    		}
+    		else{
+    			weight[0] += inc;
+    			weight[edges[i].S] -= inc;
+    		}
+    	}
+    	else{
+    		if(par[edges[i].S] == edges[i].F){ // a is par of b;
+    			weight[edges[i].S] += inc;
+    		}
+    		else{
+    			weight[0] += inc;
+    			weight[edges[i].F] -= inc;
+    		}
+    	}
+    }
+
+
+    dfs();
+
+	for(int i = 0; i < n; ++i){
+		cout << weight[i] << el;
+	}
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

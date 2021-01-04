@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,30 +30,49 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
-
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
+void solve(){
+    int n; cin >> n;
+    vi v(n), d(n), p(n);
     for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+    	cin >> v[i] >> d[i] >> p[i];
+    }
+    vector <bool> del(n);
+    vi ans;
+    for(int i = 0; i < n; ++i){
+    	if(del[i]){
+    		continue;
+    	}
+    	ans.pb(i);
+    	int dec = v[i], con = 0;
+    	for(int j = i + 1; j < n; ++j){
+    		if(del[j]){
+    			continue;
+    		}
+    		p[j] -= dec + con;
+    		if(p[j] < 0){
+    			con += d[j];
+    			del[j] = true;
+    		}
+    		dec = max(0ll, dec - 1);
+    	}
+    }
+    cout << SZ(ans) << el;
+    for(int i : ans){
+    	cout << i + 1 << " ";
     }
     cout << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

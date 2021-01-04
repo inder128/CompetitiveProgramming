@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,30 +30,55 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
-
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+void solve(){
+    int y, x; cin >> y >> x;
+    vi _c(7);
+    for(int i = 1; i <= 6; ++i){
+    	cin >> _c[i];
     }
-    cout << el;
+    vi c = _c;
+    mini(c[2], _c[3] + _c[1]);
+    mini(c[6], _c[5] + _c[1]);
+    mini(c[3], _c[2] + _c[4]);
+    mini(c[5], _c[6] + _c[4]);
+
+    int ans;
+
+    if(y >= 0){
+    	if(x >= 0){ // 1st
+    		int d = min(x, y);
+    		ans = min(d * c[1] + (x - d) * c[2] + (y - d) * c[6], x * c[2] + y * c[6]);
+    	}
+    	else{
+    		x *= -1;
+    		ans = x * c[5] + y * c[6];
+    	}
+    }
+    else{
+    	y *= -1;
+    	if(x >= 0){
+    		ans = x * c[2] + y * c[3];
+    	}
+    	else{
+    		x *= -1;
+    		int d = min(x, y);
+    		ans = min(d * c[4] + (x - d) * c[5] + (y - d) * c[3], x * c[5] + y * c[3]);
+    	}
+    }
+
+    cout << ans << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

@@ -30,30 +30,51 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
-
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+void solve(){
+    int n, m; cin >> n >> m; 
+    vector <pi> edges(m);
+    for(int i = 0; i < m; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	edges[i] = {u, v};
     }
-    cout << el;
+
+    vector <bool> clique(1 << n);
+    for(int msk = 0; msk < (1 << n); ++msk){
+    	int ec = 0, nc = __builtin_popcount(msk);
+    	for(int j = 0; j < m; ++j){
+    		if((msk & (1 << edges[j].F)) and (msk & (1 << edges[j].S))){
+    			ec++;
+    		}
+    	}
+    	if(ec == nc * (nc - 1) / 2){
+    		clique[msk] = true;
+    	}
+    }
+
+	vi DP(1 << n, 1e9);
+	DP[0] = 0;
+	for(int msk = 1; msk < (1 << n); ++msk){
+		for(int subMsk = msk; subMsk; subMsk = (subMsk - 1) & msk){
+			if(clique[subMsk]){
+				mini(DP[msk], DP[msk ^ subMsk] + 1);
+			}
+		}
+	}
+
+	cout << DP[(1 << n) - 1] << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

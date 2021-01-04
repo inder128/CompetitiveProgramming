@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,30 +30,53 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
-
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+void solve(){
+    int n, m, k; cin >> n >> m >> k;
+    vi cost(k + 1);
+    vi a(n); cin >> a;
+    
+    for(int i = 0; i < m; ++i){
+    	int x, y; cin >> x >> y;
+    	if(x <= k){
+    		maxi(cost[x], y);
+    	}
     }
-    cout << el;
+
+    
+
+    mini(n, k);
+    sort(rng(a));
+    sort(a.begin(), a.begin() + n, greater<int>());
+    for(int i = 1; i < n; ++i){
+    	a[i] += a[i - 1];
+    }
+
+    
+    vi DP(n, 1e18);
+    for(int i = 0; i < n; ++i){
+    	DP[i] = (i + 1 - cost[i + 1] ? a[i + 1 - cost[i + 1] - 1] : 0);
+    	for(int j = 1; j <= i; ++j){
+    		int ln = i - j + 1;
+    		int cst = (i - cost[ln] >= 0 ? a[i - cost[ln]] : 0) - a[j - 1];
+    		mini(DP[i], DP[j - 1] + cst);
+    	}
+    	db(i, DP[i]);
+    }
+
+
+    cout << DP[n - 1] << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

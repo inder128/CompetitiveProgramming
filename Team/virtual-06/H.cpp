@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define ll long long
+#define int long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,30 +30,51 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+vi arr{1, 2, 3, 4, 8, 12, 5, 10, 15, 6, 11, 13, 7, 9, 14, 16};
+vi inc{0, 2, 3, 1};
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+void solve(){
+    int n; cin >> n;
+    if(n <= 15){
+        cout << arr[n - 1] << el;
+        return;
     }
-    cout << el;
+
+    // n >= 16;
+    int fst = 16;
+    while(4 * fst <= n){
+        fst *= 4;
+    }
+
+    vi nums(3);
+
+    nums[1] = fst + (n - fst) / 3;
+
+    int mod = (n - fst) / 3;  
+    int offset = 2 * fst;
+
+    while(fst != 1){
+        fst /= 4;
+        offset += fst * inc[mod / fst];
+        mod %= fst;
+    }
+
+    nums[2] = offset;
+
+    nums[0] = nums[1] ^ nums[2];
+    cout << nums[n % 3] << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

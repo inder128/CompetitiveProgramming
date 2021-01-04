@@ -30,30 +30,60 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+void solve(){
+    int n, sd; cin >> n >> sd;
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
-}
+    vector <vector <pi>> DP(n, vector <pi>(sd + 1, {-1, -1}));
 
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
-    for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+    bool found = false;
+    queue <pi> Q;
+    Q.push({0, 0});
+    while(SZ(Q)){
+    	int currRem = Q.front().F, currsd = Q.front().S; Q.pop();
+    	for(int nextDigit = 0; nextDigit < 10; ++nextDigit){
+    		int nxtRem = (currRem * 10 + nextDigit) % n;
+    		int nxtsd = currsd + nextDigit;
+    		if(nxtsd > sd or DP[nxtRem][nxtsd] != pi(-1, -1)){
+    			continue;
+    		}
+    		DP[nxtRem][nxtsd] = {currRem, currsd};
+    		if(nxtRem == 0 and nxtsd == sd){
+    			found = true;
+    		}
+    		Q.push({nxtRem, nxtsd});
+    	}
+    	if(found){
+    		break;
+    	}
     }
-    cout << el;
+
+    if(found == false){
+    	cout << -1 << el;
+    	return;
+    }
+
+    int currRem = 0, currsd = sd;
+    string str;
+    while(currsd){
+    	pi prv = DP[currRem][currsd];
+    	str.pb((char)('0' + currsd - prv.S));
+    	currRem = prv.F, currsd = prv.S;
+    }
+    reverse(rng(str));
+
+    cout << str << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

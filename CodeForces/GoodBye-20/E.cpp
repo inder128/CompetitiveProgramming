@@ -30,30 +30,79 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int D = 5e5 + 5;
+const int mod = 1e9 + 7;
 
-ll rand(ll l, ll r){
-    return l + rand() % (r - l + 1);
+vector <pi> basis(D); 
+
+int sz = 0;
+
+bool insertVector(pi newVector){
+    
+    while(newVector.F and basis[newVector.F].F){
+        if(basis[newVector.F].S == 0){
+            newVector.F = newVector.S;
+            newVector.S = 0;
+        }
+        else{
+            if(newVector.S == 0){
+                newVector.F = basis[newVector.F].S;
+            }
+            else if(newVector.S == basis[newVector.F].S){
+                newVector = {0, 0};
+            }
+            else{
+                newVector = {min(newVector.S, basis[newVector.F].S), max(newVector.S, basis[newVector.F].S)};
+            }
+        }
+    }
+    if(newVector.F == 0){
+        return false;
+    }
+
+    sz++;
+    basis[newVector.F] = newVector;
+
+    return true;
 }
 
-void solve(int bin){
-    int n = 200000;
-    cout << n << el;
+
+
+void solve(){
+    int n, m; cin >> n >> m;
+    vi ans;
+    int r = 1;
     for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+    	pi nv = {0, 0};
+    	int k; cin >> k;
+    	if(k == 1){
+    		cin >> nv.F;
+    	}
+    	else{
+    		cin >> nv.F >> nv.S;
+    	}
+    	if(insertVector(nv)){
+    		ans.pb(i);
+    		r = (r * 2) % mod;
+    	}
+    }
+    cout << r << " " << SZ(ans) << el;
+    for(int i : ans){
+    	cout << i + 1 << " ";
     }
     cout << el;
 }
  
-int main(int argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
-    int T=1;
-    //cin>>T;
-    srand(atoi(argv[1]));
+    int T = 1;
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }
