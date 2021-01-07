@@ -33,63 +33,55 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-const int N = 2e5;
-vi adj[N];
-vi path;
-vector <bool> vis(N);
-
-void dfs(int node = 0){
-    vis[node] = true;
-    path.pb(node);
-    for(int child : adj[node]){
-        if(vis[child]){
-            continue;
-        }
-        dfs(child);
-        if(path.back() != node){
-            path.pb(node);
-        }
-    }
-}
-
 void solve(){
     int n, m, k; cin >> n >> m >> k;
-    set <pi> edges;
+    vi arr(n);
+    for(int i = 0; i < n; ++i){
+    	cin >> arr[i];
+    } 
+    sort(rng(arr));
+    db(arr); 
+
+    vector <pi> ext(m);
     for(int i = 0; i < m; ++i){
-        int u, v; cin >> u >> v;
-        u--, v--;
-        if(u == v){
-            continue;
-        }
-        if(u > v){
-            swap(u, v);
-        }
-        edges.insert({u, v});
+    	cin >> ext[i].F;
+    	ext[i].S = i;
     }
-    for(pi eg : edges){
-        adj[eg.F].pb(eg.S);
-        adj[eg.S].pb(eg.F);
-    }
-    dfs();
+    sort(rng(ext), greater <pi>());
 
-    assert(SZ(path) <= 2 * n);
-    assert(count(vis.begin(), vis.begin() + n, true) == n);
-    for(int i = 1; i < SZ(path); ++i){
-        assert(edges.count({path[i - 1], path[i]}) + edges.count({path[i], path[i - 1]}));
+    int l = -1, r = m + 1;
+    while(l + 1 < r){
+    	int mid = (l + r) >> 1;
+
+    	vi tarr = arr;
+    	for(int i = 0; i < mid; ++i){
+    		tarr.pb(ext[i].F);
+    	}
+    	sort(rng(tarr));
+
+    	bool sol = true;
+    	for(int i = 0; i < n + mid; i++){
+    		if(i / k > tarr[i]){
+    			sol = false;
+    			break;
+    		}
+    	}
+
+    	db(sol, mid, tarr);
+
+    	if(sol){
+    		l = mid;
+    	}
+    	else{
+    		r = mid;
+    	}
     }
 
-    n = SZ(path);
-    int l = 0;
-    for(int i = 0; i < k; ++i){
-        int sz = n / k + (i < (n % k));
-        cout << sz << " ";
-        for(int j = l; j < l + sz; ++j){
-            cout << path[j] + 1 << " ";
-        }
-        cout << el;
-        l += sz;
+    cout << l << el;
+    for(int i = 0; i < l; ++i){
+    	cout << ext[i].S + 1 << " ";
     }
-    assert(l == n);
+    cout << el;
 }
  
 int32_t main(){

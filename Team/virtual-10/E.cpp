@@ -33,63 +33,25 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-const int N = 2e5;
-vi adj[N];
-vi path;
-vector <bool> vis(N);
-
-void dfs(int node = 0){
-    vis[node] = true;
-    path.pb(node);
-    for(int child : adj[node]){
-        if(vis[child]){
-            continue;
-        }
-        dfs(child);
-        if(path.back() != node){
-            path.pb(node);
-        }
-    }
-}
-
 void solve(){
-    int n, m, k; cin >> n >> m >> k;
-    set <pi> edges;
-    for(int i = 0; i < m; ++i){
-        int u, v; cin >> u >> v;
-        u--, v--;
-        if(u == v){
-            continue;
-        }
-        if(u > v){
-            swap(u, v);
-        }
-        edges.insert({u, v});
+	int k, n = 8000; cin >> k;
+    vector <vector <double>> p(n + 1, vector <double>(k + 1));
+    p[0][0] = 1;
+    for(int i = 1; i <= n; ++i){
+    	for(int j = 1; j <= k; ++j){
+    		p[i][j] = p[i - 1][j] * j / k + p[i - 1][j - 1] * (k - (j - 1)) / k;
+    	}
     }
-    for(pi eg : edges){
-        adj[eg.F].pb(eg.S);
-        adj[eg.S].pb(eg.F);
+    int q; cin >> q;
+    while(q--){
+    	double pr; cin >> pr;
+    	for(int i = 1; i <= n; ++i){
+    		if(p[i][k] >= (pr - 1e-7) / 2000){
+    			cout << i << el;
+    			break;
+    		}
+    	}
     }
-    dfs();
-
-    assert(SZ(path) <= 2 * n);
-    assert(count(vis.begin(), vis.begin() + n, true) == n);
-    for(int i = 1; i < SZ(path); ++i){
-        assert(edges.count({path[i - 1], path[i]}) + edges.count({path[i], path[i - 1]}));
-    }
-
-    n = SZ(path);
-    int l = 0;
-    for(int i = 0; i < k; ++i){
-        int sz = n / k + (i < (n % k));
-        cout << sz << " ";
-        for(int j = l; j < l + sz; ++j){
-            cout << path[j] + 1 << " ";
-        }
-        cout << el;
-        l += sz;
-    }
-    assert(l == n);
 }
  
 int32_t main(){

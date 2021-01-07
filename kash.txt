@@ -52,6 +52,7 @@ https://www.codechef.com/problems/GUESSPRM -> p137.cpp
 https://codeforces.com/contest/1463/problem/E -> p138.cpp
 https://codeforces.com/gym/102219/problem/F -> team-virtual02/E.cpp
 https://codeforces.com/problemset/problem/901/C -> team-virtual03/C.cpp
+./Team/virtual-10/C.cpp -> F & C2
 
 
 Todo :-

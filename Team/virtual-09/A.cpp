@@ -38,12 +38,11 @@ vi adj[N];
 vi path;
 vector <char> vis(N, 'w');
 bool cyc = false;
-bool ter;
 
 
 bool dfs(int node){
 	vis[node] = 'g';
-	if(node % 2 == ter and SZ(adj[node]) == 0){
+	if(node % 2 and SZ(adj[node]) == 0){
 		path.pb(node);
 		return true;
 	}
@@ -80,13 +79,7 @@ void solve(){
     int r; cin >> r;
     r--;
 
-    ter = true;
     dfs(2 * r);
-    if(SZ(path) == 0){
-    	fill(rng(vis), 'w');
-    	ter = false;
-    	dfs(2 * r + 1);
-    }
 
     if(SZ(path) == 0){
     	if(cyc){

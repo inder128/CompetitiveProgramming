@@ -33,63 +33,55 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-const int N = 2e5;
-vi adj[N];
-vi path;
-vector <bool> vis(N);
-
-void dfs(int node = 0){
-    vis[node] = true;
-    path.pb(node);
-    for(int child : adj[node]){
-        if(vis[child]){
-            continue;
-        }
-        dfs(child);
-        if(path.back() != node){
-            path.pb(node);
-        }
-    }
-}
+// https://codeforces.com/blog/entry/20766
 
 void solve(){
-    int n, m, k; cin >> n >> m >> k;
-    set <pi> edges;
-    for(int i = 0; i < m; ++i){
-        int u, v; cin >> u >> v;
-        u--, v--;
-        if(u == v){
-            continue;
-        }
-        if(u > v){
-            swap(u, v);
-        }
-        edges.insert({u, v});
+    int n; cin >> n;
+    vi arr(n); cin >> arr;
+    map <int, int> ord;
+    for(int i = 0; i < n; ++i){
+    	int x; cin >> x;
+    	ord[x] = i;
     }
-    for(pi eg : edges){
-        adj[eg.F].pb(eg.S);
-        adj[eg.S].pb(eg.F);
+    vector <pi> ans;
+    int cost = 0;
+    int zeros = 0;
+    for(int i = 0; i < n; ++i){
+    	arr[i] = ord[arr[i]];
+    	arr[i] -= i;
+    	if(arr[i] == 0){
+    		zeros++;
+    	}
+    	cost += abs(arr[i]);
     }
-    dfs();
-
-    assert(SZ(path) <= 2 * n);
-    assert(count(vis.begin(), vis.begin() + n, true) == n);
-    for(int i = 1; i < SZ(path); ++i){
-        assert(edges.count({path[i - 1], path[i]}) + edges.count({path[i], path[i - 1]}));
+    db(arr);
+    cout << cost / 2 << el;
+    while(zeros < n){
+    	db(arr);
+    	int fp = -1;
+    	for(int i = 0; i < n; ++i){
+    		if(arr[i] < 0){
+    			arr[fp] -= i - fp;
+    			arr[i] += i - fp;
+    			ans.pb({i, fp});
+    			swap(arr[i], arr[fp]);
+    			zeros += (arr[fp] == 0);
+    			zeros += (arr[i] == 0);
+    			break;
+    		}
+    		if(arr[i] > 0){
+    			fp = i;
+    		}
+    	}
     }
-
-    n = SZ(path);
-    int l = 0;
-    for(int i = 0; i < k; ++i){
-        int sz = n / k + (i < (n % k));
-        cout << sz << " ";
-        for(int j = l; j < l + sz; ++j){
-            cout << path[j] + 1 << " ";
-        }
-        cout << el;
-        l += sz;
+    // assert(count(rng(arr), 0) == n);
+    cout << SZ(ans) << el;
+    cost /= 2;
+    for(pi p : ans){
+    	cout << p.F + 1 << " " << p.S + 1 << el;
+    	// cost -= abs(p.F - p.S);
     }
-    assert(l == n);
+    // assert(cost == 0);
 }
  
 int32_t main(){

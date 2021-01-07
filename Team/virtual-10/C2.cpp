@@ -9,7 +9,7 @@ using namespace std;
 #define S second
 #define el '\n'
 #define ll long long
-#define SZ(x) ((int)(x).size()) 
+#define SZ(x) ((double)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
 template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
@@ -29,67 +29,68 @@ template <typename Arg1, typename... Args>
 void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
-typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+typedef pair<double,double> pi; typedef vector<double> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-const int N = 2e5;
-vi adj[N];
-vi path;
-vector <bool> vis(N);
+// https://codeforces.com/contest/793/problem/C
 
-void dfs(int node = 0){
-    vis[node] = true;
-    path.pb(node);
-    for(int child : adj[node]){
-        if(vis[child]){
-            continue;
+pi get(double l, double r, double m, double v){
+    if(v == 0){
+        if(m > r or m < l){
+            return {0, -1};
         }
-        dfs(child);
-        if(path.back() != node){
-            path.pb(node);
+        else{
+            return {0, 1e9};
         }
     }
+    double t1 = (r - m) / v;
+    double t2 = (l - m) / v;
+    if(t1 > t2){
+        swap(t1, t2);
+    }
+    if(t1 < 0){
+        t1 = 0;
+    }
+    return {t1, t2};
 }
 
+
 void solve(){
-    int n, m, k; cin >> n >> m >> k;
-    set <pi> edges;
-    for(int i = 0; i < m; ++i){
-        int u, v; cin >> u >> v;
-        u--, v--;
-        if(u == v){
-            continue;
-        }
-        if(u > v){
-            swap(u, v);
-        }
-        edges.insert({u, v});
-    }
-    for(pi eg : edges){
-        adj[eg.F].pb(eg.S);
-        adj[eg.S].pb(eg.F);
-    }
-    dfs();
-
-    assert(SZ(path) <= 2 * n);
-    assert(count(vis.begin(), vis.begin() + n, true) == n);
-    for(int i = 1; i < SZ(path); ++i){
-        assert(edges.count({path[i - 1], path[i]}) + edges.count({path[i], path[i - 1]}));
+    double n; cin >> n; 
+    double x1, y1, x2, y2; cin >> x1 >> y1 >> x2 >> y2;
+    vi x(n), y(n), vx(n), vy(n);
+    for(int i = 0; i < n; ++i){
+    	cin >> x[i] >> y[i] >> vx[i] >> vy[i];
     }
 
-    n = SZ(path);
-    int l = 0;
-    for(int i = 0; i < k; ++i){
-        int sz = n / k + (i < (n % k));
-        cout << sz << " ";
-        for(int j = l; j < l + sz; ++j){
-            cout << path[j] + 1 << " ";
+    vi tin{0}, tout{1e9};
+    for(int i = 0; i < n; ++i){
+    	if(vy[i] == 0 and (y[i] == y1 or y[i] == y2)){
+            cout << -1 << el;
+            return;
         }
-        cout << el;
-        l += sz;
+        if(vx[i] == 0 and (x[i] == x1 or x[i] == x2)){
+            cout << -1 << el;
+            return;
+        }
+        pi ts1 = get(x1, x2, x[i], vx[i]);
+        pi ts2 = get(y1, y2, y[i], vy[i]);
+        pi t = {max(ts1.F, ts2.F), min(ts1.S, ts2.S)};
+        if(ts1.S < 0 or ts2.S < 0 or t.S < t.F){
+            cout << -1;
+            return;
+        }
+        tin.pb(t.F), tout.pb(t.S);
     }
-    assert(l == n);
+
+    sort(rng(tin)), sort(rng(tout));
+    if(tin.back() < tout[0]){
+    	cout << setprecision(12) << fixed << tin.back() << el;
+    }
+    else{
+    	cout << -1 << el;
+    }
 }
  
 int32_t main(){
