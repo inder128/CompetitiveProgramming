@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -33,32 +33,77 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+const int N = 2e5;
+vi adj[N];
+vi path;
+vector <char> vis(N, 'w');
+bool cyc = false;
+bool ter;
+
+
+bool dfs(int node){
+	vis[node] = 'g';
+	if(node % 2 == ter and SZ(adj[node]) == 0){
+		path.pb(node);
+		return true;
+	}
+	for(int child : adj[node]){
+		if(vis[child] == 'b'){
+			continue;
+		}
+		if(vis[child] == 'g'){
+			cyc = true;
+		}
+		else{
+			if(dfs(child)){
+				path.pb(node);
+				return true;
+			}
+		}
+	}
+	vis[node] = 'b';
+	return false;
+}
+
+
 void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
+    int n, m; cin >> n >> m;
+    for(int i = 0; i < n; ++i){
+    	int k; cin >> k;
+    	for(int j = 0; j < k; ++j){
+    		int v; cin >> v;
+    		v--;
+    		adj[2 * i].pb(2 * v + 1);
+    		adj[2 * i + 1].pb(2 * v);
+    	}
     }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
+    int r; cin >> r;
+    r--;
 
-
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
-        }
+    ter = true;
+    dfs(2 * r);
+    if(SZ(path) == 0){
+    	fill(rng(vis), 'w');
+    	ter = false;
+    	dfs(2 * r + 1);
     }
 
-    cout << ans << el;
+    if(SZ(path) == 0){
+    	if(cyc){
+    		cout << "Draw" << el;
+    	}
+    	else{
+    		cout << "Lose" << el;
+    	}
+    }
+    else{
+    	cout << "Win" << el;
+    	reverse(rng(path));
+    	for(int u : path){
+    		cout << u / 2 + 1 << " ";
+    	}
+    	cout << el;
+    }
 }
  
 int32_t main(){

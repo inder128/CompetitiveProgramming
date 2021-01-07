@@ -37,25 +37,56 @@ void solve(){
     int n; cin >> n;
     vi a(n); cin >> a;
     for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
+    	a[i] += a[i - 1];
     }
     auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
+    	if(l > r){
+    		return 0;
+    	}
+    	return a[r] - (l ? a[l - 1] : 0);
     };
 
 
     int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
-        }
+    for(int i = 0; i < n; ++i){
+    	int x = a[i];
+    	if(a[n - 1] < 2 * x){
+    		break;
+    	}
+
+    	int l = i + 1, r = n;
+    	// invarients :-
+    	// get(r, n - 1) < (x or get(i + 1, l - 1))
+    	// get(l, n - 1) >= (x or get(i + 1, l - 1));
+    	// highest such l;
+    	while(l + 1 < r){
+    		int m = (l + r) >> 1;
+    		if(get(m, n - 1) >= max(x, get(i + 1, m - 1))){
+    			l = m;
+    		}
+    		else{
+    			r = m;
+    		}
+    	}
+    	int lastCut = l;
+
+    	l = i, r = n - 1;
+    	// invarients;
+    	// get(i + 1, l) < x;
+    	// get(i + 1, r) >= x; 
+    	// lowest such r;
+    	while(l + 1 < r){
+    		int m = (l + r) >> 1;
+    		if(get(i + 1, m) >= x){
+    			r = m;
+    		}
+    		else{
+    			l = m;
+    		}
+    	}
+    	int firstCut = r + 1;
+
+    	ans += max(0ll, lastCut - firstCut + 1);
     }
 
     cout << ans << el;

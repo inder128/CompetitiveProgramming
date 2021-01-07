@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -34,31 +34,41 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
+    int n, k; cin >> n >> k;
+    set <int> vals;
+    for(int i = 0; i < k; ++i){
+        int a; cin >> a;
+        vals.insert(a - n);
     }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
+    n = SZ(vals);
+
+    map <int, vi> adj;
+    map <int, int> dist;
+    for(int i = -1000; i <= 1000; ++i){
+        for(int j : vals){
+            adj[i].pb(i + j);
         }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
+        dist[i] = 1e9;
+    }
 
-
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
+    queue <int> Q;
+    Q.push(0);
+    dist[0] = 0;
+    while(SZ(Q)){
+        int node = Q.front(); Q.pop();
+        for(int child : adj[node]){
+            if(child == 0){
+                cout << dist[node] + 1 << el;
+                return;
+            }
+            if(dist[child] > dist[node] + 1){
+                dist[child] = dist[node] + 1;
+                Q.push(child);
             }
         }
     }
 
-    cout << ans << el;
+    cout << -1 << el;
 }
  
 int32_t main(){

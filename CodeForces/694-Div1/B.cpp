@@ -33,39 +33,82 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
+// make sure to initialise;
+const int N = 1e6;
+vi spf(N + 1); // shortest prime factor;
+void findSPF(){
+    iota(rng(spf), 0);
+    spf[0] = spf[1] = 0;
+    for(int i = 2; i * i <= N; ++i){
+        if(spf[i] != i) continue;
+        for(int j = i * i; j <= N; j += i){
+            if(spf[j] != j) continue;
+            spf[j] = i;
+        }
+    }
+}
+
+
+
 void solve(){
+    map <vi, int> mp;
     int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
-    }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
-
-
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
-        }
+    for(int i = 0; i < n; ++i){
+    	int x; cin >> x;
+    	map <int, int> fac;
+    	while(x > 1){
+    		fac[spf[x]]++;
+    		x /= spf[x];
+    	}
+    	vi op;
+    	for(auto pp : fac){
+    		if(pp.S % 2){
+    			op.pb(pp.F);
+    		}
+    	}
+    	mp[op]++;
     }
 
-    cout << ans << el;
+    int a0 = 0;
+    for(auto vc : mp){
+    	maxi(a0, vc.S);
+    }
+
+    map <vi, int> mp2;
+    for(auto pp : mp){
+    	if(SZ(pp.F) and pp.S % 2 == 0){
+    		mp2[{}] += pp.S;
+    	}
+    	else{
+    		mp2[pp.F] = pp.S;
+    	}
+    }
+
+    int a1 = 0;
+    for(auto vc : mp2){
+    	maxi(a1, vc.S);
+    }
+
+
+    int q; cin >> q;
+    while(q--){
+    	int t; cin >> t;
+    	if(t){
+    		cout << a1 << el;
+    	}
+    	else{
+    		cout << a0 << el;
+    	}
+    }
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
+    findSPF();
     while(T--){
         solve();
     }

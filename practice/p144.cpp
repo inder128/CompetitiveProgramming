@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -33,39 +33,67 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
+const int N = 2e5;
+vi adj[N], depth(N), ans(N);
+vector <bool> vis(N);
+
+void dfs(int node = 0){
+	vis[node] = true;
+	ans[node] = depth[node];
+	for(int child : adj[node]){
+		if(depth[child] <= depth[node]){
+			mini(ans[node], depth[child]);
+		}
+		else{
+			if(vis[child] == false){
+				dfs(child);
+			}
+			mini(ans[node], ans[child]);
+		}
+	}
+}
+
 void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
+    int n, m; cin >> n >> m;
+    for(int i = 0; i < n; ++i){
+    	adj[i].clear();
+    	depth[i] = 1e9;
+    	ans[i] = 1e9;
+    	vis[i] = false;
     }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
-
-
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
-        }
+    for(int i = 0; i < m; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	adj[u].pb(v);
     }
 
-    cout << ans << el;
+    queue <int> Q;
+    Q.push(0);
+    depth[0] = 0;
+    while(SZ(Q)){
+    	int node = Q.front(); Q.pop();
+    	for(int child : adj[node]){
+    		if(depth[child] > depth[node] + 1){
+    			depth[child] = depth[node] + 1;
+    			Q.push(child);
+    		}
+    	}
+    }
+
+    dfs();
+
+    for(int i = 0; i < n; ++i){
+    	cout << ans[i] << " ";
+    }
+    cout << el;
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

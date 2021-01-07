@@ -33,32 +33,46 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+
 void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
+    int n, m; cin >> n >> m;
+    vector <vector <bool>> edges(n, vector <bool>(n));
+    for(int i = 0; i < m; ++i){
+        int u, v; cin >> u >> v;
+        u--, v--;
+        edges[u][v] = edges[v][u] = 1;
     }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
 
-
+    vvi DP(1 << n, vi(n));
     int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
+
+    for(int msk = 1; msk < (1 << n); ++msk){
+        int fs = 0;
+        for(int i = 0; i < n; ++i){
+            if(msk >> i & 1){
+                fs = i;
+                break;
             }
         }
+        if(msk - (1 << fs) == 0){
+            DP[msk][fs] = 1;
+            continue;
+        }
+        for(int lst = 0; lst < n; ++lst){
+            if((msk >> lst & 1) == 0 or lst == fs){
+                continue;
+            }
+            for(int secondLst = 0; secondLst < n; ++secondLst){
+                if((msk >> secondLst & 1) == 0 or secondLst == lst){
+                    continue;
+                }
+                DP[msk][lst] += DP[msk ^ (1 << lst)][secondLst] * edges[lst][secondLst];
+            }
+            ans += edges[fs][lst] * DP[msk][lst] * (__builtin_popcount(msk) > 2);
+        }
     }
 
-    cout << ans << el;
+    cout << ans / 2 << el;
 }
  
 int32_t main(){

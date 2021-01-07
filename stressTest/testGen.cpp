@@ -38,10 +38,10 @@ ll rand(ll l, ll r){
 }
 
 void solve(int bin){
-    int n = 200000;
+    int n = rand(3, 2000);
     cout << n << el;
     for(int i = 0; i < n; ++i){
-        cout << rand(0, (1 << 30) - 1) << " "; 
+        cout << rand(1, 100000) << " ";
     }
     cout << el;
 }

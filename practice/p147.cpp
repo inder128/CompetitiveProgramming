@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -34,38 +34,74 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
+    int n, m; cin >> n >> m;
+
+    map <int, int> mp;
+    mp[0] = 3;
+    for(int i = 0; i < m; ++i){
+        int r, c; cin >> r >> c;
+        r--;
+        mp[c] += (1 << r);
+    }
+    if(mp[n] == 0){
+        mp[n] = 0;
+    }
+
+    int lst = -1;
+    vi arr;
+    for(pi p : mp){
+        if((p.F - lst - 1) % 2){
+            arr.pb(0);
+        }
+        arr.pb(p.S);
+        lst = p.F;
+    }
+    db(arr);
+
+    n = SZ(arr);
+    vector <vector <bool>> DP(n, vector <bool>(4));
+    DP[0][3] = true;
+
     for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
-    }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
+        if(arr[i] == 0){
+            DP[i][0] = DP[i - 1][3];
+            DP[i][1] = DP[i - 1][2];
+            DP[i][2] = DP[i - 1][1];
+            DP[i][3] = DP[i - 1][3];
         }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
-
-
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
+        if(arr[i] == 1){
+            DP[i][0] = false;
+            DP[i][1] = DP[i - 1][3];
+            DP[i][2] = false;
+            DP[i][3] = DP[i - 1][1];
+        }
+        if(arr[i] == 2){
+            DP[i][0] = false;
+            DP[i][1] = false;
+            DP[i][2] = DP[i - 1][3];
+            DP[i][3] = DP[i - 1][2];
+        }
+        if(arr[i] == 3){
+            DP[i][0] = false;
+            DP[i][1] = false;
+            DP[i][2] = false;
+            DP[i][3] = DP[i - 1][3];
         }
     }
 
-    cout << ans << el;
+    if(DP[n - 1][3]){
+        cout << "YES" << el;
+    }
+    else{
+        cout << "NO" << el;
+    }
 }
  
 int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

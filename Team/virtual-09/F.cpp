@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -33,29 +33,57 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
-    }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
 
+const int N = 19;
+int DP[N][N][1 << N];
+
+
+void solve(){
+    int n, m; cin >> n >> m;
+    set <pi> edges;
+    for(int i = 0; i < m; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	edges.insert({u, v});
+    	edges.insert({v, u});
+    }
+
+    vi cnt(n + 1);
+    for(int msk = 0; msk < (1 << n); ++msk){
+    	vi nodes;
+    	for(int i = 0; i < n; ++i){
+    		if(msk >> i & 1){
+    			nodes.pb(i);
+    		}
+    	}
+    	if(SZ(nodes) < 2){
+    		continue;
+    	}
+    	if(SZ(nodes) == 2){
+    		DP[nodes[0]][nodes[1]][msk] = edges.count({nodes[0], nodes[1]});
+    		DP[nodes[1]][nodes[0]][msk] = DP[nodes[0]][nodes[1]][msk];
+    		continue;
+    	}
+    	for(int i = 0; i < SZ(nodes); ++i){
+    		for(int j = i + 1; j < SZ(nodes); ++j){
+    			// DP[nodes[i]][nodes[j]] ??
+    			// i -> k -> some nodes -> j;
+    			for(int k = 0; k < SZ(nodes); ++k){
+    				if(k == i or k == j){
+    					continue;
+    				}
+    				DP[nodes[i]][nodes[j]][msk] += edges.count({nodes[i], nodes[k]}) * DP[nodes[k]][nodes[j]][msk - (1 << nodes[i])];
+    			}
+    			DP[nodes[j]][nodes[i]][msk] = DP[nodes[i]][nodes[j]][msk];
+    			// db(nodes[i], nodes[j], msk, DP[nodes[j]][nodes[i]][msk]);
+    			cnt[SZ(nodes)] += edges.count({nodes[i], nodes[j]}) * DP[nodes[i]][nodes[j]][msk];
+    		}	
+    	}	
+    }
 
     int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
-        }
+    for(int i = 3; i <= n; ++i){
+    	ans += cnt[i] / i;
     }
 
     cout << ans << el;

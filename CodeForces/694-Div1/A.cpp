@@ -34,28 +34,40 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
 /*-----------------------------Code Begins--------------------------------*/
 
 void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
+    int n, m; cin >> n >> m;
+    vi k(n + 1);
+    for(int i = 1; i <= n; ++i){
+    	cin >> k[i];	
     }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
+    sort(rng(k));
+    vi c(m + 1);
+    for(int i = 1; i <= m; ++i){
+    	cin >> c[i];
+    }
+    vi kk(n + 1);
+    for(int i = 1; i <= n; ++i){
+    	kk[i] = c[k[i]];
+    	kk[i] += kk[i - 1];
+    }
+    for(int i = 1; i <= m; ++i){
+    	c[i] += c[i - 1];
+    }
 
 
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
-        }
+    for(int i = 1; i <= n; ++i){
+    	k[i] -= i;
+    }
+    for(int i = n - 1; i >= 0; --i){
+    	mini(k[i], k[i + 1]);
+    }
+
+    int ans = 1e18;
+    // i i products are sold;
+    for(int i = 0; i <= min(n, m); ++i){
+    	if(i and k[n - i + 1] + n - i < 0){
+    		continue;
+    	}
+    	mini(ans, c[i] + kk[n - i]);
     }
 
     cout << ans << el;
@@ -65,7 +77,7 @@ int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin>>T;
+    cin>>T;
     while(T--){
         solve();
     }

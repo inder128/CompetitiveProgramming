@@ -33,31 +33,67 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
+const int N = 19;
+int DP[N][1 << N];
+bool edges[N][N];
+
+
 void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
+    int n, m; cin >> n >> m;
+    for(int i = 0; i < m; ++i){
+        int u, v; cin >> u >> v;
+        u--, v--;
+        edges[u][v] = edges[v][u] = 1;
     }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
 
+    vi cnt(n + 1);
 
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
+    vi nodes[1 << n];
+    for(int msk = 0; msk < (1 << n); ++msk){
+        for(int i = 0; i < n; ++i){
+            if(msk >> i & 1){
+                nodes[msk].pb(i);
             }
         }
     }
 
+    for(int root = 0; root < n; ++root){
+
+        for(int i = 0; i < n; ++i){
+            for(int j = 0; j < (1 << n); ++j){
+                DP[i][j] = 0;
+            }
+        }
+        DP[root][1 << root] = 1;
+
+        for(int msk = 0; msk < (1 << n); ++msk){
+            if((msk >> root & 1) == 0){
+                continue;
+            }
+            for(int lst : nodes[msk]){
+                if(lst == root){
+                    continue;
+                }
+
+                for(int secondLst : nodes[msk]){
+                    if(secondLst == lst or edges[lst][secondLst] == 0){
+                        continue;
+                    }
+                    DP[lst][msk] += DP[secondLst][msk - (1 << lst)];
+                }
+
+                if(msk - (1 << root) - (1 << lst) and edges[lst][root]){
+                    cnt[__builtin_popcount(msk)] += DP[lst][msk];
+                }
+            }
+        }
+    }
+
+
+    int ans = 0;
+    for(int i = 3; i <= n; ++i){
+        ans += cnt[i] / (2 * i);
+    }
     cout << ans << el;
 }
  

@@ -33,31 +33,36 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
-    }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
-        }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
 
+void solve(){
+    mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
+
+    int n, m; cin >> n >> m;
+
+    vi num(n), adj(n);
+    for(int i = 0; i < n; ++i){
+        num[i] = uniform_int_distribution<int>(0, 1e14)(rnd);
+    }
+
+    vector <pi> edges;
+    for(int i = 0; i < m; ++i){
+        int u, v; cin >> u >> v;
+        u--, v--;
+        adj[u] += num[v];
+        adj[v] += num[u];
+        edges.pb({u, v});
+    }
 
     int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
-        }
+    map <int, int> mp;
+    for(int i = 0; i < n; ++i){
+        ans += mp[adj[i]];
+        mp[adj[i]]++;
     }
 
+    for(pi eg : edges){
+        ans += (adj[eg.F] - num[eg.S] == adj[eg.S] - num[eg.F]);
+    }
     cout << ans << el;
 }
  
