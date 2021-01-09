@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,29 +30,91 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+int n;
+vi arr;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
 
-void solve(int bin){
-    for(int i = 0; i < 10; ++i){
-        int x = rand(-50, 50);
-        cout << "|x" << (x >= 0 ? "+" : "") << x << "| + "; 
+bool hill(int i){
+	if(i <= 0 or i >= n - 1){
+		return false;
+	}
+	return arr[i] > arr[i - 1] and arr[i] > arr[i + 1];
+};
+
+bool val(int i){
+	if(i <= 0 or i >= n - 1){
+		return false;
+	}
+	return arr[i] < arr[i - 1] and arr[i] < arr[i + 1];
+};
+
+int  get(int i, int v){
+	int x = arr[i];
+
+	int ld = 0;
+	ld += hill(i - 1);
+	ld += hill(i);
+	ld += hill(i + 1);
+	ld += val(i - 1);
+	ld += val(i);
+	ld += val(i + 1);
+
+	arr[i] = v;
+
+
+	ld -= hill(i - 1);
+	ld -= hill(i);
+	ld -= hill(i + 1);
+	ld -= val(i - 1);
+	ld -= val(i);
+	ld -= val(i + 1);
+
+	arr[i] = x;
+
+	return ld;
+};
+
+
+void solve(){
+    cin >> n;
+    arr.resize(n);
+    cin >> arr;
+
+    int c = 0;
+    for(int i = 0; i < n; ++i){
+    	c += hill(i);
+    	c += val(i);
     }
-    return;
+
+
+    int d = 0;
+    for(int i = 0; i < n; ++i){
+    	if(i > 0){
+    		maxi(d, get(i, arr[i - 1]));
+    		maxi(d, get(i, arr[i - 1] + 10));
+    		maxi(d, get(i, arr[i - 1] - 10));
+    	}
+    	if(i < n - 1){
+    		maxi(d, get(i, arr[i + 1]));
+    		maxi(d, get(i, arr[i + 1] + 10));
+    		maxi(d, get(i, arr[i + 1] - 10));
+    	}
+    }
+
+
+    cout << c - d << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin >> T;
-    srand(atoi(argv[1]));
+    cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

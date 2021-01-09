@@ -6,7 +6,7 @@ for((i = 1;; ++i)); do
     ./testGen $i > input
     ./sol < input > output
     echo "Input : "
-    cat input
+    # cat input
     echo "Output : "
     cat output
     echo ""

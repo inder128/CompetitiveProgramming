@@ -30,29 +30,33 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
-
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    for(int i = 0; i < 10; ++i){
-        int x = rand(-50, 50);
-        cout << "|x" << (x >= 0 ? "+" : "") << x << "| + "; 
-    }
-    return;
+void solve(){
+	int n1, n2, n3; cin >> n1 >> n2 >> n3;
+	vi a1(n1), a2(n2), a3(n3); cin >> a1 >> a2 >> a3;
+	sort(rng(a1));
+	sort(rng(a2));
+	sort(rng(a3));
+	int mn = 1e14;
+	int sm = accumulate(rng(a1), 0ll) + accumulate(rng(a3), 0ll) + accumulate(rng(a2), 0ll);
+	mini(mn, accumulate(rng(a1), 0ll));
+	mini(mn, accumulate(rng(a2), 0ll));
+	mini(mn, accumulate(rng(a3), 0ll));
+	mini(mn, a1[0] + a2[0]);
+	mini(mn, a1[0] + a3[0]);
+	mini(mn, a2[0] + a3[0]);
+	cout << sm - 2 * mn << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin >> T;
-    srand(atoi(argv[1]));
+    // cin>>T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

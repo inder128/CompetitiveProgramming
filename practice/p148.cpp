@@ -135,7 +135,7 @@ void solve(){
     	}
     	cout << SZ(ans) << el;
     	for(int i : ans){
-    		// cout << i <<  " "; 
+    		cout << i <<  " "; 
     	}
     	cout << el;
 
@@ -164,7 +164,7 @@ int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin >> T;
+    cin >> T;
     while(T--){
         solve();
     }

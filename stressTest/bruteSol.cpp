@@ -1,73 +1,49 @@
 #include <bits/stdc++.h>
 using namespace std;
- 
-#define rng(x) x.begin(), x.end()
-#define maxi(x, y) x = max(x, (y))
-#define mini(x, y) x = min(x, (y))
-#define pb push_back
-#define F first
-#define S second
-#define el '\n'
-#define int long long
-#define SZ(x) ((int)(x).size()) 
-template<typename T>
-istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
-template<class L, class R> ostream& operator<<(ostream &os, pair<L,R> P) {
-    return os << "(" << P.F << "," << P.S << ")"; }
-template<class T> ostream& operator<<(ostream &os, vector<T> V) {
-    os << "[ "; for(auto v : V) os << v << " "; return os << "]"; }
-template<class T> ostream& operator<<(ostream &os, set<T> S){
-    os << "{ "; for(auto s:S) os<<s<<" "; return os<<"}"; }
-#ifndef ONLINE_JUDGE 
-#define db(...) __f(#__VA_ARGS__, __VA_ARGS__)
-#else
-#define db(...)
-#endif
-template <typename Arg1>
-void __f(const char* name, Arg1&& arg1) { cerr<<name<<" : "<<arg1<<'\n';}
-template <typename Arg1, typename... Args>
-void __f(const char* names, Arg1&& arg1, Args&&... args) {
-    const char* comma = strchr(names + 1, ',');
-    cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
-typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
- 
-/*-----------------------------Code Begins--------------------------------*/
 
-void solve(){
-    int n; cin >> n;
-    vi a(n); cin >> a;
-    for(int i = 1; i < n; ++i){
-        a[i] += a[i - 1];
-    }
-    auto get = [&](int l, int r){
-        if(l > r){
-            return 0ll;
+const int N = 1001;
+set<pair<int, int>> ok;    // set to store valid dimensions for a piece.
+int dp[N][N];        // dp table for memoization.
+
+int min_nonValid_area(int l, int b)     // function to calculate minimum non valid area for a chochlate
+{   //  piece having dimension (l, r).
+    if (dp[l][b] == -1) {
+        if (ok.find({l, b}) != ok.end()) { // checking whether current piece is valid or not.
+            return dp[l][b] = 0;        // If it is, them we can return zero for current dimension.
         }
-        return a[r] - (l ? a[l - 1] : 0);
-    };
-
-
-    int ans = 0;
-    for(int i = 0; i < n - 2; ++i){
-        for(int j = i + 1; j < n - 1; ++j){
-            if(get(0, i) <= get(i + 1, j) and get(i + 1, j) <= get(j + 1, n - 1)){
-                ans++;
-                // db(i, j);
-                // db(get(0, i), get(i + 1, j));
-            }
+        int ans = l * b;                // Base case, in worst case the whole piece is wasted.
+        for (int i = 1; i < b; i++) {   //  (that is if we are not able to break it down further)
+            ans = min(ans, min_nonValid_area(l, i) + min_nonValid_area(l, b - i));
+            // Making all possible horizontal cuts, one by one and calculating
+            //  the sum of minimum non valid area for both resulting pieces.
         }
+        for (int i = 1; i < l; i++)
+        {
+            ans = min(ans, min_nonValid_area(i, b) + min_nonValid_area(l - i, b));
+            // Making all possible vertical cuts, one by one and calculating
+            //  the sum of minimum non valid area for both resulting pieces.
+        }
+        dp[l][b] = ans;
     }
-
-    cout << ans << el;
+    return dp[l][b];
 }
- 
-int32_t main(){
-    ios_base::sync_with_stdio(0);
-    cin.tie(0); cout.tie(0);
-    int T = 1;
-    // cin>>T;
-    while(T--){
-        solve();
+
+int main()
+{
+    int n, m, k;
+    cin >> n >> m >> k;
+    
+    for(int i = 0; i < k; ++i){
+        int x, y; cin >> x >> y;
+        ok.insert({x, y});
+        ok.insert({y, x});
     }
+
+    for (int i = 0; i < N; i++) {
+        for (int j = 0; j < N; j++)     // Filling dp table with -1, indicating that results are not computed yet.
+            dp[i][j] = -1;
+    }
+
+    cout << min_nonValid_area(n, m) << "\n";
     return 0;
 }
