@@ -30,34 +30,63 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int mod = 1e9 + 7;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
+int add(int x, int y){
+    x += y;
+    while(x >= mod) x -= mod;
+    while(x < 0) x += mod;
+    return x;
 }
 
-void solve(int bin){
-    cout << 4 << el;
-    for(int i = 0; i < 4; ++i){
-        if(rand() % 2){
-            cout << "OR" << el;
-        }
-        else{
-            cout << "AND" << el;
-        }
+int mul(int x, int y){
+    return (x * 1ll * y) % mod;
+}
+
+void solve(){
+    int n; cin >> n;
+
+    vi fac;
+    for(int i = 0; (1 << i) <= n; ++i){
+    	fac.pb(1 << i);
+    	if((1 << i) * 3 <= n){
+    		fac.pb((1 << i) * 3);
+    	}
     }
-    return;
+    sort(rng(fac));
+
+    map <int, int> mp;
+    mp[fac.back()] = 1;
+    if(fac.back() % 3 == 0){
+    	mp[fac.back() / 3 * 2] = 1;
+    }
+
+    for(int i = 2; i <= n; ++i){
+    	map <int, int> nmp;
+    	for(int g : fac){
+    		if(n / g < i){
+    			continue;
+    		}
+    		nmp[g] = add(nmp[g], mul(mp[g], (n / g - (i - 1))));
+    		nmp[g] = add(nmp[g], mul(mp[2 * g], (n / g - n / (2 * g))));
+    		nmp[g] = add(nmp[g], mul(mp[3 * g], (n / g - n / (3 * g))));
+    	}
+    	mp = nmp;
+    }
+
+    cout << mp[1] << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

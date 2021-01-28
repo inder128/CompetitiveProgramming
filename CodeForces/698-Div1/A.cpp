@@ -30,34 +30,37 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
-
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
+int gcd(int a, int b){
+	if(b == 0) return a;
+	return gcd(b, a % b);
 }
 
-void solve(int bin){
-    cout << 4 << el;
-    for(int i = 0; i < 4; ++i){
-        if(rand() % 2){
-            cout << "OR" << el;
-        }
-        else{
-            cout << "AND" << el;
-        }
-    }
-    return;
+void solve(){
+   	int n, x; cin >> n >> x; 
+   	vi a(n); cin >> a;
+   	sort(rng(a));
+   	int g = 0;
+   	for(int i = 0; i < n - 1; ++i){
+   		g = gcd(g, a[i + 1] - a[i]);
+   	}
+   	if((x - a[0]) % g){
+   		cout << "NO" << el;
+   	}
+   	else{
+   		cout << "YES" << el;
+   	}
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin >> T;
-    srand(atoi(argv[1]));
+    cin >> T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

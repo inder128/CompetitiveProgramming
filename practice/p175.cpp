@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,34 +30,53 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int N = 1e5;
+vi adj[N];
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    cout << 4 << el;
-    for(int i = 0; i < 4; ++i){
-        if(rand() % 2){
-            cout << "OR" << el;
-        }
-        else{
-            cout << "AND" << el;
-        }
+void solve(){
+    int n, m; cin >> n >> m;
+    for(int i = 0; i < m; ++i){
+    	int u, v; cin >> u >> v;
+    	u--, v--;
+    	adj[u].pb(v);
     }
-    return;
+    int s, t; cin >> s >> t;
+    s--, t--;
+
+    queue <pi> Q;
+   	Q.push({s, 0});
+   	vvi dist(n, vi(3, 1e9));
+   	dist[s][0] = 0;
+
+   	while(SZ(Q)){
+   		auto [node, rem] = Q.front(); Q.pop();
+   		for(int child : adj[node]){
+   			if(dist[child][(rem + 1) % 3] > dist[node][rem] + 1){
+   				dist[child][(rem + 1) % 3] = dist[node][rem] + 1;
+   				Q.push({child, (rem + 1) % 3});
+   			}
+   		}
+   	}
+
+   	if(dist[t][0] == 1e9){
+   		dist[t][0] = -1;
+   	}
+   	else{
+   		dist[t][0] /= 3;
+   	}
+   	cout << dist[t][0] << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,34 +30,43 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+void solve(){
+    int n, m, k; cin >> n >> m >> k;
+    vi a(k); cin >> a;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
+    vector <pair <double, double>> ans(n + m + 5);
+    for(int i = n - 1; i >= 0; --i){
+		if(count(rng(a), i)){
+			ans[i].S = 1;
+		}
+		else{
+			ans[i].F = 1 + (ans[i + 1].F - ans[i + m + 1].F) / m;
+			ans[i].S = (ans[i + 1].S - ans[i + m + 1].S) / m;
+		}
 
-void solve(int bin){
-    cout << 4 << el;
-    for(int i = 0; i < 4; ++i){
-        if(rand() % 2){
-            cout << "OR" << el;
-        }
-        else{
-            cout << "AND" << el;
-        }
+    	ans[i].F += ans[i + 1].F;
+    	ans[i].S += ans[i + 1].S;
     }
-    return;
+    ans[0].F -= ans[1].F, ans[0].S -= ans[1].S;
+
+    if(abs(ans[0].S - 1) <= 1e-12){
+    	cout << -1 << el;
+    	return;
+    }
+
+    cout << setprecision(12) << fixed << ans[0].F / (1 - ans[0].S) << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

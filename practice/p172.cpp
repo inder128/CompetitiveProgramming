@@ -30,34 +30,51 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
-
-/*-----------------------------Code begins----------------------------------*/
-
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    cout << 4 << el;
-    for(int i = 0; i < 4; ++i){
-        if(rand() % 2){
-            cout << "OR" << el;
-        }
-        else{
-            cout << "AND" << el;
-        }
-    }
-    return;
-}
  
-int32_t main(int32_t argc, char* argv[]){
+/*-----------------------------Code Begins--------------------------------*/
+
+mt19937 mrand(chrono::steady_clock::now().time_since_epoch().count());
+int rnd(int r = 1e13){ return uniform_int_distribution<int>(0, r)(mrand); }
+int rnd(int l, int r){ return uniform_int_distribution<int>(l, r)(mrand); }
+
+int gcd(int a, int b){
+	if(b == 0) return a;
+	return gcd(b, a % b);
+}
+
+void solve(){
+	int n, m; cin >> n >> m;
+	vi val(n), cst(n);
+	for(int i = 0; i < n; ++i){
+		val[i] = rnd();
+	}
+	vi c(n); cin >> c;
+	for(int i = 0; i < m; ++i){
+		int u, v; cin >> u >> v;
+		u--, v--;
+		cst[v] += val[u];
+	}
+	map <int, int> mp;
+	for(int i = 0; i < n; ++i){
+		if(cst[i]){
+			mp[cst[i]] += c[i];
+		}
+	}
+	int ans = 0;
+	for(auto [st, sm] : mp){
+		ans = gcd(ans, sm);
+	}
+	cout << ans << el;
+}
+
+ 
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
-    // cin >> T;
-    srand(atoi(argv[1]));
+    cin >> T;
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

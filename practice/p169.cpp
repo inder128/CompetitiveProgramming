@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,34 +30,75 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int mod = 998244353;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
+int add(int x, int y){
+    x += y;
+    while(x >= mod) x -= mod;
+    while(x < 0) x += mod;
+    return x;
 }
 
-void solve(int bin){
-    cout << 4 << el;
-    for(int i = 0; i < 4; ++i){
-        if(rand() % 2){
-            cout << "OR" << el;
-        }
-        else{
-            cout << "AND" << el;
-        }
+int sub(int x, int y){
+    return add(x, -y);
+}
+
+int mul(int x, int y){
+    return (x * 1ll * y) % mod;
+}
+
+int binPow(int x, int y){
+    int z = 1;
+    while(y){
+        if(y & 1) z = mul(z, x);
+        x = mul(x, x);
+        y >>= 1;
     }
-    return;
+    return z;
+}
+
+int inv(int x){
+    return binPow(x, mod - 2);
+}
+
+int divide(int x, int y){
+    return mul(x, inv(y));
+}
+
+
+void solve(){
+    string s, t; cin >> s >> t;
+    int n = SZ(s), m = SZ(t);
+    t.insert(t.end(), n - m, '$');
+    vvi DP(n, vi(n));
+    for(int i = 0; i < n; ++i){
+    	if(t[i] == '$' or t[i] == s[0]){
+    		DP[i][i] = 2;
+    	}
+    }
+    for(int l = 2; l <= n; ++l){
+    	for(int i = 0, j = l - 1; j < n; ++i, ++j){
+    		DP[i][j] = (t[i] == '$' or s[l - 1] == t[i]) * DP[i + 1][j];
+    		DP[i][j] = add(DP[i][j], (t[j] == '$' or s[l - 1] == t[j]) * DP[i][j - 1]);
+    	}
+    }
+    int ans = 0;
+    for(int i = m - 1; i <= n - 1; ++i){
+    	ans = add(ans, DP[0][i]);
+    }
+    cout << ans << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

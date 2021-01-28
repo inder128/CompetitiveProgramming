@@ -65,6 +65,7 @@ https://codeforces.com/problemset/problem/678/E
 https://codeforces.com/contest/268/problem/E -> exchange arguments
 https://codeforces.com/contest/1045/problem/D
 https://codeforces.com/blog/entry/85186 -> editorial E
+https://codeforces.com/blog/entry/87234 -> problem 5 (Basis with minimum sum)
 
 
 https://codeforces.com/blog/entry/48417

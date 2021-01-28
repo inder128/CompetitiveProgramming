@@ -30,34 +30,58 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
-
-void solve(int bin){
-    cout << 4 << el;
-    for(int i = 0; i < 4; ++i){
-        if(rand() % 2){
-            cout << "OR" << el;
-        }
-        else{
-            cout << "AND" << el;
-        }
+void solve(){
+    int n; cin >> n;
+    vector <pi> xy(n); 
+    for(int i = 0; i < n; ++i){
+    	cin >> xy[i].F >> xy[i].S;
     }
-    return;
+
+    auto dist = [&](int i, int j){
+    	int dx = xy[i].F - xy[j].F;
+    	int dy = xy[i].S - xy[j].S;
+    	return dx * dx + dy * dy;
+    };
+
+    vi prem{0}, vis(n);
+    vis[0] = true;
+    int l = 0;
+    for(int i = 0; i < n - 1; ++i){
+
+    	vi rem;
+    	for(int j = 0; j < n; ++j){
+    		if(vis[j]){
+    			continue;
+    		}
+    		rem.pb(j);
+    	}
+    	sort(rng(rem), [&](int j, int k){
+    		return dist(j, l) > dist(k, l);
+    	});
+
+		prem.pb(rem[0]);
+		vis[rem[0]] = true;
+		l = rem[0];
+		
+    }
+
+    for(int i : prem){
+    	cout << i + 1 << " ";
+    }
+    cout << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }
