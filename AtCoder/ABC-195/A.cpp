@@ -30,27 +30,50 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+void solve(){
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
+	int a, b; cin >> a >> b;
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 5e5 + 5), k = rand(0, 50);
-    cout << n << " " << k << el;
+	vi pr = {2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71};
+	
+
+	vi rep(b - a + 1);
+	for(int i = 0; i < b - a + 1; ++i){
+		int e = a + i;
+		int re = 0;
+		for(int j = 0; j < 20; ++j){
+			if(e % pr[j] == 0){
+				re += (1 << j);
+			}
+		}
+		rep[i] = re;
+	}
+
+	vi cnt(1 << 20);
+	cnt[0] = 1;
+	for(int e : rep){
+		vi ncnt = cnt;
+		for(int msk = 0; msk < (1 << 20); ++msk){
+			if((e & msk) == e){
+				ncnt[msk] += cnt[msk ^ e];
+			}
+		}
+		cnt = ncnt;
+	}
+
+	cout << accumulate(rng(cnt), 0ll) << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

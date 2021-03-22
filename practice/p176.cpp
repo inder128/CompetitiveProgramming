@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,27 +30,49 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int mod = 1e9 + 7;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
+void solve(){
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 5e5 + 5), k = rand(0, 50);
-    cout << n << " " << k << el;
+    int n; cin >> n;
+    vi a(n); cin >> a;
+
+    int N = 20001;
+    vi DP(N);
+
+    int ans = 0;
+
+    for(int i = 0; i < n; ++i){
+        vi nDP(N);
+        for(int j = 0; j < N; ++j){
+            if(j + a[i] < N){
+                nDP[j + a[i]] = (nDP[j + a[i]] + DP[j]) % mod;
+            }
+            if(j - a[i] >= 0){
+                nDP[j - a[i]] = (nDP[j - a[i]] + DP[j]) % mod;
+            }
+        }
+        nDP[10000 + a[i]]++;
+        nDP[10000 - a[i]]++;
+
+        ans = (ans + nDP[10000]) % mod;
+
+        DP = nDP;
+    }
+
+    cout << ans << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

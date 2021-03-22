@@ -8,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -30,27 +30,54 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+int n;
+string s, x;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
+bool get(int i, vector <bool> a){
+	if(i == -1){
+		return a[0];
+	}
+
+
+
+	vector <bool> aa(7);
+	if(x[i] == 'T'){
+		for(int j = 0; j < 7; ++j){
+			if(a[(10 * j) % 7] or a[(10 * j + s[i] - '0') % 7]){
+				aa[j] = true;
+			}
+		}
+	}
+	else{
+		for(int j = 0; j < 7; ++j){
+			if(a[(10 * j) % 7] and a[(10 * j + s[i] - '0') % 7]){
+				aa[j] = true;
+			}
+		}
+		
+	}
+
+	return get(i - 1, aa);
 }
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 5e5 + 5), k = rand(0, 50);
-    cout << n << " " << k << el;
+
+void solve(){
+    cin >> n >> s >> x;
+    vector <bool> a(7);
+    a[0] = true;
+    cout << (get(n - 1, a) ? "Takahashi" : "Aoki") << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

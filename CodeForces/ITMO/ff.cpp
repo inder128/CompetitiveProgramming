@@ -30,27 +30,39 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+void solve(){
+    int n, s; cin >> n >> s;
+    vi a(n); cin >> a;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 5e5 + 5), k = rand(0, 50);
-    cout << n << " " << k << el;
+    int ans = 0;
+    int currSum = 0;
+    // a[l] + a[l + 1] + ---- + a[r] <= s;
+    for(int l = 0, r = 0; r < n; ++r){
+  
+    	currSum += a[r];
+
+    	while(currSum > s){
+    		currSum -= a[l];
+    		l++;
+    	}
+
+    	maxi(ans, r - l + 1);
+    }
+
+    cout << ans << el;
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

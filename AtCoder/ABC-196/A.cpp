@@ -30,27 +30,95 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+const int N = 2e5;
+vi a(N), t(N);
+int n;
+vector <array <int, 4>> res;
+const int inf = 1e9;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
+
+void go(int i, array <int, 4> lr){
+	if(i == n){
+		res.pb(lr);
+		return;
+	}
+
+	if(t[i] == 1){
+		lr[3] += a[i];
+		go(i + 1, lr);
+	}
+	else if(t[i] == 2){
+		if(lr[2]){
+			if(lr[0] + lr[3] >= a[i]){
+				return go(i + 1, lr);
+			}
+			int m = a[i] - lr[3];
+			go(i + 1, {m, lr[1], lr[2], lr[3]});
+			go(i + 1, {lr[0], m - 1, 0, a[i]});
+		}
+		else{
+			maxi(lr[3], a[i]);
+			return go(i + 1, lr);
+		}
+	}
+	else{
+		if(lr[2]){
+			if(lr[1] + lr[3] <= a[i]){
+				return go(i + 1, lr);
+			}
+			int m = a[i] - lr[3];
+			go(i + 1, {lr[0], m, lr[2], lr[3]});
+			go(i + 1, {m + 1, lr[1], 0, a[i]});
+		}
+		else{
+			mini(lr[3], a[i]);
+			return go(i + 1, lr);
+		}
+	}
 }
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 5e5 + 5), k = rand(0, 50);
-    cout << n << " " << k << el;
+
+void solve(){
+    cin >> n;
+    for(int i = 0; i < n; ++i){
+    	cin >> a[i] >> t[i];
+    }
+
+    go(0, {-inf, inf, 1, 0});
+
+    int q; cin >> q;
+    vector <pi> qi(q);
+    for(int i = 0; i < q; ++i){
+    	cin >> qi[i].F;
+    	qi[i].S = i;
+    }
+    sort(rng(qi));
+
+    vi ans(q);
+
+    sort(rng(res));
+    for(int i = 0, j = 0; i < SZ(res); ++i){
+    	while(j < q and qi[j].F <= res[i][1]){
+    		ans[qi[j].S] = qi[j].F * res[i][2] + res[i][3];
+    		j++;
+    	}
+    }
+
+    for(int i : ans){
+    	cout << i << el;
+    }
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

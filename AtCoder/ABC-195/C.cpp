@@ -30,27 +30,58 @@ void __f(const char* names, Arg1&& arg1, Args&&... args) {
     const char* comma = strchr(names + 1, ',');
     cerr.write(names,comma-names)<<" : "<<arg1<<" |";__f(comma+1, args...);}
 typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
+ 
+/*-----------------------------Code Begins--------------------------------*/
 
-/*-----------------------------Code begins----------------------------------*/
+void solve(){
+    int n, m, q; cin >> n >> m >> q;
 
-int rand(int l, int r){
-    return l + rand() % (r - l + 1);
-}
+    vector <pi> wv(n);
+    for(int i = 0; i < n; ++i){
+    	cin >> wv[i].F >> wv[i].S;
+    }
+    sort(rng(wv));
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 5e5 + 5), k = rand(0, 50);
-    cout << n << " " << k << el;
+    vi x(m); cin >> x;
+
+    while(q--){
+    	int l, r; cin >> l >> r;
+    	l--, r--;
+
+    	vi rx;
+    	for(int i = 0; i < m; ++i){
+    		if(i < l or i > r){
+    			rx.pb(x[i]);
+    		}
+    	}
+
+    	sort(rng(rx));
+
+    	multiset <int> vals;
+    	int ans = 0;
+    	for(int i = 0, j = 0; i < SZ(rx); ++i){
+    		while(j < n and wv[j].F <= rx[i]){
+    			vals.insert(wv[j].S);
+    			j++;
+    		}
+    		if(SZ(vals)){
+    			int t = *vals.rbegin();
+    			ans += t;
+    			vals.erase(vals.find(t));
+    		}
+    	}
+
+    	cout << ans << el;
+    }
 }
  
-int32_t main(int32_t argc, char* argv[]){
+int32_t main(){
     ios_base::sync_with_stdio(0);
     cin.tie(0); cout.tie(0);
     int T = 1;
     // cin >> T;
-    srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }
