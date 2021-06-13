@@ -1,48 +1,60 @@
-#include <bits/stdc++.h>
+#include <iostream>
+#include<bits/stdc++.h>
 using namespace std;
-
-#define endl  '\n'
-#define w(x)  int x; cin>>x; while(x--)
-#define int long long
-
-const int N = 5e5 + 10;
-const int K = 55;
-int dp[N][K];
-const int mod = 1e9 + 7;
-
-
-void calc()
+ 
+vector<int>v,ans;
+int m;
+ 
+void dfs(int cnt,int prev,int sum1,int sum2)
 {
-    for (int i = 0; i <= N; i++) {
-        for (int j = 0; j <= K; j++) {
-            if (i <= 1) {
-                dp[i][j] = 1;
-                continue;
+    if(cnt==m)
+    {
+        cout<<"YES"<<endl;
+        for(int i=0;i<ans.size();i++)
+        cout<<ans[i]<<" ";
+        exit(0);
+    }
+    for(int i=0;i<v.size();i++)
+    {
+        if(v[i]==prev)
+        continue;
+        if(cnt%2==0)
+        {
+            if(sum1+v[i]>sum2)
+            {
+                ans.push_back(v[i]);
+                dfs(cnt+1,v[i],sum1+v[i],sum2);
+                ans.pop_back();
             }
-
-            dp[i][j] = dp[i - 1][j] + dp[i - 2][j];
-            if (j && i > 2) dp[i][j] += dp[i - 3][j - 1];
-            dp[i][j] %= mod;
+        }
+        else
+        {
+            if(sum2+v[i]>sum1)
+            {
+                ans.push_back(v[i]);
+                dfs(cnt+1,v[i],sum1,sum2+v[i]);
+                ans.pop_back();
+            }
         }
     }
 }
-
-
-void solve()
+ 
+int main() 
 {
-    int n, k;
-    cin >> n >> k;
-
-    int ans = dp[n][k];
-    cout << ans << endl;
-}
-
-int32_t main()
-{
-    ios_base::sync_with_stdio(0); cin.tie(0); cout.tie(0);
-    calc();
-    w(T) {
-        solve();
+    int t; cin >> t;
+    while(t--){
+    string s;
+    cin>>s;
+    cin>>m;
+    for(int i=0;i<10;i++)
+    {
+        if(s[i]=='1')
+        {
+            v.push_back(i+1);
+        }
     }
+    dfs(0,0,0,0);
+    cout<<"NO" << endl;
+}
     return 0;
 }

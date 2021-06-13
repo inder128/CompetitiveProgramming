@@ -53,6 +53,17 @@ https://codeforces.com/contest/1463/problem/E -> p138.cpp
 https://codeforces.com/gym/102219/problem/F -> team-virtual02/E.cpp
 https://codeforces.com/problemset/problem/901/C -> team-virtual03/C.cpp
 ./Team/virtual-10/C.cpp -> F & C2
+https://codeforces.com/contest/1461/problem/E -> p182.cpp
+https://codeforces.com/contest/1510/problem/G -> p193.cpp
+https://atcoder.jp/contests/abc188/tasks/abc188_f -> p194.cpp
+https://www.codechef.com/problems/ISS -> p210.cpp
+https://codeforces.com/contest/1521/problem/D -> p212.cpp
+https://codeforces.com/contest/1515/problem/F -> p216.cpp
+https://codeforces.com/contest/1519/problem/E -> p217.cpp
+https://codeforces.com/contest/1487/problem/G -> p219.cpp
+https://codeforces.com/contest/1492/problem/E -> p222.cpp
+https://codeforces.com/contest/1486/problem/F -> p225.cpp
+https://codeforces.com/contest/1527/problem/D -> p228.cpp
 
 
 Todo :-
@@ -66,6 +77,8 @@ https://codeforces.com/contest/268/problem/E -> exchange arguments
 https://codeforces.com/contest/1045/problem/D
 https://codeforces.com/blog/entry/85186 -> editorial E
 https://codeforces.com/blog/entry/87234 -> problem 5 (Basis with minimum sum)
+https://codeforces.com/contest/1479/problem/B2
 
 
 https://codeforces.com/blog/entry/48417
+https://codeforces.com/blog/entry/91363 - topic wise blogs list

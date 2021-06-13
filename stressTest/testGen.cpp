@@ -37,10 +37,16 @@ int rand(int l, int r){
     return l + rand() % (r - l + 1);
 }
 
-void solve(int bin){
-    cout << 1 << el;
-    int n = rand(1, 5e5 + 5), k = rand(0, 50);
-    cout << n << " " << k << el;
+void solve(){
+    for(int i = 1; i <= 100; ++i){
+        for(int j = 1; j <= 100; ++j){
+            for(int k = 1; k <= 50; ++k){
+                for(int l = 1; l <= 200; ++l){
+                    cout << i << " " << j << " " << k << l << endl;
+                }
+            }
+        }
+    }
 }
  
 int32_t main(int32_t argc, char* argv[]){
@@ -50,7 +56,7 @@ int32_t main(int32_t argc, char* argv[]){
     // cin >> T;
     srand(atoi(argv[1]));
     while(T--){
-        solve(atoi(argv[1]));
+        solve();
     }
     return 0;
 }

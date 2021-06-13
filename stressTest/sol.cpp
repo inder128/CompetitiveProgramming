@@ -1,38 +1,3 @@
-/*
-c[0] -> (1 - n)
-
-
-sum of c[i] * 10^i;
-
-c[0] -> (n + 1) / 2
-c[1] -> (n + 1)
-
-
-
-groups = (n + 1) / 2^(i + 1);
-c[i] += groups * 2 ^ (i) 
-c[i] += max(0, (n + 1) - groups * 2 ^ (i + 1) - 2 * (i));
-
-0000
-0001
-0010
-0011
-
-0100
-0101
-0110
-0111
-
-1000
-1001
-1010
-1011
-
-1100
-1101
-1110
-
-*/
 #include <bits/stdc++.h>
 using namespace std;
  
@@ -43,7 +8,7 @@ using namespace std;
 #define F first
 #define S second
 #define el '\n'
-#define int long long
+#define ll long long
 #define SZ(x) ((int)(x).size()) 
 template<typename T>
 istream&operator>>(istream&is,vector<T>&v){for(auto&it:v)is>>it;return is;}
@@ -68,26 +33,50 @@ typedef pair<int,int> pi; typedef vector<int> vi; typedef vector<vi> vvi;
  
 /*-----------------------------Code Begins--------------------------------*/
 
-const int mod = 1e9 + 7;
+
+const int N = 101;
+vector <vvi> DP(N, vvi(N, vi(N)));
+int p, q, s, n; 
+
+void go(int c1, int c2, int rem){
+
+    if(DP[c1][c2][rem]){
+        return;
+    }
+
+    DP[c1][c2][rem] = 1;
+    if(rem == 0){
+        return;
+    }
+    // db(c1, c2, rem);
+
+    go(p, c2, rem - 1);
+    go(c1, q, rem - 1);
+
+    go(0, c2, rem - 1);
+    go(c1, 0, rem - 1);
+    
+    int tak = min(p - c1, c2);
+    go(c1 + tak, c2 - tak, rem - 1);
+    tak = min(c1, q - c2);
+    go(c1 - tak, c2 + tak, rem - 1);
+}
 
 void solve(){
-    vi pow2(61);
-    pow2[0] = 1;
-    for(int i = 1; i < 61; ++i){
-        pow2[i] = pow2[i - 1] * 2;
+    cin >> p >> q >> s >> n;
+
+    go(0, 0, s);
+
+    int diff = n;
+    for(int i = 0; i <= p; ++i){
+        for(int j = 0; j <= q; ++j){
+            if(accumulate(rng(DP[i][j]), 0)) {
+                mini(diff, abs(i + j - n));
+            }
+        }
     }
 
-    int n; cin >> n;
-    int pow10 = 1;
-    int ans = 0;
-    for(int i = 0; i < 60; ++i){
-        int groups = (n + 1) / pow2[i + 1];
-        int ci = groups * pow2[i] + max(0ll, n + 1 - groups * pow2[i + 1] - pow2[i]);
-        ans = (ans + ci % mod * pow10) % mod;
-        pow10 = pow10 * 10 % mod;
-    }
-
-    cout << ans << el;
+    cout << diff << el;
 }
  
 int32_t main(){
