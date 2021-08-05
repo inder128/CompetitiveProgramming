@@ -22,7 +22,6 @@ https://codeforces.com/contest/280/problem/C -> p62.cpp
 https://codeforces.com/contest/1428/problem/D -> CF-Raif/C.cpp (implementation heavy)
 https://codeforces.com/contest/1428/problem/E -> CF-Raif/D.cpp and CF-Raif/F.cpp
 https://codeforces.com/contest/1444/problem/C -> p67.cpp
-https://codeforces.com/blog/entry/8219
 https://codeforces.com/problemset/problem/1335/F -> p71.cpp
 ITMO -> questions
 https://codeforces.com/blog/entry/77491 -> problem-D proof
@@ -82,3 +81,4 @@ https://codeforces.com/contest/1479/problem/B2
 
 https://codeforces.com/blog/entry/48417
 https://codeforces.com/blog/entry/91363 - topic wise blogs list
+https://codeforces.com/blog/entry/8219
